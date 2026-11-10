@@ -1,0 +1,354 @@
+{
+  "path": "/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme",
+  "binary_sha256": "5b48748fa6394811cba0f8c05905ffebb9a2cd02faf6d47b26deb3d9b86247e0",
+  "matches": [
+    {
+      "offset": 17206768,
+      "text": "flute::asr::ntp_cif::PromptProcessor"
+    },
+    {
+      "offset": 17206816,
+      "text": "flute::asr::ntp_cif::PantherLLMEngineCreator"
+    },
+    {
+      "offset": 17312779,
+      "text": "N7panther4lite3cpu26QW4ConformerLayerRopeChunkE"
+    },
+    {
+      "offset": 17314048,
+      "text": "N7panther4lite3cpu19W4A8Gpt2TransformerE"
+    },
+    {
+      "offset": 18334512,
+      "text": "flute.asr.acllm.HFTokenizer"
+    },
+    {
+      "offset": 18373629,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: ffn1 layernorm init failed"
+    },
+    {
+      "offset": 18373795,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: attn layernorm init failed"
+    },
+    {
+      "offset": 18373880,
+      "text": "[1m[Panther][INFO]: QW4ConformerLayerRopeChunk: is_mha_quant=1, no catcher scales, using dynamic quant_bmm (mode=2)"
+    },
+    {
+      "offset": 18374002,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: pos_emb_mat_size[%d] != attn_left[%d]+chunk_size[%d]"
+    },
+    {
+      "offset": 18374113,
+      "text": "[1m[Panther][INFO]: QW4ConformerLayerRopeChunk: pos_rope rebuilt (streaming=%d, f32->bf16=%d, frames=%d->%d, HD=%d, total=%d floats)"
+    },
+    {
+      "offset": 18374252,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: conv layernorm init failed"
+    },
+    {
+      "offset": 18374337,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: conv2 init failed"
+    },
+    {
+      "offset": 18374413,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: conv2 layernorm init failed"
+    },
+    {
+      "offset": 18374499,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: ffn2 layernorm init failed"
+    },
+    {
+      "offset": 18374584,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: out layernorm init failed"
+    },
+    {
+      "offset": 18374668,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: failed to allocate kv_scales_buffer (%d floats)"
+    },
+    {
+      "offset": 18375663,
+      "text": "[1m[Panther][INFO]: QW4ConformerLayerRopeChunk: format must be PthBTN"
+    },
+    {
+      "offset": 18375739,
+      "text": "[1m[Panther][INFO]: QW4ConformerLayerRopeChunk: attn_left_context < attn_right_context is unsupported now"
+    },
+    {
+      "offset": 18375944,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunkKernel: chunk_size error %d!"
+    },
+    {
+      "offset": 18376029,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunkKernel: stream not support mask!"
+    },
+    {
+      "offset": 18376118,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunkKernel: stream first/mid not support T %dwith param chunksize:%d!"
+    },
+    {
+      "offset": 18376240,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunkKernel: unsupported mask type/dtype"
+    },
+    {
+      "offset": 18376457,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: ffn1 layernorm compute failed"
+    },
+    {
+      "offset": 18377337,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: attn layernorm compute failed"
+    },
+    {
+      "offset": 18378237,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: conv layernorm compute failed"
+    },
+    {
+      "offset": 18378325,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: conv2 compute failed"
+    },
+    {
+      "offset": 18378404,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: conv2 layernorm compute failed"
+    },
+    {
+      "offset": 18378634,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: ffn2 layernorm compute failed"
+    },
+    {
+      "offset": 18379365,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: out layernorm compute failed"
+    },
+    {
+      "offset": 18399967,
+      "text": "PthCpuProviderQW4ConformerLayerRopeChunk"
+    },
+    {
+      "offset": 18400008,
+      "text": "QW4ConformerLayerRopeChunk"
+    },
+    {
+      "offset": 18400035,
+      "text": "KernelFactory<CpuKernelType>::Global().RegisterKernelInfo( \"PthCpuProvider\" \"QW4ConformerLayerRopeChunk\", \"QW4ConformerLayerRopeChunk\", cpu::BuildLiteKernelCreateInfo<cpu::LITE_KERNEL_CLASS_NAME( PthCpuProvider, QW4ConformerLayerRopeChunk)>)"
+    },
+    {
+      "offset": 18400277,
+      "text": "register cpu kernel QW4ConformerLayerRopeChunk info failed"
+    },
+    {
+      "offset": 18460173,
+      "text": "PthCpuProviderW4A8GPT2TransformerBlock"
+    },
+    {
+      "offset": 18460212,
+      "text": "W4A8GPT2TransformerBlock"
+    },
+    {
+      "offset": 18460237,
+      "text": "KernelFactory<CpuKernelType>::Global().RegisterKernelInfo( \"PthCpuProvider\" \"W4A8GPT2TransformerBlock\", \"W4A8GPT2TransformerBlock\", cpu::BuildLiteKernelCreateInfo<cpu::LITE_KERNEL_CLASS_NAME( PthCpuProvider, W4A8GPT2TransformerBlock)>)"
+    },
+    {
+      "offset": 18460473,
+      "text": "register cpu kernel W4A8GPT2TransformerBlock info failed"
+    },
+    {
+      "offset": 18499261,
+      "text": "QW4ConformerLayerRopeChunk only support format BTN"
+    },
+    {
+      "offset": 18513602,
+      "text": "W4A8Gpt2Transformer ffn activation only support gelu"
+    },
+    {
+      "offset": 18514252,
+      "text": "GetW4A8Gpt2TransformerKernel Init failed"
+    },
+    {
+      "offset": 18514364,
+      "text": "W4A8Gpt2Transformer input x shape is not valid"
+    },
+    {
+      "offset": 18514504,
+      "text": "W4A8Gpt2Transformer compute failed"
+    },
+    {
+      "offset": 38191424,
+      "text": "flute::asr::ntp_cif::PromptProcessor"
+    },
+    {
+      "offset": 38231526,
+      "text": "flute::asr::ntp_cif::PantherLLMEngineCreator"
+    },
+    {
+      "offset": 38289152,
+      "text": "N7panther4lite3cpu26QW4ConformerLayerRopeChunkE"
+    },
+    {
+      "offset": 38290336,
+      "text": "N7panther4lite3cpu19W4A8Gpt2TransformerE"
+    },
+    {
+      "offset": 39312722,
+      "text": "flute.asr.acllm.HFTokenizer"
+    },
+    {
+      "offset": 39349271,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: ffn1 layernorm init failed"
+    },
+    {
+      "offset": 39349437,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: attn layernorm init failed"
+    },
+    {
+      "offset": 39349522,
+      "text": "[1m[Panther][INFO]: QW4ConformerLayerRopeChunk: is_mha_quant=1, no catcher scales, using dynamic quant_bmm (mode=2)"
+    },
+    {
+      "offset": 39349644,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: pos_emb_mat_size[%d] != attn_left[%d]+chunk_size[%d]"
+    },
+    {
+      "offset": 39349755,
+      "text": "[1m[Panther][INFO]: QW4ConformerLayerRopeChunk: pos_rope rebuilt (streaming=%d, f32->bf16=%d, frames=%d->%d, HD=%d, total=%d floats)"
+    },
+    {
+      "offset": 39349894,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: conv layernorm init failed"
+    },
+    {
+      "offset": 39349979,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: conv2 init failed"
+    },
+    {
+      "offset": 39350055,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: conv2 layernorm init failed"
+    },
+    {
+      "offset": 39350141,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: ffn2 layernorm init failed"
+    },
+    {
+      "offset": 39350226,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: out layernorm init failed"
+    },
+    {
+      "offset": 39350310,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: failed to allocate kv_scales_buffer (%d floats)"
+    },
+    {
+      "offset": 39351305,
+      "text": "[1m[Panther][INFO]: QW4ConformerLayerRopeChunk: format must be PthBTN"
+    },
+    {
+      "offset": 39351381,
+      "text": "[1m[Panther][INFO]: QW4ConformerLayerRopeChunk: attn_left_context < attn_right_context is unsupported now"
+    },
+    {
+      "offset": 39351586,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunkKernel: chunk_size error %d!"
+    },
+    {
+      "offset": 39351671,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunkKernel: stream not support mask!"
+    },
+    {
+      "offset": 39351760,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunkKernel: stream first/mid not support T %dwith param chunksize:%d!"
+    },
+    {
+      "offset": 39351882,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunkKernel: unsupported mask type/dtype"
+    },
+    {
+      "offset": 39352099,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: ffn1 layernorm compute failed"
+    },
+    {
+      "offset": 39352979,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: attn layernorm compute failed"
+    },
+    {
+      "offset": 39353879,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: conv layernorm compute failed"
+    },
+    {
+      "offset": 39353967,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: conv2 compute failed"
+    },
+    {
+      "offset": 39354046,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: conv2 layernorm compute failed"
+    },
+    {
+      "offset": 39354276,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: ffn2 layernorm compute failed"
+    },
+    {
+      "offset": 39355007,
+      "text": "[1;31m[Panther][FATAL]: QW4ConformerLayerRopeChunk: out layernorm compute failed"
+    },
+    {
+      "offset": 39375562,
+      "text": "PthCpuProviderQW4ConformerLayerRopeChunk"
+    },
+    {
+      "offset": 39375603,
+      "text": "QW4ConformerLayerRopeChunk"
+    },
+    {
+      "offset": 39375630,
+      "text": "KernelFactory<CpuKernelType>::Global().RegisterKernelInfo( \"PthCpuProvider\" \"QW4ConformerLayerRopeChunk\", \"QW4ConformerLayerRopeChunk\", cpu::BuildLiteKernelCreateInfo<cpu::LITE_KERNEL_CLASS_NAME( PthCpuProvider, QW4ConformerLayerRopeChunk)>)"
+    },
+    {
+      "offset": 39375872,
+      "text": "register cpu kernel QW4ConformerLayerRopeChunk info failed"
+    },
+    {
+      "offset": 39435775,
+      "text": "PthCpuProviderW4A8GPT2TransformerBlock"
+    },
+    {
+      "offset": 39435814,
+      "text": "W4A8GPT2TransformerBlock"
+    },
+    {
+      "offset": 39435839,
+      "text": "KernelFactory<CpuKernelType>::Global().RegisterKernelInfo( \"PthCpuProvider\" \"W4A8GPT2TransformerBlock\", \"W4A8GPT2TransformerBlock\", cpu::BuildLiteKernelCreateInfo<cpu::LITE_KERNEL_CLASS_NAME( PthCpuProvider, W4A8GPT2TransformerBlock)>)"
+    },
+    {
+      "offset": 39436075,
+      "text": "register cpu kernel W4A8GPT2TransformerBlock info failed"
+    },
+    {
+      "offset": 39474863,
+      "text": "QW4ConformerLayerRopeChunk only support format BTN"
+    },
+    {
+      "offset": 39480220,
+      "text": "QW4ConformerLayerRopeChunk CPU execution requested after CPU weights were released"
+    },
+    {
+      "offset": 39480529,
+      "text": "QW4ConformerLayerRopeChunk Metal execution failed after CPU weights were released"
+    },
+    {
+      "offset": 39481483,
+      "text": "[UNLOAD] ~QW4ConformerLayerRopeChunk layer_idx=%d had_handle=%d device=%.1fMB->%.1fMB freed=%.1fMB"
+    },
+    {
+      "offset": 39490863,
+      "text": "W4A8Gpt2Transformer ffn activation only support gelu"
+    },
+    {
+      "offset": 39491513,
+      "text": "GetW4A8Gpt2TransformerKernel Init failed"
+    },
+    {
+      "offset": 39491625,
+      "text": "W4A8Gpt2Transformer input x shape is not valid"
+    },
+    {
+      "offset": 39491765,
+      "text": "W4A8Gpt2Transformer compute failed"
+    }
+  ]
+}

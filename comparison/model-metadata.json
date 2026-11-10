@@ -1,0 +1,709 @@
+[
+  {
+    "file": "asr/models/encoder.opt.stream.pthlite",
+    "file_bytes": 208533328,
+    "scanned_bytes": 4194304,
+    "markers": [
+      {
+        "offset": 5124,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.13/QW4ConformerLayerRopeChunk_state_out_13"
+      },
+      {
+        "offset": 5844,
+        "text": "/audio_encoder/acoustic_front_end_module/conv/conv.2/QuantizeLinear_output_0"
+      },
+      {
+        "offset": 5988,
+        "text": "/audio_encoder/acoustic_front_end_module/Transpose_QuantizeLinear__24:0"
+      },
+      {
+        "offset": 6108,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.12/QW4ConformerLayerRopeChunk_state_out_12"
+      },
+      {
+        "offset": 6448,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.23/QW4ConformerLayerRopeChunk_state_out_23"
+      },
+      {
+        "offset": 6592,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.20/QW4ConformerLayerRopeChunk_state_out_20"
+      },
+      {
+        "offset": 6736,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.22/QW4ConformerLayerRopeChunk_state_out_22"
+      },
+      {
+        "offset": 6880,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.4/QW4ConformerLayerRopeChunk_state_out_4"
+      },
+      {
+        "offset": 7160,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.18/QW4ConformerLayerRopeChunk_state_out_18"
+      },
+      {
+        "offset": 7352,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.15/QW4ConformerLayerRopeChunk_state_out_15"
+      },
+      {
+        "offset": 7516,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.15/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 7628,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.6/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 7768,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.7/QW4ConformerLayerRopeChunk_state_out_7"
+      },
+      {
+        "offset": 7884,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.12/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 8172,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.2/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 8452,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.8/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 8564,
+        "text": "/Reshape_QuantizeLinear__20:0"
+      },
+      {
+        "offset": 8652,
+        "text": "/audio_encoder/acoustic_front_end_module/Unsqueeze_QuantizeLinear__17:0"
+      },
+      {
+        "offset": 8748,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.0/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 8860,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.9/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 8972,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.5/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 9084,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.19/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 9224,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.10/QW4ConformerLayerRopeChunk_state_out_10"
+      },
+      {
+        "offset": 10088,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.0/QW4ConformerLayerRopeChunk_state_out_0"
+      },
+      {
+        "offset": 10204,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.1/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 10344,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.1/QW4ConformerLayerRopeChunk_state_out_1"
+      },
+      {
+        "offset": 10488,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.2/QW4ConformerLayerRopeChunk_state_out_2"
+      },
+      {
+        "offset": 10604,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.3/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 10744,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.3/QW4ConformerLayerRopeChunk_state_out_3"
+      },
+      {
+        "offset": 10860,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.4/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 11000,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.5/QW4ConformerLayerRopeChunk_state_out_5"
+      },
+      {
+        "offset": 11144,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.6/QW4ConformerLayerRopeChunk_state_out_6"
+      },
+      {
+        "offset": 11260,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.7/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 11400,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.8/QW4ConformerLayerRopeChunk_state_out_8"
+      },
+      {
+        "offset": 11544,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.9/QW4ConformerLayerRopeChunk_state_out_9"
+      },
+      {
+        "offset": 11660,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.10/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 11772,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.11/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 11912,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.11/QW4ConformerLayerRopeChunk_state_out_11"
+      },
+      {
+        "offset": 12028,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.13/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 12140,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.14/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 12280,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.14/QW4ConformerLayerRopeChunk_state_out_14"
+      },
+      {
+        "offset": 12396,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.16/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 12536,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.16/QW4ConformerLayerRopeChunk_state_out_16"
+      },
+      {
+        "offset": 12652,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.17/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 12792,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.17/QW4ConformerLayerRopeChunk_state_out_17"
+      },
+      {
+        "offset": 12908,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.18/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 13048,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.19/QW4ConformerLayerRopeChunk_state_out_19"
+      },
+      {
+        "offset": 13164,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.20/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 13276,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.21/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 13416,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.21/QW4ConformerLayerRopeChunk_state_out_21"
+      },
+      {
+        "offset": 13532,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.22/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 13644,
+        "text": "/audio_encoder/acoustic_backbone_module/encoders.23/QW4ConformerLayerRopeChunk_output_0"
+      }
+    ],
+    "identifier_counts": {
+      "body_len": 1,
+      "head_len": 1,
+      "global_state_out": 1,
+      "encoder_out": 1,
+      "x_sign": 1,
+      "global_state_in": 1,
+      "bjctzy": 1,
+      "ad4c4cc0dfa153b886c5491b2e9e3837": 1,
+      "e25fe0724abd7fefb7e1274518148f62": 1,
+      "BQQu1A": 1,
+      "DZ4DUN": 1,
+      "PQN21p": 1
+    }
+  },
+  {
+    "file": "asr/models/non_s_encoder.opt.stream.pthlite",
+    "file_bytes": 206124592,
+    "scanned_bytes": 4194304,
+    "markers": [
+      {
+        "offset": 4016,
+        "text": "/out/Qw4DynGemm_output_0"
+      },
+      {
+        "offset": 5356,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_state_out_0"
+      },
+      {
+        "offset": 5448,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_output_0"
+      },
+      {
+        "offset": 5564,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_9_state_out_9"
+      },
+      {
+        "offset": 5656,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_9_output_0"
+      },
+      {
+        "offset": 5772,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_8_state_out_8"
+      },
+      {
+        "offset": 5864,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_8_output_0"
+      },
+      {
+        "offset": 5980,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_7_state_out_7"
+      },
+      {
+        "offset": 6072,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_7_output_0"
+      },
+      {
+        "offset": 6188,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_6_state_out_6"
+      },
+      {
+        "offset": 6280,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_6_output_0"
+      },
+      {
+        "offset": 6396,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_5_state_out_5"
+      },
+      {
+        "offset": 6488,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_5_output_0"
+      },
+      {
+        "offset": 6604,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_4_state_out_4"
+      },
+      {
+        "offset": 6696,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_4_output_0"
+      },
+      {
+        "offset": 6812,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_3_state_out_3"
+      },
+      {
+        "offset": 6904,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_3_output_0"
+      },
+      {
+        "offset": 7020,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_2_state_out_2"
+      },
+      {
+        "offset": 7112,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_2_output_0"
+      },
+      {
+        "offset": 7228,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_23_state_out_23"
+      },
+      {
+        "offset": 7324,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_23_output_0"
+      },
+      {
+        "offset": 7444,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_22_state_out_22"
+      },
+      {
+        "offset": 7540,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_22_output_0"
+      },
+      {
+        "offset": 7660,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_21_state_out_21"
+      },
+      {
+        "offset": 7756,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_21_output_0"
+      },
+      {
+        "offset": 7876,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_20_state_out_20"
+      },
+      {
+        "offset": 7972,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_20_output_0"
+      },
+      {
+        "offset": 8092,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_1_state_out_1"
+      },
+      {
+        "offset": 8184,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_1_output_0"
+      },
+      {
+        "offset": 8300,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_19_state_out_19"
+      },
+      {
+        "offset": 8396,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_19_output_0"
+      },
+      {
+        "offset": 8516,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_18_state_out_18"
+      },
+      {
+        "offset": 8612,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_18_output_0"
+      },
+      {
+        "offset": 8732,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_17_state_out_17"
+      },
+      {
+        "offset": 8828,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_17_output_0"
+      },
+      {
+        "offset": 8948,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_16_state_out_16"
+      },
+      {
+        "offset": 9044,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_16_output_0"
+      },
+      {
+        "offset": 9164,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_15_state_out_15"
+      },
+      {
+        "offset": 9260,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_15_output_0"
+      },
+      {
+        "offset": 9380,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_14_state_out_14"
+      },
+      {
+        "offset": 9476,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_14_output_0"
+      },
+      {
+        "offset": 9596,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_13_state_out_13"
+      },
+      {
+        "offset": 9692,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_13_output_0"
+      },
+      {
+        "offset": 9812,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_12_state_out_12"
+      },
+      {
+        "offset": 9908,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_12_output_0"
+      },
+      {
+        "offset": 10028,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_11_state_out_11"
+      },
+      {
+        "offset": 10124,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_11_output_0"
+      },
+      {
+        "offset": 10248,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_10_state_out_10"
+      },
+      {
+        "offset": 10344,
+        "text": "/acoustic_backbone_module/QW4ConformerLayerRopeChunk_10_output_0"
+      },
+      {
+        "offset": 462856,
+        "text": "onnx::QW4ConformerLayerRopeChunk_762"
+      }
+    ],
+    "identifier_counts": {
+      "x_sign": 1,
+      "global_state_out": 1,
+      "global_state_in": 1,
+      "encoder_out": 1,
+      "bjctzy": 1,
+      "ad4c4cc0dfa153b886c5491b2e9e3837": 1,
+      "e25fe0724abd7fefb7e1274518148f62": 1,
+      "Dtf9Dtf9": 1,
+      "Me92yV": 1,
+      "kE69bh": 1,
+      "H29Lrn": 1,
+      "EPd8Rb5": 1,
+      "D223N2": 1
+    }
+  },
+  {
+    "file": "asr/models/llm_decoder.pthlite",
+    "file_bytes": 76644680,
+    "scanned_bytes": 4194304,
+    "markers": [
+      {
+        "offset": 1436,
+        "text": "/W4A8GPT2TransformerBlock_5_output_0"
+      },
+      {
+        "offset": 1612,
+        "text": "/W4A8GPT2TransformerBlock_10_output_0"
+      },
+      {
+        "offset": 2040,
+        "text": "/W4A8GPT2TransformerBlock_6_output_0"
+      },
+      {
+        "offset": 2296,
+        "text": "/W4A8GPT2TransformerBlock_output_0"
+      },
+      {
+        "offset": 2388,
+        "text": "/W4A8GPT2TransformerBlock_1_output_0"
+      },
+      {
+        "offset": 2484,
+        "text": "/W4A8GPT2TransformerBlock_2_output_0"
+      },
+      {
+        "offset": 2580,
+        "text": "/W4A8GPT2TransformerBlock_3_output_0"
+      },
+      {
+        "offset": 2676,
+        "text": "/W4A8GPT2TransformerBlock_4_output_0"
+      },
+      {
+        "offset": 2772,
+        "text": "/W4A8GPT2TransformerBlock_7_output_0"
+      },
+      {
+        "offset": 2868,
+        "text": "/W4A8GPT2TransformerBlock_8_output_0"
+      },
+      {
+        "offset": 2964,
+        "text": "/W4A8GPT2TransformerBlock_9_output_0"
+      },
+      {
+        "offset": 3060,
+        "text": "/W4A8GPT2TransformerBlock_11_output_0"
+      }
+    ],
+    "identifier_counts": {
+      "hidden_state": 1,
+      "cache_T": 1,
+      "kv_cache_list": 1,
+      "input_embedding": 1,
+      "bjctzy": 1,
+      "ad4c4cc0dfa153b886c5491b2e9e3837": 1,
+      "e25fe0724abd7fefb7e1274518148f62": 1,
+      "DAAD11": 1,
+      "os2aCWt": 1,
+      "NatRnT0": 1,
+      "Acr0Av": 1,
+      "aLBR3a": 1,
+      "rDQvpS2": 1,
+      "mR1BaM2": 1,
+      "pn9w3I": 1,
+      "BannA6": 1,
+      "z11RFQ": 1,
+      "XGeL8t": 1,
+      "O1G05A": 1,
+      "Rot17N": 1,
+      "h4BN2mS": 1,
+      "f3QtOq": 1,
+      "B39C13": 1,
+      "QBw3l5o": 1,
+      "Oqoo_O": 1,
+      "Q5s6NrD": 1,
+      "zRwe1M": 1,
+      "BRkxBL": 1,
+      "BNyPTR": 1,
+      "jCAw_A": 1,
+      "vravDx": 1,
+      "Qn20WE0": 1,
+      "QxAZD2": 1,
+      "q71Oal": 1,
+      "hOBs13": 1,
+      "aG2SFK": 1,
+      "A6F1eB": 1,
+      "aR5Ktq": 1
+    }
+  },
+  {
+    "file": "asr/models/non_s_llm_decoder.pthlite",
+    "file_bytes": 230098144,
+    "scanned_bytes": 4194304,
+    "markers": [
+      {
+        "offset": 10736,
+        "text": "v_catcher_before_rope_0"
+      },
+      {
+        "offset": 14968,
+        "text": "k_catcher_before_rope_0"
+      },
+      {
+        "offset": 23872,
+        "text": "h.9.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 33376,
+        "text": "h.8.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 42880,
+        "text": "h.7.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 52384,
+        "text": "h.6.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 61888,
+        "text": "h.5.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 71392,
+        "text": "h.4.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 80896,
+        "text": "h.3.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 90396,
+        "text": "h.27.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 99900,
+        "text": "h.26.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 109404,
+        "text": "h.25.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 118908,
+        "text": "h.24.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 128412,
+        "text": "h.23.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 137916,
+        "text": "h.22.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 147420,
+        "text": "h.21.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 156924,
+        "text": "h.20.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 166432,
+        "text": "h.2.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 175932,
+        "text": "h.19.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 185436,
+        "text": "h.18.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 194940,
+        "text": "h.17.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 204444,
+        "text": "h.16.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 213948,
+        "text": "h.15.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 223452,
+        "text": "h.14.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 232956,
+        "text": "h.13.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 242460,
+        "text": "h.12.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 251964,
+        "text": "h.11.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 261468,
+        "text": "h.10.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 270976,
+        "text": "h.1.attn.query_layernorm.weight"
+      },
+      {
+        "offset": 280480,
+        "text": "h.0.attn.query_layernorm.weight"
+      }
+    ],
+    "identifier_counts": {
+      "kv_cache_list": 1,
+      "input_embedding": 1,
+      "hidden_state": 1,
+      "cache_T": 1,
+      "bjctzy": 1,
+      "ad4c4cc0dfa153b886c5491b2e9e3837": 1,
+      "e25fe0724abd7fefb7e1274518148f62": 1,
+      "v_catcher_before_rope_0": 1,
+      "k_catcher_before_rope_0": 1,
+      "C1RPNO": 1,
+      "R4AOcA": 1,
+      "oB4O21": 1,
+      "S01HEB": 1,
+      "l21MOA": 1,
+      "EE3K12": 1,
+      "ERrRos": 1,
+      "Ta4120": 1
+    }
+  },
+  {
+    "file": "asr/models/non_s_draft.pthlite",
+    "file_bytes": 32627552,
+    "scanned_bytes": 4194304,
+    "markers": [],
+    "identifier_counts": {
+      "kv_cache_list": 1,
+      "inputs_embeds_2e": 1,
+      "draft_hidden": 1,
+      "cache_T": 1,
+      "bjctzy": 1,
+      "ad4c4cc0dfa153b886c5491b2e9e3837": 1,
+      "e25fe0724abd7fefb7e1274518148f62": 1
+    }
+  }
+]

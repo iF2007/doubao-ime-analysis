@@ -1,0 +1,18 @@
+{
+  "recorded_on": "2026-11-10",
+  "liteasr": {
+    "repository": "https://github.com/efeslab/LiteASR",
+    "commit": "da5be85382a6fc22245803c18c820b5c1b049ef8",
+    "references": [
+      "https://github.com/efeslab/LiteASR/blob/da5be85382a6fc22245803c18c820b5c1b049ef8/README.md",
+      "https://github.com/efeslab/LiteASR/blob/da5be85382a6fc22245803c18c820b5c1b049ef8/src/compress.py",
+      "https://github.com/efeslab/LiteASR/blob/da5be85382a6fc22245803c18c820b5c1b049ef8/src/lite_whisper/modeling_lite_whisper.py"
+    ]
+  },
+  "lite_whisper_config": "https://huggingface.co/efficient-speech/lite-whisper-large-v3-turbo/raw/main/config.json",
+  "seed_asr": {
+    "paper": "https://arxiv.org/html/2407.04675v1",
+    "official_demo": "https://bytedancespeech.github.io/seedasr_tech_report/"
+  },
+  "doubao_realtime": "https://seed.bytedance.com/en/blog/doubao-realtime-voice-model-is-available-upon-release-high-eq-and-iq"
+}

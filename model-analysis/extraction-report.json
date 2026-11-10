@@ -1,0 +1,151 @@
+{
+  "source": "~/Library/Application Support/DoubaoIme/ASRModel/versions/1_8/asr_model.model",
+  "source_bytes": 824999405,
+  "source_md5": "c31bdfbd138e9beac48e02672f98f1e8",
+  "extraction_verified": true,
+  "extracted_files": 20,
+  "extracted_bytes": 824998262,
+  "written_files_verified": 20,
+  "model_md5_entries_checked": 8,
+  "model_md5_entries_matched": 5,
+  "model_md5_manifest_matches": false,
+  "model_md5_mismatches": [
+    {
+      "path": "asr/models/non_s_encoder.opt.stream.pthlite",
+      "expected_md5": "453cd5e0eee1c1350e5dce8f540b90a1",
+      "actual_md5": "f838d414b5f3f465fb3ed165cf3f5dc7"
+    },
+    {
+      "path": "asr/models/non_s_llm_decoder.pthlite",
+      "expected_md5": "ab0c38ed97f55dfdee20c3f64a829a79",
+      "actual_md5": "083d4717b9648369083c42cf72cb3a15"
+    },
+    {
+      "path": "asr/models/non_s_llm_embedding_logit.pthlite",
+      "expected_md5": "18e804822a3fe5767e71c21da898e68c",
+      "actual_md5": "9beee631e16a50672e62c69bbb71e55a"
+    }
+  ],
+  "files": [
+    {
+      "path": "model_md5s.txt",
+      "bytes": 880,
+      "md5": "079571b6e95a73fc4ab3b9602a979f0b",
+      "sha256": "45e148493562612467177ad048ce688366046f0329993d29abbef328aa3c76e7"
+    },
+    {
+      "path": "prompt_template.txt",
+      "bytes": 786,
+      "md5": "9a9153e05f8cf2b8540756ec87eef1bb",
+      "sha256": "85a259cb3908e9967e916d681798ad78528cc487501fe5bdd9fd8f8ce870fc4f"
+    },
+    {
+      "path": "config.yaml",
+      "bytes": 12128,
+      "md5": "04eb8f7e6adec65191aec9c5acade57a",
+      "sha256": "dd20ae583e60cbb80242bebb0f1800443c009adeae173cc5c00c69489273d6bd"
+    },
+    {
+      "path": "config.yaml.cirepro_bak",
+      "bytes": 11650,
+      "md5": "532ee3a58b28eb4b64279baadaf6d820",
+      "sha256": "3b10c196d95097a23b64e4b83cb48876f8b9dbd35c5e5b514995305ae618d017"
+    },
+    {
+      "path": "vad/config.yaml",
+      "bytes": 1338,
+      "md5": "337c60e206bae4f0eacd0b6207805edc",
+      "sha256": "e1fa2211eff29fcbe78d97b10b82320da7bbbb0da3aa65565bd3db02759c5a3c"
+    },
+    {
+      "path": "asr/token/merges.txt",
+      "bytes": 620622,
+      "md5": "3e115c90aff62b74899beb46ee051adc",
+      "sha256": "98e61956e912372717f37358ffb1f4954f31759a837d54a36ad52ce0c9442c95"
+    },
+    {
+      "path": "asr/token/vocab.txt",
+      "bytes": 935789,
+      "md5": "27052a98cb23741ebf82fc800ba07cd7",
+      "sha256": "d90571b868b4285bf22eafeac862f8b5e8cba7639c06192598e8c4b250d00027"
+    },
+    {
+      "path": "asr/token/add_special_tokens.txt",
+      "bytes": 6803,
+      "md5": "f70bd05e9575e35bf2bdbaf1f8b07825",
+      "sha256": "d5476c0860731be3fa8ebc52f8ecd95f132d9255b88272952ec51beb0492ec1d"
+    },
+    {
+      "path": "asr/models/llm_decoder_embeding_logit.pthlite",
+      "bytes": 33089600,
+      "md5": "6ee06b1f384134b8503bb2de2ce930a8",
+      "sha256": "a72ab96d2a3b4bbfc196e8f2d711ce9984979fc94224a479e67574d4337c2808"
+    },
+    {
+      "path": "asr/models/encoder.opt.stream.pthlite",
+      "bytes": 208533328,
+      "md5": "75061fa52e70f573b0b0688fa5ab0576",
+      "sha256": "0a906d00c7cd35bd1ddc917745261bbc1fd721b8ff92bd7645dca4689ac6e60c"
+    },
+    {
+      "path": "asr/models/llm_decoder.pthlite",
+      "bytes": 76644680,
+      "md5": "268f058abcc12ba2f2131ef09e315c68",
+      "sha256": "07f9799dfe4c87d1703bbd72c981f8fb54b13269d50a2075613b51b360112b0c"
+    },
+    {
+      "path": "asr/models/non_s_draft.pthlite",
+      "bytes": 32627552,
+      "md5": "2b62ead5d58e6fa66d59cafcc4360b20",
+      "sha256": "ac3d6b36783711c1f2094fde9f88d5fb9a23d9e8967b3d063f754fa520e5a737"
+    },
+    {
+      "path": "asr/models/non_s_encoder.opt.stream.pthlite",
+      "bytes": 206124592,
+      "md5": "f838d414b5f3f465fb3ed165cf3f5dc7",
+      "sha256": "6ed77a10065990aa5fc3af474e8e2c2b98f77c95a71dd4b1143f5a495b37a6ed"
+    },
+    {
+      "path": "asr/models/non_s_llm_embedding_logit.pthlite",
+      "bytes": 33025424,
+      "md5": "9beee631e16a50672e62c69bbb71e55a",
+      "sha256": "77f2542fe5ea1d095c18d0849edef9f210a47e278bff0c19af7b4217c23ce37d"
+    },
+    {
+      "path": "asr/models/llm_decoder_embeding_wpe.pthlite",
+      "bytes": 2106368,
+      "md5": "3168879ba5dcd4ddcd4fa19a63772b75",
+      "sha256": "f006bf5f86deef26b049fdf3e7992e3a0ddc69fa4bf73dc6f5e771eee4dfede0"
+    },
+    {
+      "path": "asr/models/non_s_llm_decoder.pthlite",
+      "bytes": 230098144,
+      "md5": "083d4717b9648369083c42cf72cb3a15",
+      "sha256": "37ef904a6c44ea6a475fc1f4edb8d9d54dde4fc6c60d309ebcfcab26d727ebb3"
+    },
+    {
+      "path": "asr/feature_extractor/cmvn.txt.bak_lf",
+      "bytes": 1505,
+      "md5": "21cb61a33bed32617c442a7c79f2cf1e",
+      "sha256": "d1026e706f3e0561fd2824b3c806d57ab129459ca1ff395109380187f7ef9622"
+    },
+    {
+      "path": "asr/feature_extractor/fbank.conf",
+      "bytes": 89,
+      "md5": "1decd7a0c7dc66febe0b68cabf0dde90",
+      "sha256": "33447b195117728900e9922989eea466cf3116cb3a1a8883212dfbb23a4a2ede"
+    },
+    {
+      "path": "asr/feature_extractor/cmvn.txt",
+      "bytes": 1584,
+      "md5": "753b9da691401b5694be8d47942f721e",
+      "sha256": "ff7a5df4fbf2d96d3936990620a233e7c12406a7d9ba545267dac6fc33cd1154"
+    },
+    {
+      "path": "vad/encoder/vad_v4.pth.pthlite",
+      "bytes": 1155400,
+      "md5": "9cf6a7fe3237431aca988c4cf4ca4bbd",
+      "sha256": "09bb94649cac4e388674890f559bc7872ec7035afa00a09d1a21cbc4e102e18b"
+    }
+  ]
+}

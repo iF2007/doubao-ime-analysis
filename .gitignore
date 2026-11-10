@@ -1,0 +1,8 @@
+/.local-tools/
+/.local-data/
+/.audit/
+/lulu-backups/
+__pycache__/
+*.py[cod]
+.DS_Store
+*.pthlite

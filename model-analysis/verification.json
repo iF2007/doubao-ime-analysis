@@ -1,0 +1,145 @@
+{
+  "model": "~/Library/Application Support/DoubaoIme/ASRModel/versions/1_8/asr_model.model",
+  "model_bytes": 824999405,
+  "layout_version": 3,
+  "header_size": 1143,
+  "internal_files": 20,
+  "payload_xor_verified": true,
+  "candidate_verified": true,
+  "key_source": "derived from seed and model metadata",
+  "attempts": [
+    {
+      "counter": 0,
+      "valid": false,
+      "error": "'ascii' codec can't decode byte 0x91 in position 0: ordinal not in range(128)"
+    },
+    {
+      "counter": 1,
+      "valid": true,
+      "entries": [
+        {
+          "name": "/model_md5s.txt",
+          "offset": 1143,
+          "size": 880,
+          "mtime": 1785913723
+        },
+        {
+          "name": "/prompt_template.txt",
+          "offset": 2023,
+          "size": 786,
+          "mtime": 1785913723
+        },
+        {
+          "name": "/config.yaml",
+          "offset": 2809,
+          "size": 12128,
+          "mtime": 1785913723
+        },
+        {
+          "name": "/config.yaml.cirepro_bak",
+          "offset": 14937,
+          "size": 11650,
+          "mtime": 1785913723
+        },
+        {
+          "name": "/vad/config.yaml",
+          "offset": 26587,
+          "size": 1338,
+          "mtime": 1785913723
+        },
+        {
+          "name": "/asr/token/merges.txt",
+          "offset": 27925,
+          "size": 620622,
+          "mtime": 1785913723
+        },
+        {
+          "name": "/asr/token/vocab.txt",
+          "offset": 648547,
+          "size": 935789,
+          "mtime": 1785913723
+        },
+        {
+          "name": "/asr/token/add_special_tokens.txt",
+          "offset": 1584336,
+          "size": 6803,
+          "mtime": 1785913723
+        },
+        {
+          "name": "/asr/models/llm_decoder_embeding_logit.pthlite",
+          "offset": 1591139,
+          "size": 33089600,
+          "mtime": 1785913761
+        },
+        {
+          "name": "/asr/models/encoder.opt.stream.pthlite",
+          "offset": 34680739,
+          "size": 208533328,
+          "mtime": 1785913820
+        },
+        {
+          "name": "/asr/models/llm_decoder.pthlite",
+          "offset": 243214067,
+          "size": 76644680,
+          "mtime": 1785913788
+        },
+        {
+          "name": "/asr/models/non_s_draft.pthlite",
+          "offset": 319858747,
+          "size": 32627552,
+          "mtime": 1785913722
+        },
+        {
+          "name": "/asr/models/non_s_encoder.opt.stream.pthlite",
+          "offset": 352486299,
+          "size": 206124592,
+          "mtime": 1785913722
+        },
+        {
+          "name": "/asr/models/non_s_llm_embedding_logit.pthlite",
+          "offset": 558610891,
+          "size": 33025424,
+          "mtime": 1785913723
+        },
+        {
+          "name": "/asr/models/llm_decoder_embeding_wpe.pthlite",
+          "offset": 591636315,
+          "size": 2106368,
+          "mtime": 1785913728
+        },
+        {
+          "name": "/asr/models/non_s_llm_decoder.pthlite",
+          "offset": 593742683,
+          "size": 230098144,
+          "mtime": 1785913723
+        },
+        {
+          "name": "/asr/feature_extractor/cmvn.txt.bak_lf",
+          "offset": 823840827,
+          "size": 1505,
+          "mtime": 1785913720
+        },
+        {
+          "name": "/asr/feature_extractor/fbank.conf",
+          "offset": 823842332,
+          "size": 89,
+          "mtime": 1785913720
+        },
+        {
+          "name": "/asr/feature_extractor/cmvn.txt",
+          "offset": 823842421,
+          "size": 1584,
+          "mtime": 1785913720
+        },
+        {
+          "name": "/vad/encoder/vad_v4.pth.pthlite",
+          "offset": 823844005,
+          "size": 1155400,
+          "mtime": 1785913723
+        }
+      ],
+      "directory_sha256": "07e0a4590ced10d7fc0b094ea8ca948f1df61fb4e9e80f218373b5f67985b991",
+      "matches_reference": true
+    }
+  ]
+}

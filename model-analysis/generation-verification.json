@@ -1,0 +1,15 @@
+{
+  "original": {
+    "nonce": "45189cedd063abfc8f2ab7cc",
+    "header_size": 1143,
+    "formula_matches_captured_cipher_key": true,
+    "full_directory_validated": true
+  },
+  "synthetic_metadata": {
+    "nonce": "000102030405060708090a0b",
+    "header_size": 1144,
+    "guard_random_byte": 153,
+    "formula_matches_captured_cipher_key": true,
+    "different_key_from_original": true
+  }
+}

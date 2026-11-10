@@ -1,0 +1,46 @@
+{
+  "recorded_on": "2026-11-10",
+  "analysis_dates": [
+    "2026-11-09",
+    "2026-11-10"
+  ],
+  "application": {
+    "name": "DoubaoIme",
+    "version": "1.1.0",
+    "build": "1",
+    "bundle_id": "com.bytedance.inputmethod.doubaoime",
+    "path": "/Library/Input Methods/DoubaoIme.app",
+    "binary_sha256": "5b48748fa6394811cba0f8c05905ffebb9a2cd02faf6d47b26deb3d9b86247e0",
+    "installed_binary_rechecked_matches_analysis": true
+  },
+  "model": {
+    "name": "acllm_main_model_mac",
+    "version": "1.8",
+    "config_label": "LiteASRP_v1.1.2_6",
+    "bytes": 824999405,
+    "md5": "c31bdfbd138e9beac48e02672f98f1e8"
+  },
+  "host": {
+    "os": "macOS",
+    "version": "27.2",
+    "build": "26B123",
+    "architecture": "arm64",
+    "hardware": "MacBook Air",
+    "model_id": "Mac17,3",
+    "chip": "Apple M5",
+    "memory": "16 GB"
+  },
+  "analysis_tools": {
+    "python": "3.12.12",
+    "python_distribution": "Miniforge",
+    "numpy_distribution": "2.3.5",
+    "pycryptodome_distribution": "3.23.0",
+    "unicorn_distribution": "2.1.4",
+    "unicorn_import_reported_version": "2.1.4",
+    "capstone_distribution": "5.0.9",
+    "capstone_import_reported_version": "5.0.7",
+    "clang": "Apple clang 21.0.0 (clang-2100.4.1.1)",
+    "lldb": "lldb-2103.0.34.407"
+  },
+  "execution": "Installed files were inspected read-only. Independent analysis process snapshots and ARM64 instruction emulation were verified by independent cipher and payload checks. The original input method process was not attached to or modified."
+}

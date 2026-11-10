@@ -1,0 +1,271 @@
+[
+  {
+    "url": "https://huggingface.co/efficient-speech/lite-whisper-large-v3-turbo/raw/main/config.json",
+    "recorded_on": "2026-11-10",
+    "config": {
+      "model_type": "lite-whisper",
+      "architectures": [
+        "LiteWhisperForConditionalGeneration"
+      ],
+      "encoder_layers": 32,
+      "decoder_layers": 4,
+      "d_model": 1280,
+      "num_mel_bins": 128,
+      "vocab_size": 51866,
+      "low_rank_config": [
+        {
+          "fc1": 352,
+          "fc2": 304,
+          "k_proj": 32,
+          "out_proj": 32,
+          "q_proj": 32,
+          "v_proj": 48
+        },
+        {
+          "fc1": 240,
+          "fc2": 256,
+          "k_proj": 48,
+          "out_proj": 80,
+          "q_proj": 48,
+          "v_proj": 112
+        },
+        {
+          "fc1": 192,
+          "fc2": 144,
+          "k_proj": 32,
+          "out_proj": 112,
+          "q_proj": 32,
+          "v_proj": 112
+        },
+        {
+          "fc1": 256,
+          "fc2": 128,
+          "k_proj": 48,
+          "out_proj": 160,
+          "q_proj": 48,
+          "v_proj": 176
+        },
+        {
+          "fc1": 272,
+          "fc2": 192,
+          "k_proj": 48,
+          "out_proj": 112,
+          "q_proj": 48,
+          "v_proj": 176
+        },
+        {
+          "fc1": 272,
+          "fc2": 304,
+          "k_proj": 32,
+          "out_proj": 112,
+          "q_proj": 32,
+          "v_proj": 160
+        },
+        {
+          "fc1": 352,
+          "fc2": 320,
+          "k_proj": 64,
+          "out_proj": 192,
+          "q_proj": 64,
+          "v_proj": 304
+        },
+        {
+          "fc1": 368,
+          "fc2": 560,
+          "k_proj": 64,
+          "out_proj": 192,
+          "q_proj": 80,
+          "v_proj": 272
+        },
+        {
+          "fc1": 464,
+          "fc2": 672,
+          "k_proj": 64,
+          "out_proj": 224,
+          "q_proj": 80,
+          "v_proj": 272
+        },
+        {
+          "fc1": 464,
+          "fc2": 688,
+          "k_proj": 80,
+          "out_proj": 224,
+          "q_proj": 96,
+          "v_proj": 304
+        },
+        {
+          "fc1": 528,
+          "fc2": 720,
+          "k_proj": 48,
+          "out_proj": 240,
+          "q_proj": 48,
+          "v_proj": 288
+        },
+        {
+          "fc1": 512,
+          "fc2": 720,
+          "k_proj": 64,
+          "out_proj": 224,
+          "q_proj": 64,
+          "v_proj": 320
+        },
+        {
+          "fc1": 544,
+          "fc2": 800,
+          "k_proj": 48,
+          "out_proj": 224,
+          "q_proj": 64,
+          "v_proj": 368
+        },
+        {
+          "fc1": 624,
+          "fc2": 928,
+          "k_proj": 48,
+          "out_proj": 272,
+          "q_proj": 48,
+          "v_proj": 304
+        },
+        {
+          "fc1": 704,
+          "fc2": 880,
+          "k_proj": 64,
+          "out_proj": 288,
+          "q_proj": 64,
+          "v_proj": 464
+        },
+        {
+          "fc1": 592,
+          "fc2": 992,
+          "k_proj": 32,
+          "out_proj": 352,
+          "q_proj": 48,
+          "v_proj": 400
+        },
+        {
+          "fc1": 640,
+          "fc2": 1024,
+          "k_proj": 48,
+          "out_proj": 224,
+          "q_proj": 48,
+          "v_proj": 288
+        },
+        {
+          "fc1": 736,
+          "k_proj": 80,
+          "out_proj": 304,
+          "q_proj": 96,
+          "v_proj": 384
+        },
+        {
+          "fc1": 800,
+          "k_proj": 64,
+          "out_proj": 272,
+          "q_proj": 64,
+          "v_proj": 320
+        },
+        {
+          "fc1": 848,
+          "k_proj": 64,
+          "out_proj": 272,
+          "q_proj": 64,
+          "v_proj": 416
+        },
+        {
+          "fc1": 832,
+          "fc2": 16,
+          "k_proj": 64,
+          "out_proj": 352,
+          "q_proj": 64,
+          "v_proj": 432
+        },
+        {
+          "fc1": 976,
+          "k_proj": 96,
+          "out_proj": 368,
+          "q_proj": 112,
+          "v_proj": 512
+        },
+        {
+          "fc1": 960,
+          "k_proj": 112,
+          "out_proj": 496,
+          "q_proj": 112,
+          "v_proj": 576
+        },
+        {
+          "k_proj": 96,
+          "out_proj": 496,
+          "q_proj": 112,
+          "v_proj": 528
+        },
+        {
+          "k_proj": 144,
+          "out_proj": 512,
+          "q_proj": 160,
+          "v_proj": 624
+        },
+        {
+          "k_proj": 128,
+          "out_proj": 464,
+          "q_proj": 144
+        },
+        {
+          "k_proj": 160,
+          "out_proj": 576,
+          "q_proj": 176
+        },
+        {
+          "k_proj": 160,
+          "out_proj": 560,
+          "q_proj": 192
+        },
+        {
+          "k_proj": 176,
+          "out_proj": 576,
+          "q_proj": 192
+        },
+        {
+          "k_proj": 240,
+          "out_proj": 624,
+          "q_proj": 272,
+          "v_proj": 608
+        },
+        {
+          "k_proj": 272,
+          "out_proj": 640,
+          "q_proj": 320,
+          "v_proj": 640
+        },
+        {
+          "k_proj": 272,
+          "q_proj": 320,
+          "v_proj": 592
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://arxiv.org/abs/2005.08100",
+    "metadata": {
+      "citation_title": "Conformer: Convolution-augmented Transformer for Speech Recognition",
+      "citation_author": "Pang, Ruoming",
+      "citation_date": "2020/05/16"
+    }
+  },
+  {
+    "url": "https://arxiv.org/abs/1905.11235",
+    "metadata": {
+      "citation_title": "CIF: Continuous Integrate-and-Fire for End-to-End Speech Recognition",
+      "citation_author": "Xu, Bo",
+      "citation_date": "2019/05/27"
+    }
+  },
+  {
+    "url": "https://arxiv.org/abs/2407.04675",
+    "metadata": {
+      "citation_title": "Seed-ASR: Understanding Diverse Speech and Contexts with LLM-based Speech Recognition",
+      "citation_author": "Zou, Ming",
+      "citation_date": "2024/07/05"
+    }
+  }
+]

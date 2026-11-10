@@ -1,0 +1,389 @@
+objects:
+  universal_asr_executor:
+    type: flute.asr.ntp_cif.AsrExecutorWithContext
+    audio_input: audio_input
+    finish: finish
+    asr_output: asr_output
+    input_msg: input_msg
+    non_s_asr_output: non_s_asr_decoder_out
+    segment: segment
+    prompt_str: prompt_str
+    model_version: LiteASRP_v1.1.2_6
+    enable_asr_track: true
+    track_data_out: asr_track_data
+    actors:
+      - vad_feature_extractor
+      - vad_encoder
+      - vad_decoder
+      - wav_split
+      - s_asr_feature_extractor
+      - asr_feature_extractor
+      - non_s_asr_decoder
+      - non_s_asr_encoder
+      - asr_encoder
+      - asr_decoder
+      - asr_post
+      - asr_post_track
+  universal_s_asr_executor:
+    type: flute.asr.ntp_cif.AsrExecutorWithContext
+    audio_input: audio_input
+    finish: finish
+    asr_output: asr_output
+    segment: segment
+    model_version: LiteASRP_v1.1.2_6
+    actors:
+      - vad_feature_extractor
+      - vad_encoder
+      - vad_decoder
+      - wav_split
+      - s_asr_feature_extractor
+      - asr_encoder
+      - asr_decoder
+      - asr_post
+
+  mel_bank_feature_option:
+    type: flute.FeOption
+    ftype: 4
+    sampleRate: 16000
+    wave_normalization: true
+  mel_bank_kernel:
+    type: flute.MelBankKernel
+    sample_rate: 16000
+    stft_win: 320
+    stft_shift: 160
+    num_mel_bins: 84
+    low_freq: 0
+    high_freq: 12000
+    mel_bank_mode: 0
+    fillter_mode: 1
+    hz_domain: true
+    norm: true
+  mel_bank_feature_extractor:
+    type: flute.MelBankFeature
+    fe_opt: mel_bank_feature_option
+    mel_bank_kernel: mel_bank_kernel
+  vad_feature_extractor:
+    type: flute.vad.v4.FeatureExtractorActor
+    feature_extractor: mel_bank_feature_extractor
+    audio_input: audio_input
+    finish: finish
+    feature: vad_feature
+
+  vad_encoder_infer:
+    type: flute.nn.PantherInference
+    mel_bins: 84
+    inputs:
+      - feat
+      - h
+      - c
+    output:
+      - out
+      - h_out
+      - c_out
+    model_path: vad/encoder/vad_v4.pth.pthlite
+    model_data_release: true
+    use_gpu: false
+    providers:
+      - 0
+  vad_encoder:
+    type: flute.vad.v4.EncoderActor
+    encoder_infer: vad_encoder_infer
+    feature_input: vad_feature
+    likelihood: vad_encoder_likelihood
+
+  vad_decoder:
+    type: flute.vad.v4.DecoderActor
+    likelihood_threshold: 0.5
+    begin_smooth_window_size: 48
+    begin_smooth_voice_proportion: 0.5
+    end_smooth_window_size: 208
+    end_smooth_silence_proportion: 0.925
+    likelihood: vad_encoder_likelihood
+    finish: finish
+    vad_output: vad_segments
+
+  wav_split:
+    type: flute.vad.v4.WavSplitActor
+    input_wav: audio_input
+    vad_output: vad_segments
+    output_wav: asr_audio_input
+    vad_segment_finish: asr_finish
+    segment_input: segment
+    segment_output: asr_segment
+    max_buffer_length: 16000
+    enable_max_segment_split: true
+    max_segment_ms: 18200
+
+  asr_feature_extractor:
+    type: flute.asr.ntp_cif.FeatureExtractorActor
+    feature_extractor: feature_extractor
+    feat_win_size: 32
+    feat_win_shift: 32
+    finish_pad_wav_ms: 160
+    tot_wav_ms_multiple: 0
+    finish_limiter_feat_out: false
+    audio_input: asr_audio_input
+    finish: asr_finish
+    feature: non_s_asr_feature
+
+  s_asr_feature_extractor:
+    type: flute.asr.ntp_cif.FeatureExtractorActor
+    feature_extractor: feature_extractor
+    feat_win_size: 16
+    feat_win_shift: 16
+    finish_pad_wav_ms: 960
+    tot_wav_ms_multiple: 0
+    finish_limiter_feat_out: false
+    audio_input: asr_audio_input
+    finish: asr_finish
+    feature: s_asr_feature
+
+  feature_option:
+    type: flute.FeOption
+    ftype: 1
+    sampleRate: 16000
+    fbank_config_file: asr/feature_extractor/fbank.conf
+    use_cmvn: true
+    global_cmvn_file: asr/feature_extractor/cmvn.txt
+  feature_extractor:
+    type: flute.PantherFeature
+    fe_opt: feature_option
+
+  asr_encoder_infer:
+    type: flute.nn.PantherInference
+    inputs:
+      - fbank
+      - global_state_in
+      - x_sign
+    outputs:
+      - encoder_out
+      - global_state_out
+    model_path: asr/models/encoder.opt.stream.pthlite
+    model_data_release: true
+    use_gpu: false
+    providers:
+      - 0
+  asr_encoder:
+    type: flute.asr.ntp_cif.EncoderActor
+    encoder_infer: asr_encoder_infer
+    global_state_size: 5451936
+    fbank_length: 80
+    encoder_input_T: 16
+    wav_buffer_size: 6400
+    sample_rate: 16000
+    downsample: 16
+    encoder_out_t: 1024
+    feature: s_asr_feature
+    finish: asr_finish
+    output_finish: decoder_finish
+    encoder_out: asr_encoder_out
+
+  non_s_asr_encoder_infer:
+    type: flute.nn.PantherInference
+    inputs:
+      - fbank
+      - global_state_in
+      - x_sign
+    outputs:
+      - encoder_out
+      - global_state_out
+    model_path: asr/models/non_s_encoder.opt.stream.pthlite
+    model_data_release: true
+    use_gpu: false
+    providers:
+      - 11
+
+  non_s_asr_encoder:
+    type: flute.asr.ntp_cif.EncoderActor
+    encoder_infer: non_s_asr_encoder_infer
+    global_state_size: 5417424
+    fbank_length: 80
+    enable_track_data: true
+    encoder_fixed_input: true
+    encoder_fixed_input_len: 400
+    encoder_max_len: 1920
+    wav_buffer_size: 6400
+    sample_rate: 16000
+    downsample: 16
+    enable_reset: false
+    encoder_out_t: 1024
+    feature: non_s_asr_feature
+    finish: asr_finish
+    enable_track_data: true
+    encoder_track_data: encoder_track_data
+    output_finish: non_s_decoder_finish
+    encoder_out: non_s_asr_encoder_out
+
+  asr_decoder:
+    type: flute.asr.ntp_cif.DecoderMixerActor
+    llm_decoder_infer: llm_decoder_infer
+    llm_decoder_embeding_wpe_infer: llm_decoder_embeding_wpe_infer
+    llm_decoder_embeding_wte_infer: llm_decoder_embeding_logit_infer
+    llm_decoder_logit_infer: llm_decoder_embeding_logit_infer
+    beam_searcher: beam_searcher
+    logits_wte_shared_flg: true
+    cif_state_buffer_size: 1536
+    cif_state_acc_size: 1024
+    cls_pos: 4
+    layer_num: 12
+    audio_chunk_size: 1
+    stream_beam_size: 1
+    no_stream_beam_size: 1
+    logits_size: 1024
+    token_counts: 64000
+    cif_delay_frame: 5
+    encoder_out: asr_encoder_out
+    decoder_out: asr_decoder_out
+    finish: decoder_finish
+
+  non_s_asr_decoder:
+    type: flute.asr.ntp_cif.DecoderContextActor
+    input_msg: input_msg
+    input_embeds: non_s_asr_encoder_out
+    finish: non_s_decoder_finish
+    output: non_s_asr_decoder_out
+    enable_disfluency: true
+    enable_itn_post_process: true
+    itn_choice: itn
+    logits_wte_shared_flg: true
+    cif_state_acc_size: 1024
+    layer_num: 28
+    max_kv_cache_T: 2048
+    kv_heads: 8
+    gpu_kv_offload: true
+    beam_size: 1
+    logits_size: 1024
+    token_counts: 64000
+    mid_decode_time_ms: 1
+    full_decode_time_ms: 1
+    llm_decoder_infer: non_s_llm_decoder_infer
+    llm_decoder_embeding_wte_infer: non_s_llm_decoder_embeding_logit_infer
+    llm_decoder_logit_infer: non_s_llm_decoder_embeding_logit_infer
+    draft_model: asr/models/non_s_draft.pthlite
+    draft_len: 2
+    draft_layer_num: 2
+    tokenizer: tokenizer
+    enable_track_data: true
+    decoder_track_data: decoder_track_data
+    prompt_processor: prompt_processor
+    inc_prefill_chunk_size: 0
+    lowercase_en: false
+
+  llm_decoder_infer:
+    type: flute.nn.PantherInference
+    inputs:
+      - input_embedding
+      - kv_cache_list
+      - cache_T
+      - max_T
+    outputs:
+      - hidden_state
+    model_path: asr/models/llm_decoder.pthlite
+    model_data_release: true
+    use_gpu: false
+    providers:
+      - 0
+  llm_decoder_embeding_logit_infer:
+    type: flute.nn.PantherInference
+    inputs:
+      - input_ids
+      - hidden_state
+      - mode
+    outputs:
+      - output
+    model_path: asr/models/llm_decoder_embeding_logit.pthlite
+    model_data_release: true
+    use_gpu: false
+    providers:
+      - 0
+  llm_decoder_embeding_wpe_infer:
+    type: flute.nn.PantherInference
+    inputs:
+      - input_ids
+    outputs:
+      - out_embeding
+    model_path: asr/models/llm_decoder_embeding_wpe.pthlite
+    model_data_release: true
+    use_gpu: false
+    providers:
+      - 0
+  beam_searcher:
+    type: flute.asr.ntp_cif.BeamSearcher
+  tokenizer:
+    type: flute.asr.acllm.HFTokenizer
+    init_file: asr/token/vocab.txt
+    merge_file: asr/token/merges.txt
+    add_special_tokens_file: asr/token/add_special_tokens.txt
+    eot: "[EOS]"
+    decoder_only_flag: false
+    encode_without_special_split: false
+  prompt_processor:
+    type: flute.asr.ntp_cif.PromptProcessor
+    tokenizer: tokenizer
+    prompt_template_map:
+      - name: "lr_context"
+        "prompt_template": "[CLS]system\n你是一名语音识别专家，用户会和你用语音对话，在识别语音内容时请参考上下文信息，但有时用户的语音识别结果有错误，请谨慎参考。请将需要转写的汉字数字转写成阿拉伯数字，并以{\"asr\": \"十五\",\"itn\":\"15\"}格式输出。\n请识别内容中的无意义的语气词(A)，并以〈呃|A〉格式输出。\n在输出识别内容时请加上标点符号。\n如果语音是静音或噪音，则不输出任何内容。\n你的名字是：\n@@BOT_NAME@@\n你的设定是：\n@@BOT_DESC@@\n用户所在位置：未知\n可能需要做如下修改：@@USER_MODIFY@@[EOS]@@DIALOG@@[CLS]user\n有时候语音内容可能插入在某段文字中间，这时候可以参考语音插入位置的上下文，来提升语音识别以及标点的准确率，语音上文内容：@@CUR_CONTEXT@@[EOS][CLS]user\n用户可能提到人名或者地名或者其它个性化词汇和网络新词，其他：@@HOTWORDS@@[EOS][CLS]user\n帮我复述以下这句话 <audio>@@AUDIO@@</audio>[EOS][CLS]assistant\n"
+        cursor_context_delim: " 语音下文内容："
+        hotwords_types:
+          - other
+        hotwords_types_prompts:
+          - ""
+        max_prompt_num: 1000
+        bot_name_max_length: 10
+        bot_desc_max_length: 300
+        user_modify_max_length: 300
+        hotwords_max_length: 200
+        dialog_max_length: 400
+        cursor_context_max_length: 50
+      - name: "default" 
+        "prompt_template": "[CLS]system\n你是一名语音识别专家，用户会和你用语音对话，在识别语音内容时请参考上下文信息，但有时用户的语音识别结果有错误，请谨慎参考。请将需要转写的汉字数字转写成阿拉伯数字，并以{\"asr\": \"十五\",\"itn\":\"15\"}格式输出。\n请识别内容中的无意义的语气词(A)，并以〈呃|A〉格式输出。\n在输出识别内容时请加上标点符号。\n如果语音是静音或噪音，则不输出任何内容。\n你的名字是：\n@@BOT_NAME@@\n你的设定是：\n@@BOT_DESC@@\n用户所在位置：未知\n可能需要做如下修改：@@USER_MODIFY@@[EOS]@@DIALOG@@[CLS]user\n用户可能提到人名或者地名或者其它个性化词汇和网络新词，其他：@@HOTWORDS@@[EOS][CLS]user\n帮我复述以下这句话 <audio>@@AUDIO@@</audio>[EOS][CLS]assistant\n"
+        hotwords_types:
+          - other
+        hotwords_types_prompts:
+          - ""
+        max_prompt_num: 1000
+        bot_name_max_length: 10
+        bot_desc_max_length: 300
+        user_modify_max_length: 300
+        hotwords_max_length: 200
+        dialog_max_length: 400
+        cursor_context_max_length: 50
+  asr_post:
+    type: flute.asr.ntp_cif.PostActor
+    decoder_out: asr_decoder_out
+    asr_output: asr_output
+    segment: asr_segment
+    lowercase_en: false
+  non_s_llm_decoder_infer:
+    type: flute.nn.PantherInference
+    inputs:
+      - input_embedding
+      - kv_cache_list
+      - cache_T
+      - max_T
+    outputs:
+      - hidden_state
+    model_path: asr/models/non_s_llm_decoder.pthlite
+    model_data_release: true
+    use_gpu: false
+    providers:
+      - 11
+  non_s_llm_decoder_embeding_logit_infer:
+    type: flute.nn.PantherInference
+    inputs:
+      - input_ids
+      - hidden_state
+      - mode
+    outputs:
+      - output
+    model_path: asr/models/non_s_llm_embedding_logit.pthlite
+    model_data_release: true
+    use_gpu: false
+    providers:
+      - 11
+  asr_post_track:
+    type: flute.asr.ntp_cif.PostTrackActor
+    track_data_in:
+      - decoder_track_data
+      - encoder_track_data
+    track_data_out: asr_track_data

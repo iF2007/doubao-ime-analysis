@@ -1,0 +1,60 @@
+objects:
+  vad_executor:
+    type: flute.vad.VadExecutor
+    actors:
+      - vad_feature_extractor
+      - vad_encoder
+      - vad_decoder
+
+  feature_option:
+    type: flute.FeOption
+    ftype: 4
+    sampleRate: 16000
+    wave_normalization: true
+  mel_bank_kernel:
+    type: flute.MelBankKernel
+    sample_rate: 16000
+    stft_win: 320
+    stft_shift: 160
+    num_mel_bins: 84
+    low_freq: 0
+    high_freq: 12000
+    mel_bank_mode: 0
+    fillter_mode: 1
+    hz_domain: true
+    norm: true
+  mel_bank_feature_extractor:
+    type: flute.MelBankFeature
+    fe_opt: feature_option
+    mel_bank_kernel: mel_bank_kernel
+  vad_feature_extractor:
+    type: flute.vad.v4.FeatureExtractorActor
+    feature_extractor: mel_bank_feature_extractor
+
+  vad_encoder_infer:
+    type: flute.nn.PantherInference
+    mel_bins: 84
+    inputs:
+      - feat
+      - h
+      - c
+    output:
+      - out
+      - h_out
+      - c_out
+    model_path: encoder/vad_v4.pth.pthlite
+    model_data_release: true
+    use_gpu: false
+    providers:
+      - 0
+  vad_encoder:
+    type: flute.vad.v4.EncoderActor
+    encoder_infer: vad_encoder_infer
+
+  vad_decoder:
+    type: flute.vad.v4.DecoderActor
+    likelihood_threshold: 0.5
+    begin_smooth_window_size: 48
+    begin_smooth_voice_proportion: 0.5
+    end_smooth_window_size: 208
+    end_smooth_silence_proportion: 0.925
