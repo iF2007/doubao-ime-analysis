@@ -1,8 +1,23 @@
 # 主模型结构与公开语音模型的比较
 
-本机主模型与字节 Seed-ASR / AcLLM 的公开技术路线更接近，尤其是 Conformer 编码器和上下文识别设计。与 efeslab/LiteASR 的 Whisper 编码器低秩压缩方案存在明显结构差异。现有证据不能确认本机权重来自某个公开模型，也不能确认它是 Seed-ASR 的压缩、蒸馏或微调版本。
+本机主模型的可见结构支持以下判断：
 
-对象是 `acllm_main_model_mac` 1.8，包内配置标签为 `LiteASRP_v1.1.2_6`。名称相似不能证明与 efeslab/LiteASR 的关系。本次未运行公共代码、下载公共模型权重或测量识别性能。
+- **与 Seed-ASR / AcLLM 的公开路线更接近。** 共同点包括 Conformer 编码器和上下文识别设计。
+- **与 efeslab/LiteASR 存在明显结构差异。** 后者针对 Whisper 编码器进行低秩压缩。
+- **具体代码或权重来源未确认。** 现有证据不能证明它是某个公开模型的压缩、蒸馏或微调版本。
+
+> [!IMPORTANT]
+> 路线相似性不等于训练血缘。包内标签 `LiteASRP_v1.1.2_6` 与 LiteASR 名称相似，也不能证明两者有关。
+
+| 比较范围 | 说明 |
+| --- | --- |
+| 本机对象 | `acllm_main_model_mac` 1.8 |
+| 包内配置标签 | `LiteASRP_v1.1.2_6` |
+| 本机证据 | 当前配置、五个权重文件各自前 4 MiB 的图字符串、应用静态标记 |
+| 公开证据 | LiteASR 固定提交、具体公开模型配置、官方论文与介绍 |
+| 未执行 | 运行公共代码、下载公共模型权重、测量识别性能 |
+
+可按 [LiteASR 结构差异](#本机与-liteasr-的结构差异)、[本机证据](#本机证据与含义)、[Seed-ASR 对应](#与-seed-asr--acllm-的对应) 和 [实时语音模型区别](#与豆包实时语音模型的区别) 阅读。
 
 ## 本机与 LiteASR 的结构差异
 
@@ -28,18 +43,29 @@ LiteASR 的比较固定在提交 `da5be85382a6fc22245803c18c820b5c1b049ef8`，�
 
 ## 本机证据与含义
 
-[当前配置](../model-config/config.yaml) 描述两个 ASR 路径，包含以下字段：
+[当前配置](../model-config/config.yaml) 描述两个 ASR 路径，关键字段如下：
 
-- 两个编码器的 `fbank_length: 80`，`encoder_out_t: 1024`。
-- 流式解码器的 `layer_num: 12`、`token_counts: 64000` 和 CIF 状态字段。
-- 上下文解码器的 `layer_num: 28`、`kv_heads: 8`、`draft_layer_num: 2` 和 `draft_len: 2`。
-- `flute.asr.acllm.HFTokenizer`、音频提示和上下文提示。
+| 组件 | 可见字段 |
+| --- | --- |
+| 两个编码器 | `fbank_length: 80`、`encoder_out_t: 1024` |
+| 流式解码器 | `layer_num: 12`、`token_counts: 64000`、CIF 状态字段 |
+| 上下文解码器 | `layer_num: 28`、`kv_heads: 8`、`draft_layer_num: 2`、`draft_len: 2` |
+| tokenizer 与提示 | `flute.asr.acllm.HFTokenizer`、音频提示、上下文提示 |
 
-[模型图字符串](model-metadata.json) 保存五个权重文件各自前 4 MiB 中的名称及文件偏移。流式编码器有 `encoders.0` 至 `encoders.23` 的 `QW4ConformerLayerRopeChunk` 标记；另一编码器有同类算子的 24 层标记。流式解码器有 12 个 `W4A8GPT2TransformerBlock` 标记，上下文解码器有 `h.27.attn.query_layernorm.weight` 等名称。
+[模型图字符串](model-metadata.json) 保存五个权重文件各自前 4 MiB 中的名称及文件偏移，包含以下结构证据：
 
-[应用静态标记](runtime-markers.json) 保留相关 Conformer、W4A8、AcLLM 和上下文处理名称，用于交叉核对。主程序可能包含多种模型实现；静态标记不证明每个算子都在当前识别路径中启用。`GPT2` 类算子名称也不证明使用 OpenAI GPT-2 的预训练权重，`HFTokenizer` 不证明模型由 Hugging Face 公开权重微调而来。
+- 流式编码器有 `encoders.0` 至 `encoders.23` 的 `QW4ConformerLayerRopeChunk` 标记。
+- 另一编码器有同类算子的 24 层标记。
+- 流式解码器有 12 个 `W4A8GPT2TransformerBlock` 标记。
+- 上下文解码器有 `h.27.attn.query_layernorm.weight` 等名称。
 
-配置和图名称支持结构判断，不足以计算精确参数量、确定全部执行路径、推导识别性能或证明训练来源。包内 MD5 的三项差异仍未解释，见 [格式与校验结果](../model-analysis/FINDINGS.md)。
+[应用静态标记](runtime-markers.json) 保留相关 Conformer、W4A8、AcLLM 和上下文处理名称，用于交叉核对。解释这些证据时有以下限制：
+
+- 主程序可能包含多种模型实现，静态标记不证明每个算子都在当前识别路径中启用。
+- `GPT2` 类算子名称不证明使用 OpenAI GPT-2 的预训练权重。
+- `HFTokenizer` 不证明模型由 Hugging Face 公开权重微调而来。
+- 配置和图名称不足以计算精确参数量、确定全部执行路径、推导识别性能或证明训练来源。
+- 包内 MD5 的三项差异仍未解释，见 [格式与校验结果](../model-analysis/FINDINGS.md#包内-md5-清单差异)。
 
 ## 与 Seed-ASR / AcLLM 的对应
 
@@ -56,7 +82,15 @@ LiteASR 的比较固定在提交 `da5be85382a6fc22245803c18c820b5c1b049ef8`，�
 
 论文摘要脚注明确说明 Seed-ASR 已用于字节产品，并以 Doubao speech recognition models 提供商业服务。这个公开产品关系和具体上下文字段支持路线相似性，不能替代权重来源证据。
 
-论文的 LUISE 音频编码器接近 2B 参数并有 32 层，LLM 为数百亿参数的 MoE。本机图层数、解码器配置及包大小不同，说明规模和部署形态不同。论文第 3.3 节的 converter 使用帧拼接和线性投影，本机配置则包含 CIF 路径；论文引用 CIF 不能证明它与本机使用相同实现。
+公开论文和本机对象也存在差异：
+
+| 项目 | Seed-ASR 论文 | 本机主模型 1.8 |
+| --- | --- | --- |
+| 音频编码器 | LUISE 接近 2B 参数，32 层 | 两套编码器图各有 24 层标记，精确参数量未确认 |
+| LLM 规模 | 数百亿参数的 MoE | 解码器配置与论文不同，整个源包约 825 MB |
+| converter | 第 3.3 节使用帧拼接和线性投影 | 配置包含 CIF 路径 |
+
+这些差异说明规模和部署形态不同。论文引用 CIF 不能证明它与本机使用相同实现。
 
 目前没有将 `LiteASRP_v1.1.2_6` 映射到某个公开 Seed-ASR 权重版本的来源声明、训练记录或可对应指纹。
 
@@ -64,6 +98,10 @@ LiteASR 的比较固定在提交 `da5be85382a6fc22245803c18c820b5c1b049ef8`，�
 
 [Seed 团队官方介绍](https://seed.bytedance.com/en/blog/doubao-realtime-voice-model-is-available-upon-release-high-eq-and-iq) 将实时语音模型描述为集成语音理解和生成的端到端对话模型，支持 S2S、S2T、T2S 和 T2T。
 
-本次主模型包的目标是转写，包含 ASR、VAD、tokenizer、编码器、解码器和提示。已检查的包内没有用于合成输出的声码器文件。因此 Seed-ASR 比实时语音对话模型更接近本次对象；这一判断不覆盖整个输入法或其他模型包。
+本次主模型包的可见内容与转写任务对应：
+
+- 包内包含 ASR、VAD、tokenizer、编码器、解码器和提示。
+- 已检查的包内没有用于合成输出的声码器文件。
+- 因此 Seed-ASR 比实时语音对话模型更接近本次对象，这一判断不覆盖整个输入法或其他模型包。
 
 来源链接和固定提交见 [sources.json](sources.json)。以上结论区分可见结构、路线相似性和未知训练血缘，不能将三者视为同一证明。
