@@ -1,12 +1,13 @@
 # 文件功能索引
 
-公开仓库包含 **24 个文件**。下表按用途分组，路径相对于仓库根目录。本机解包输出、LuLu 备份、发布工具及缓存不计入。
+公开仓库包含 **27 个文件**。下表按用途分组，路径相对于仓库根目录。本机解包输出、LuLu 备份、发布工具及缓存不计入。
 
 | 分组 | 文件数 | 用途 |
 | --- | --- | --- |
 | [根目录](#根目录) | 6 | 结论入口、环境、依赖与发布范围 |
 | [model-analysis/](#model-analysis) | 9 | 目录验证、正文恢复与结果核对 |
 | [model-config/](#model-config) | 4 | 主模型配置与提示证据 |
+| [diagrams/](#diagrams) | 3 | 模型架构图、源码与图例 |
 | [comparison/](#comparison) | 5 | 结构比较与公开来源 |
 
 复现命令见 [README.md](README.md)。模型配置属于结构分析证据，未提供完整推理依赖。
@@ -50,6 +51,16 @@
 | [model-config/config.yaml](model-config/config.yaml) | 主模型当前处理配置，连接 VAD、编码器、解码器和上下文提示 |
 | [model-config/prompt_template.txt](model-config/prompt_template.txt) | 包内语音转写提示，包含数字转换、标点和语气词规则 |
 | [model-config/vad/config.yaml](model-config/vad/config.yaml) | 包内独立 VAD 链路及语音开始、结束判定参数 |
+
+## diagrams/
+
+主模型的静态架构展示和可重新渲染的源码。
+
+| 文件 | 核心功能 |
+| --- | --- |
+| [diagrams/README.md](diagrams/README.md) | 图例、证据范围、字体要求与渲染命令 |
+| [diagrams/doubao-asr-architecture.dot](diagrams/doubao-asr-architecture.dot) | 定义 VAD、两条识别路径、上下文提示和 draft 配置的图结构 |
+| [diagrams/doubao-asr-architecture.png](diagrams/doubao-asr-architecture.png) | README 展示的已渲染架构图 |
 
 ## comparison/
 

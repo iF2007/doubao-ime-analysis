@@ -22,6 +22,16 @@
 - [文件功能索引](FILE_INDEX.md) 列出每个文件的职责，[发布范围](PRIVACY.md) 说明身份信息和数据边界。
 - [复现步骤](#复现目录验证与解包) 给出目录验证、解包和完整输出核对命令。
 
+## 模型架构
+
+主模型 1.8 的音频分段、流式识别与上下文识别路径如下：
+
+![豆包输入法主模型 1.8 的离线语音识别架构，包含 VAD、流式识别和上下文识别路径](diagrams/doubao-asr-architecture.png)
+
+蓝色表示流式路径，紫色表示上下文路径，橙色虚线表示 draft 的配置引用。图依据静态配置和模型图标记绘制，运行时启用语义与两类输出的最终整合策略未完整验证。
+
+[查看原图](diagrams/doubao-asr-architecture.png) · [可编辑源码](diagrams/doubao-asr-architecture.dot) · [图例、证据范围与渲染命令](diagrams/README.md)
+
 ## 结论与证据
 
 | 项目 | 结果 | 证据 |
@@ -46,6 +56,7 @@ doubao-ime-analysis/
 ├── requirements.txt            两个工具的 Python 依赖
 ├── model-analysis/              密钥与解包代码、关键产物、验证报告
 ├── model-config/                主模型当前配置与提示模板，供结构分析
+├── diagrams/                    模型架构图、可编辑源码与图例
 └── comparison/                  公开模型对比、选定结构证据与来源链接
 ```
 
