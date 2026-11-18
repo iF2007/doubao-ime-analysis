@@ -1,11 +1,19 @@
 {
   "source": "~/Library/Application Support/DoubaoIme/ASRModel/versions/acllm_general_model_mac/1_8_a6846b0a91ac8a9579468e252c1da2e5/asr_model.model",
   "model_name": "acllm_general_model_mac",
+  "model_version": "1.8",
+  "config_label": "LiteASRm_v1.0.1_5",
   "source_bytes": 463455256,
   "source_md5": "a6846b0a91ac8a9579468e252c1da2e5",
+  "layout_version": 2,
   "extraction_verified": true,
   "extracted_files": 6,
   "extracted_bytes": 463454925,
+  "written_files_verified": 0,
+  "model_md5_entries_checked": 0,
+  "model_md5_entries_matched": 0,
+  "model_md5_manifest_matches": false,
+  "model_md5_mismatches": [],
   "files": [
     {
       "path": "config.yaml",

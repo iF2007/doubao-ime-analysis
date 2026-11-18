@@ -1,16 +1,13 @@
 {
   "model": "~/Library/Application Support/DoubaoIme/ASRModel/versions/acllm_general_model_mac/1_8_a6846b0a91ac8a9579468e252c1da2e5/asr_model.model",
-  "model_name": "acllm_general_model_mac",
-  "model_version": "1.8",
-  "config_label": "LiteASRm_v1.0.1_5",
   "model_bytes": 463455256,
   "layout_version": 2,
   "header_size": 331,
   "internal_files": 6,
   "payload_xor_verified": true,
   "candidate_verified": true,
+  "attempts": [],
   "key_source": "unencrypted plaintext directory (FLUTE v2)",
-  "directory_sha256": "4870a7b6f419a32066fb06b3b0d8461bc0f0a32e205d3ac80739b9adfca24392",
   "entries": [
     {
       "name": "/config.yaml",
@@ -48,5 +45,9 @@
       "size": 1155064,
       "mtime": 1
     }
-  ]
+  ],
+  "directory_sha256": "4870a7b6f419a32066fb06b3b0d8461bc0f0a32e205d3ac80739b9adfca24392",
+  "model_name": "acllm_general_model_mac",
+  "model_version": "1.8",
+  "config_label": "LiteASRm_v1.0.1_5"
 }

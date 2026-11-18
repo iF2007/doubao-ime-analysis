@@ -1,16 +1,25 @@
+#!/usr/bin/env python3
+"""Extract and verify internal files from FLUTE v2/v3 ASR model containers.
+
+Supports:
+- 1.1.0 acllm_main_model_mac (FLUTE v3, 825 MB, 20 loose files)
+- 1.1.1 acllm_pro_model_mac (FLUTE v3, 1.48 GB, 6 packed files)
+- 1.1.1 acllm_general_model_mac (FLUTE v2, 463 MB, 6 packed files)
+"""
+
 import argparse
 from contextlib import nullcontext
 import hashlib
 import json
 import os
+from pathlib import Path, PurePosixPath
 import re
 import struct
-from pathlib import Path, PurePosixPath
 
 import numpy as np
 from Crypto.Cipher import ChaCha20
 
-from verify_directory import resolve_default_model, derive_key, parse_directory
+from verify_directory import resolve_default_model, derive_key, parse_directory, detect_model_metadata
 
 
 def main():
@@ -25,6 +34,12 @@ def main():
         help="Path to asr_model.model (defaults to currently active model)",
     )
     parser.add_argument("--verify-only", action="store_true", help="Verify without extracting")
+    parser.add_argument(
+        "--report",
+        type=Path,
+        default=None,
+        help="Optional path to write extraction JSON report (defaults to <output>/extraction-report.json)",
+    )
     args = parser.parse_args()
 
     model_path = args.model if args.model else resolve_default_model()
@@ -107,7 +122,7 @@ def main():
             extracted.append(
                 dict(
                     path=str(path),
-                    bytes=entry["size"],
+                    size=entry["size"],
                     md5=md5.hexdigest(),
                     sha256=sha256.hexdigest(),
                 )
@@ -122,7 +137,7 @@ def main():
             with target.open("rb") as file:
                 while chunk := file.read(4 * 1024 * 1024):
                     digest.update(chunk)
-            if target.stat().st_size != entry["bytes"] or digest.hexdigest() != entry["sha256"]:
+            if target.stat().st_size != entry["size"] or digest.hexdigest() != entry["sha256"]:
                 raise ValueError(f"Written file failed verification: {entry['path']}")
 
     # Check for internal model_md5s.txt if present (legacy 1.1.0 models)
@@ -144,14 +159,19 @@ def main():
                 mismatches.append(dict(path=path, expected_md5=digest, actual_md5=actual[path]["md5"]))
             expected.append(path)
 
+    meta = detect_model_metadata(model_path, entries)
+
     report = dict(
         source="~/" + str(model_path.relative_to(Path.home())),
+        model_name=meta.get("model_name"),
+        model_version=meta.get("model_version"),
+        config_label=meta.get("config_label"),
         source_bytes=model_size,
         source_md5=source_md5.hexdigest(),
         layout_version=version,
         extraction_verified=True,
         extracted_files=len(extracted),
-        extracted_bytes=sum(e["bytes"] for e in extracted),
+        extracted_bytes=sum(e["size"] for e in extracted),
         written_files_verified=len(extracted) if not args.verify_only else 0,
         model_md5_entries_checked=len(expected),
         model_md5_entries_matched=len(expected) - len(mismatches),
@@ -159,7 +179,8 @@ def main():
         model_md5_mismatches=mismatches,
         files=extracted,
     )
-    (output / "extraction-report.json").write_text(
+    report_path = args.report if args.report else (output / "extraction-report.json")
+    report_path.write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + "\n"
     )
     print(f"Verified all {len(extracted)} files against decrypted source payloads.", flush=True)
@@ -168,7 +189,7 @@ def main():
             f"Internal model MD5 manifest: {len(expected)-len(mismatches)} matched, {len(mismatches)} mismatched.",
             flush=True,
         )
-    print(output, flush=True)
+    print(f"Report written to: {report_path}", flush=True)
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@
 > [!NOTE]
 > 仅供学习分析使用。
 
-图描述豆包输入法 1.1.0 的 `acllm_main_model_mac` 1.8。内容依据 [主配置](../model-config/config.yaml)、[VAD 配置](../model-config/vad/config.yaml) 和 [模型结构分析](../comparison/COMPARISON.md)。
+本架构图基于豆包输入法 1.1.0 的 `acllm_main_model_mac` 1.8 提取的静态配置绘制。其 VAD、流式与上下文双识别路径的整体架构在 1.1.1（专业版与通用版）中得到延续与重构封装。内容依据 [主配置](../model-config/config.yaml)、[VAD 配置](../model-config/vad/config.yaml) 和 [模型结构分析](../comparison/COMPARISON.md)。
 
 | 文件 | 用途 |
 | --- | --- |
