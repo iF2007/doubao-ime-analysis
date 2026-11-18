@@ -1,29 +1,62 @@
 {
-  "recorded_on": "2026-11-10",
+  "recorded_on": "2026-11-18",
   "analysis_dates": [
     "2026-11-09",
-    "2026-11-10"
+    "2026-11-10",
+    "2026-11-18"
   ],
   "application": {
     "name": "DoubaoIme",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "build": "1",
+    "wave_build_version": "1.1.1.3",
+    "build_number": "1010103",
     "bundle_id": "com.bytedance.inputmethod.doubaoime",
     "path": "/Library/Input Methods/DoubaoIme.app",
-    "binary_sha256": "5b48748fa6394811cba0f8c05905ffebb9a2cd02faf6d47b26deb3d9b86247e0",
+    "binary_sha256": "8544564ffffae4abfe64df721a71b971408fb4a124512138d040c992456435b3",
     "installed_binary_rechecked_matches_analysis": true
   },
-  "model": {
-    "name": "acllm_main_model_mac",
-    "version": "1.8",
-    "config_label": "LiteASRP_v1.1.2_6",
-    "bytes": 824999405,
-    "md5": "c31bdfbd138e9beac48e02672f98f1e8"
+  "models": {
+    "pro": {
+      "name": "acllm_pro_model_mac",
+      "version": "1.5",
+      "config_label": "LiteASRP_v1.2.0_7",
+      "bytes": 1487023817,
+      "md5": "4f19c90670291b502a4dd34b936e5f2f",
+      "container": "FLUTE v3",
+      "encryption": "ChaCha20 encrypted directory + symphony XOR payload",
+      "component_version_key": "1_5_4f19c90670291b502a4dd34b936e5f2f"
+    },
+    "general": {
+      "name": "acllm_general_model_mac",
+      "version": "1.8",
+      "config_label": "LiteASRm_v1.0.1_5",
+      "bytes": 463455256,
+      "md5": "a6846b0a91ac8a9579468e252c1da2e5",
+      "container": "FLUTE v2",
+      "encryption": "Unencrypted plaintext directory + symphony XOR payload",
+      "component_version_key": "1_8_a6846b0a91ac8a9579468e252c1da2e5"
+    },
+    "context_aux": {
+      "name": "acllm_context_model_mac",
+      "version": "1.1",
+      "bytes": 108300553,
+      "md5": "32c387bc13445d1b020077c168c0d2c9",
+      "component_version_key": "1_1"
+    },
+    "legacy_1_1_0": {
+      "name": "acllm_main_model_mac",
+      "version": "1.8",
+      "config_label": "LiteASRP_v1.1.2_6",
+      "bytes": 824999405,
+      "md5": "c31bdfbd138e9beac48e02672f98f1e8",
+      "container": "FLUTE v3"
+    }
   },
   "host": {
     "os": "macOS",
-    "version": "27.2",
-    "build": "26B123",
+    "version": "27.2.1",
+    "build": "26B131",
     "architecture": "arm64",
     "hardware": "MacBook Air",
     "model_id": "Mac17,3",

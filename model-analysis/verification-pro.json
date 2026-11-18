@@ -1,0 +1,54 @@
+{
+  "model": "~/Library/Application Support/DoubaoIme/ASRModel/versions/acllm_pro_model_mac/1_5_4f19c90670291b502a4dd34b936e5f2f/asr_model.model",
+  "model_name": "acllm_pro_model_mac",
+  "model_version": "1.5",
+  "config_label": "LiteASRP_v1.2.0_7",
+  "model_bytes": 1487023817,
+  "layout_version": 3,
+  "header_size": 343,
+  "internal_files": 6,
+  "payload_xor_verified": true,
+  "candidate_verified": true,
+  "key_source": "derived from seed and model metadata",
+  "nonce": "39a12d5e7dc541b5c5106c3f",
+  "derived_key": "b876b031394e176de4789c155f4059f92743b30f60e550a46a0d4b0c07113f6e",
+  "directory_sha256": "6481271d61f2aa15a2264fb909e10d560c48019abec71bcfb435a5139e9ee627",
+  "entries": [
+    {
+      "name": "/config.yaml",
+      "offset": 343,
+      "size": 9622,
+      "mtime": 1
+    },
+    {
+      "name": "/asr/feature_extractor/cmvn.txt",
+      "offset": 9965,
+      "size": 1584,
+      "mtime": 1
+    },
+    {
+      "name": "/asr/feature_extractor/fbank.conf",
+      "offset": 11549,
+      "size": 89,
+      "mtime": 1
+    },
+    {
+      "name": "/asr/models/nonstream.packed",
+      "offset": 11638,
+      "size": 1150638349,
+      "mtime": 1
+    },
+    {
+      "name": "/asr/models/stream.packed",
+      "offset": 1150649987,
+      "size": 335218766,
+      "mtime": 1
+    },
+    {
+      "name": "/vad/encoder/vad_v4.pth.pthlite",
+      "offset": 1485868753,
+      "size": 1155064,
+      "mtime": 1
+    }
+  ]
+}

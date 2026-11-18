@@ -1,0 +1,47 @@
+{
+  "source": "~/Library/Application Support/DoubaoIme/ASRModel/versions/acllm_pro_model_mac/1_5_4f19c90670291b502a4dd34b936e5f2f/asr_model.model",
+  "model_name": "acllm_pro_model_mac",
+  "source_bytes": 1487023817,
+  "source_md5": "4f19c90670291b502a4dd34b936e5f2f",
+  "extraction_verified": true,
+  "extracted_files": 6,
+  "extracted_bytes": 1487023474,
+  "files": [
+    {
+      "path": "config.yaml",
+      "size": 9622,
+      "md5": "0d4cef50f2a6460f072fa34d96707a60",
+      "sha256": "5c062c1e6608a3763c7d3a5502cb0eea52443c832e0561ab17f63cde4918f4b8"
+    },
+    {
+      "path": "asr/feature_extractor/cmvn.txt",
+      "size": 1584,
+      "md5": "753b9da691401b5694be8d47942f721e",
+      "sha256": "ff7a5df4fbf2d96d3936990620a233e7c12406a7d9ba545267dac6fc33cd1154"
+    },
+    {
+      "path": "asr/feature_extractor/fbank.conf",
+      "size": 89,
+      "md5": "1decd7a0c7dc66febe0b68cabf0dde90",
+      "sha256": "33447b195117728900e9922989eea466cf3116cb3a1a8883212dfbb23a4a2ede"
+    },
+    {
+      "path": "asr/models/nonstream.packed",
+      "size": 1150638349,
+      "md5": "d7695a61ae081e4af308f332c0f6409b",
+      "sha256": "2c0b532831ea1d50ee0aa9f0138f77576942bf8100420fa316208c4e41a756e7"
+    },
+    {
+      "path": "asr/models/stream.packed",
+      "size": 335218766,
+      "md5": "6d9d4ad5f953a78b1841aadd9649b8c6",
+      "sha256": "b9b85632a4fa4a5245475cd9aa0c628c969a69979b7268af864737517cfdc7a0"
+    },
+    {
+      "path": "vad/encoder/vad_v4.pth.pthlite",
+      "size": 1155064,
+      "md5": "7da957917de54fe653bb5a2bb1fd713f",
+      "sha256": "6ce875345309f4dc3488b39fd311c662e48eea2dc9e4eff4a001e4b2d10ccb07"
+    }
+  ]
+}

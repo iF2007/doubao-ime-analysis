@@ -1,11 +1,11 @@
 # 文件功能索引
 
-公开仓库包含 **28 个文件**。下表按用途分组，路径相对于仓库根目录。本机解包输出、LuLu 备份、发布工具及缓存不计入。
+公开仓库包含 **32 个文件**。下表按用途分组，路径相对于仓库根目录。本机解包输出、LuLu 备份、发布工具及缓存不计入。
 
 | 分组 | 文件数 | 用途 |
 | --- | --- | --- |
 | [根目录](#根目录) | 7 | 结论入口、环境、依赖与发布范围 |
-| [model-analysis/](#model-analysis) | 9 | 目录验证、正文恢复与结果核对 |
+| [model-analysis/](#model-analysis) | 13 | 目录验证、正文恢复与结果核对（覆盖 1.1.0/1.1.1 专业版与通用版） |
 | [model-config/](#model-config) | 4 | 主模型配置与提示证据 |
 | [diagrams/](#diagrams) | 3 | 模型架构图、源码与图例 |
 | [comparison/](#comparison) | 5 | 结构比较与公开来源 |
@@ -32,15 +32,19 @@
 
 | 文件 | 核心功能 |
 | --- | --- |
-| [model-analysis/FINDINGS.md](model-analysis/FINDINGS.md) | 容器布局、密钥派生、正文恢复、组件大小及校验限制 |
-| [model-analysis/directory-key.bin](model-analysis/directory-key.bin) | 已确认的 32 字节目录密钥，用于结果核对 |
+| [model-analysis/FINDINGS.md](model-analysis/FINDINGS.md) | 容器布局、密钥派生、正文恢复、组件大小及多版本对比 |
+| [model-analysis/directory-key.bin](model-analysis/directory-key.bin) | 已确认的 32 字节旧版 1.1.0 目录密钥，用于结果核对 |
 | [model-analysis/emulated-directory.bin](model-analysis/emulated-directory.bin) | 1110 字节原指令模拟目录明文，供逐字节参考比较 |
-| [model-analysis/extract_model.py](model-analysis/extract_model.py) | 流式恢复全部内部文件，或核对完整本机解包输出 |
-| [model-analysis/extraction-report.json](model-analysis/extraction-report.json) | 20 个文件的大小、MD5、SHA-256 及三项清单差异 |
+| [model-analysis/extract_model.py](model-analysis/extract_model.py) | 流式恢复 FLUTE v2/v3 全部内部文件，或核对完整本机解包输出 |
+| [model-analysis/extraction-report.json](model-analysis/extraction-report.json) | 1.1.0 旧版 20 个文件的大小、MD5、SHA-256 及三项清单差异 |
+| [model-analysis/extraction-report-pro.json](model-analysis/extraction-report-pro.json) | 1.1.1 专业版 6 个内部文件大小、MD5 与 SHA-256 核对报告 |
+| [model-analysis/extraction-report-general.json](model-analysis/extraction-report-general.json) | 1.1.1 通用版 6 个内部文件大小、MD5 与 SHA-256 核对报告 |
 | [model-analysis/generation-verification.json](model-analysis/generation-verification.json) | 真实及合成元数据案例的原分析派生验证记录 |
-| [model-analysis/model-seed.bin](model-analysis/model-seed.bin) | 派生工具必需的 32 字节固定种子 |
-| [model-analysis/verification.json](model-analysis/verification.json) | 真实模型目录结构、counter 对照和参考一致性结果 |
-| [model-analysis/verify_directory.py](model-analysis/verify_directory.py) | 独立派生密钥，解密目录并核对结构与参考产物 |
+| [model-analysis/model-seed.bin](model-analysis/model-seed.bin) | 派生工具必需的 32 字节固定种子（通用 FLUTE v3） |
+| [model-analysis/verification.json](model-analysis/verification.json) | 1.1.0 旧版模型目录结构、counter 对照和参考一致性结果 |
+| [model-analysis/verification-pro.json](model-analysis/verification-pro.json) | 1.1.1 专业版模型目录结构、counter 对照与派生密钥核对结果 |
+| [model-analysis/verification-general.json](model-analysis/verification-general.json) | 1.1.1 通用版模型 FLUTE v2 明文目录结构与哈希核对结果 |
+| [model-analysis/verify_directory.py](model-analysis/verify_directory.py) | 独立派生密钥，自适应解密/解析目录并核对结构与参考产物 |
 
 ## model-config/
 
