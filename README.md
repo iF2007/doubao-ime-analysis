@@ -19,6 +19,7 @@
 
 - [格式、密钥与校验](model-analysis/FINDINGS.md) 说明派生公式、文件布局和验证限制。
 - [模型结构与来源对比](comparison/COMPARISON.md) 区分本机证据、公开路线和未知血缘。
+- [离线模型下载与防火墙放行](OFFLINE_MODEL_DOWNLOAD.md) 说明离线模型官方直链、下载协议分析及 LuLu 防火墙放行策略。
 - [文件功能索引](FILE_INDEX.md) 列出每个文件的职责，[发布范围](PRIVACY.md) 说明身份信息和数据边界。
 - [复现步骤](#复现目录验证与解包) 给出目录验证、解包和完整输出核对命令。
 

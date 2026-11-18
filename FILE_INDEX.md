@@ -1,10 +1,10 @@
 # 文件功能索引
 
-公开仓库包含 **27 个文件**。下表按用途分组，路径相对于仓库根目录。本机解包输出、LuLu 备份、发布工具及缓存不计入。
+公开仓库包含 **28 个文件**。下表按用途分组，路径相对于仓库根目录。本机解包输出、LuLu 备份、发布工具及缓存不计入。
 
 | 分组 | 文件数 | 用途 |
 | --- | --- | --- |
-| [根目录](#根目录) | 6 | 结论入口、环境、依赖与发布范围 |
+| [根目录](#根目录) | 7 | 结论入口、环境、依赖与发布范围 |
 | [model-analysis/](#model-analysis) | 9 | 目录验证、正文恢复与结果核对 |
 | [model-config/](#model-config) | 4 | 主模型配置与提示证据 |
 | [diagrams/](#diagrams) | 3 | 模型架构图、源码与图例 |
@@ -20,6 +20,7 @@
 | --- | --- |
 | [.gitignore](.gitignore) | 排除本机数据、权重、工具和缓存，防止误提交 |
 | [FILE_INDEX.md](FILE_INDEX.md) | 列出公开仓库中每个文件的核心功能 |
+| [OFFLINE_MODEL_DOWNLOAD.md](OFFLINE_MODEL_DOWNLOAD.md) | 离线语音模型官方下载直链、调度机制与 LuLu 防火墙放行策略 |
 | [PRIVACY.md](PRIVACY.md) | 公开内容、匿名身份及平台日志边界 |
 | [README.md](README.md) | 结论入口、分析范围、环境摘要和可复现命令 |
 | [environment.json](environment.json) | 输入法和模型版本、原件指纹及分析环境 |
