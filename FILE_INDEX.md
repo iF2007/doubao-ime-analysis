@@ -17,7 +17,7 @@
 | [.gitignore](.gitignore) | 忽略本机解包数据、权重文件、LuLu 备份与缓存 |
 | [FILE_INDEX.md](FILE_INDEX.md) | 仓库文件职责清单 |
 | [OFFLINE_MODEL_DOWNLOAD.md](OFFLINE_MODEL_DOWNLOAD.md) | 1.1.1 离线模型官方 CDN 直链、调度协议与 LuLu 防火墙规则 |
-| [PRIVACY.md](PRIVACY.md) | 收录范围、排除项与路径/作者脱敏说明 |
+| [PRIVACY.md](PRIVACY.md) | 收录范围、隐私脱敏与合规/反滥用原则 |
 | [README.md](README.md) | 仓库入口、1.1.1 核心结论与复现命令 |
 | [environment.json](environment.json) | 1.1.1 应用指纹、模型元数据与分析环境 |
 | [requirements.txt](requirements.txt) | 验证与解包脚本的 Python 依赖 |
