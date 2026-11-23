@@ -144,7 +144,8 @@ def verify_payload_xor(model_path: Path, entries: list) -> bool:
                 with model_path.open("rb") as f:
                     f.seek(entry["offset"])
                     chunk = f.read(min(4096, entry["size"]))
-                return decode_xor_prefix(chunk).startswith(expected_prefix)
+                if decode_xor_prefix(chunk).startswith(expected_prefix):
+                    return True
     return False
 
 
@@ -240,16 +241,20 @@ def main():
     if version == 2:
         result["key_source"] = "unencrypted plaintext directory (FLUTE v2)"
         directory = header[21:]
-        entries = parse_directory(directory, count, header_size, model_size)
-        if args.reference_directory:
-            matches = directory == args.reference_directory.read_bytes()
-            result["matches_reference"] = matches
-            if not matches:
-                raise ValueError("Parsed directory differs from the reference directory")
-        result["candidate_verified"] = True
-        result["entries"] = entries
-        result["directory_sha256"] = hashlib.sha256(directory).hexdigest()
-        valid_entries = entries
+        try:
+            entries = parse_directory(directory, count, header_size, model_size)
+        except (ValueError, UnicodeDecodeError, struct.error) as error:
+            result["error"] = str(error)
+        else:
+            if args.reference_directory:
+                matches = directory == args.reference_directory.read_bytes()
+                result["matches_reference"] = matches
+                if not matches:
+                    raise ValueError("Parsed directory differs from the reference directory")
+            result["candidate_verified"] = True
+            result["entries"] = entries
+            result["directory_sha256"] = hashlib.sha256(directory).hexdigest()
+            valid_entries = entries
     elif version == 3:
         nonce = header[21:33]
         if args.key_file:

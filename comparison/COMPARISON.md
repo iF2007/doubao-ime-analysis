@@ -8,8 +8,6 @@
 - **与 efeslab/LiteASR 明显不同**：LiteASR 面向 Whisper 编码器做 SVD 低秩压缩，而本地模型是 80 维 fbank + 24 层 Conformer + GPT 风格解码器 + MNN / Panther 推理栈。包内代号 `LiteASRP_*` / `LiteASRm_*` 只是命名巧合。
 - **不同于豆包实时语音模型**：包内只有转写链路（VAD + ASR 编码/解码 + Prompt），没有语音合成声码器。
 
-> 注：以上结论基于静态配置、模型图字符串和公开论文/源码对比；具体训练权重来源与识别指标无法仅靠静态分析确认。
-
 ---
 
 ## 1.1.1 专业版 vs 通用版架构对比
@@ -23,7 +21,7 @@
 | **权重共享** | `share_weight: false`（流式与非流式完全独立） | `share_weight: true`（共享骨干参数） |
 | **非流式音频输入** | 独立 `nonstream_feature_extractor`，直接吃 `fbank` | 复用流式输出的 880 维音频投影（`audio_proj`，4 倍下采样） |
 | **硬件调度** | 流式 `cpu`；非流式 `metal`（Apple GPU） | 拆到编/解码级：macOS 流式编码 `metal`、解码 `cpu`，非流式全 `metal`；Android 配 `hexagon` |
-| **解码器与图标记** | `stream.packed` 12 层、`nonstream.packed` 29 层（含 `.mnn`、RoPE） | `stream.packed` 12 层、`no_stream.packed` 含 24 层 Macaron Conformer 编码器 |
+| **解码器与图标记** | `stream.packed` 12 层、`nonstream.packed` 29 层（均内嵌 `.mnn`、RoPE） | `stream.packed` 12 层解码 + 编码器 `0..15` 层，`no_stream.packed` 含编码器 `16..23` 层（共 24 层 Macaron Conformer） |
 | **非流式最大 Token** | `256` | `1000` |
 | **Prompt 模板** | `lr_context`、`default` | `lr_context`、`default`、`bot_context` |
 | **1.1.1 共同新增** | `tail_vad_probe`（10 帧尾静音快检）、`rag_words`（热词注入）、18.5 s 分段上限 | 同左 |
@@ -67,5 +65,5 @@
 ## 证据索引
 
 - 1.1.1 配置：[pro-config.yaml](../model-config/pro-config.yaml) · [general-config.yaml](../model-config/general-config.yaml) · [fbank.conf](../model-config/asr/feature_extractor/fbank.conf)
-- 静态算子与历史图标记：[runtime-markers.json](runtime-markers.json) · [model-metadata.json](model-metadata.json)（1.1.0 `.pthlite` 扫描记录）
+- 静态算子与 `.packed` 扫描记录：[runtime-markers.json](runtime-markers.json)（1.1.1 主程序）· [model-metadata.json](model-metadata.json)（1.1.1 `.packed` 内嵌 `.mnn` 与层索引）
 - 公开资料来源：[sources.json](sources.json) · [public-model-and-papers.json](public-model-and-papers.json)

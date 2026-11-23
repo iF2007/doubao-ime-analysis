@@ -56,7 +56,7 @@ def main():
         "--report",
         type=Path,
         default=None,
-        help="Optional path to write extraction JSON report (defaults to <output>/extraction-report.json)",
+        help="Optional path to write extraction JSON report (defaults to <output>/extraction-report.json when extracting; omitted in --verify-only unless specified)",
     )
     args = parser.parse_args()
 
@@ -144,7 +144,7 @@ def main():
 
     # Verify extracted files on disk against decrypted source payloads (both extract and --verify-only)
     for entry in extracted:
-        target = output / entry["path"]
+        target = output.joinpath(*PurePosixPath(entry["path"]).parts)
         if not target.is_file():
             raise ValueError(f"Missing extracted file: {target}")
         if target.stat().st_size != entry["size"]:
@@ -198,16 +198,22 @@ def main():
         model_md5_mismatches=mismatches,
         files=extracted,
     )
-    report_path = args.report.expanduser().resolve() if args.report else (output / "extraction-report.json")
-    report_path.parent.mkdir(parents=True, exist_ok=True)
-    report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
+    report_path = (
+        args.report.expanduser().resolve()
+        if args.report
+        else (None if args.verify_only else output / "extraction-report.json")
+    )
+    if report_path is not None:
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+        report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     print(f"Verified all {len(extracted)} files on disk against decrypted source payloads.", flush=True)
     if has_manifest:
         print(
             f"Internal model MD5 manifest: {len(expected) - len(mismatches)} matched, {len(mismatches)} mismatched.",
             flush=True,
         )
-    print(f"Report written to: {report_path}", flush=True)
+    if report_path is not None:
+        print(f"Report written to: {report_path}", flush=True)
 
 
 if __name__ == "__main__":

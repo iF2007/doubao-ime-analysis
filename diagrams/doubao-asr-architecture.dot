@@ -6,7 +6,7 @@ digraph DoubaoASR {
     fontsize=28,
     fontcolor="#0F172A",
     labelloc=t,
-    label="豆包输入法离线语音模型架构\n输入法 1.1.0 · 主模型 acllm_main_model_mac 1.8 · 约 825 MB",
+    label="豆包输入法 1.1.1 离线语音模型架构\n专业版 LiteASRP_v1.2.0_7 (1.48 GB, FLUTE v3) · 通用版 LiteASRm_v1.0.1_5 (463 MB, FLUTE v2)",
     pad=0.4,
     nodesep=0.45,
     ranksep=0.65,
@@ -21,55 +21,51 @@ digraph DoubaoASR {
         fontname="PingFang SC", fontsize=14, fontcolor="#475569"];
 
   subgraph cluster_audio {
-    label="音频输入与分段";
+    label="音频输入与 VAD 分段（两版共用）";
     fontsize=21;
     color="#CBD5E1";
     style="rounded,filled";
     fillcolor="#F1F5F9";
-    audio [label="音频输入\n16 kHz"];
-    vad [label="VAD 语音活动检测\n84 维 Mel → 编码器 → 判定"];
-    split [label="WavSplitActor\n按 VAD 结果切分音频"];
+    audio [label="音频输入\n16 kHz PCM"];
+    vad [label="VAD 端点检测\n84 维 Mel → vad_v4.pth.pthlite\n(Panther Lite · CPU)"];
+    tail [label="TailVadProbeActor\n10 帧尾静音快检\n输出 tail_vad_state", fillcolor="#FEF3C7", color="#F59E0B"];
+    split [label="WavSplitActor\n按 VAD 切分音频\n单段上限 18.5 s"];
     audio -> vad;
+    vad -> tail [label="似然度"];
     vad -> split [label="语音区间"];
-    audio -> split [label="音频", constraint=false];
+    audio -> split [label="原始音频", constraint=false];
   }
 
   subgraph cluster_stream {
-    label="流式识别路径 · 配置中的 asr_*";
+    label="流式识别路径 · PantherLLMStreamContextActor";
+    labeljust=l;
     fontsize=21;
     color="#93C5FD";
     style="rounded,filled";
     fillcolor="#EFF6FF";
-    sf [label="ASR 特征\n80 维 fbank + CMVN\n16 帧窗口配置", fillcolor="#DBEAFE", color="#60A5FA"];
-    se [label="流式音频编码器\n24 层 Conformer 图标记\nQW4 / RoPE / chunk 状态", fillcolor="#DBEAFE", color="#60A5FA"];
-    sd [label="流式解码器\n12 层 · 词表 64000\nCIF / W4A8 / KV cache", fillcolor="#DBEAFE", color="#60A5FA"];
-    post [label="PostActor\n转写后处理", fillcolor="#DBEAFE", color="#60A5FA"];
-    so [label="流式转写输出\nasr_output", fillcolor="#DCFCE7", color="#86EFAC"];
-    sf -> se -> sd -> post -> so;
+    sf [label="流式特征提取\n80 维 fbank + CMVN\n专业版 16 帧 / 通用版 32 帧", fillcolor="#DBEAFE", color="#60A5FA"];
+    se [label="stream.packed (MNN)\n12 层流式解码器\n专业版: CPU · 通用版: Metal 编码 + CPU 解码", fillcolor="#DBEAFE", color="#60A5FA"];
+    so [label="流式实时输出\nstream_context_output", fillcolor="#DCFCE7", color="#86EFAC"];
+    sf -> se -> so;
   }
 
   subgraph cluster_context {
-    label="上下文识别路径 · 配置中的 non_s_*";
+    label="非流式上下文路径 · PantherLLMNonStreamContextActor";
+    labeljust=l;
     fontsize=21;
     color="#C4B5FD";
     style="rounded,filled";
     fillcolor="#F5F3FF";
-    cf [label="ASR 特征\n80 维 fbank + CMVN\n32 帧窗口配置", fillcolor="#EDE9FE", color="#A78BFA"];
-    ce [label="上下文音频编码器\n24 层 Conformer 图标记\n独立编码器权重", fillcolor="#EDE9FE", color="#A78BFA"];
-    cd [label="上下文解码器\n28 层 · 词表 64000\nKV heads 8 · ITN / 语气词配置", fillcolor="#EDE9FE", color="#A78BFA"];
-    co [label="上下文转写输出\nnon_s_asr_decoder_out", fillcolor="#DCFCE7", color="#86EFAC"];
-    prompt [label="PromptProcessor + HFTokenizer\n热词 / 对话 / 光标前后文\n名字、设定与修改提示", fillcolor="#FFFFFF", color="#A78BFA"];
-    draft [label="draft 模型配置\n2 层 · draft_len = 2\n启用语义未完整验证", fillcolor="#FEF3C7", color="#FBBF24", style="rounded,filled,dashed"];
-    cf -> ce;
-    ce -> cd [label="语音 embedding"];
-    cd -> co;
-    prompt -> cd [label="文本 token / 提示"];
-    draft -> cd [label="配置引用", style=dashed, color="#D97706"];
+    cf [label="独立非流式特征（仅专业版）\nnonstream_feature_extractor\n80 维 fbank + CMVN", fillcolor="#EDE9FE", color="#A78BFA"];
+    ce [label="nonstream.packed / no_stream.packed (MNN)\n专业版: 独立权重, 29 层解码器 (Metal)\n通用版: share_weight=true, 共享骨干 (Metal)", fillcolor="#EDE9FE", color="#A78BFA"];
+    prompt [label="PromptProcessor + rag_words\n对话历史 / 光标前后文 / 热词检索\nITN 数字规整 · 语气词标注 · 标点", fillcolor="#FFFFFF", color="#A78BFA"];
+    co [label="最终上下文输出\nnon_s_context_result", fillcolor="#DCFCE7", color="#86EFAC"];
+    cf -> ce [label="专业版 fbank"];
+    prompt -> ce [label="文本提示与热词"];
+    ce -> co;
   }
 
   split -> sf [label="分段音频"];
-  split -> cf [label="分段音频"];
-
-  scope [shape=note, label="读图范围\n基于包内配置与模型图标记，非运行时调用追踪。\n执行器暴露两类输出，最终整合策略未验证。\nPantherInference / Panther Lite 为配置中的推理接口。\n未验证模型训练血缘、精确参数量或识别性能。\n仅供学习分析使用。", fontsize=16,
-         fillcolor="#FFF7ED", color="#FDBA74", fontcolor="#9A3412"];
+  split -> cf [label="专业版分段"];
+  se -> ce [label="通用版复用 880 维 audio_proj\n(4× 下采样, share_weight=true)", style=dashed, color="#7C3AED", fontcolor="#6D28D9"];
 }

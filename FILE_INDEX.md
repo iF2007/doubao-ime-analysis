@@ -48,16 +48,16 @@
 
 | 文件 | 职责 |
 | :--- | :--- |
-| [diagrams/README.md](diagrams/README.md) | 图例、1.1.1 架构演进差异与重新渲染命令 |
-| [diagrams/doubao-asr-architecture.dot](diagrams/doubao-asr-architecture.dot) | Graphviz 源码 |
-| [diagrams/doubao-asr-architecture.png](diagrams/doubao-asr-architecture.png) | 已渲染架构图 |
+| [diagrams/README.md](diagrams/README.md) | 1.1.1 架构图图例与重新渲染命令 |
+| [diagrams/doubao-asr-architecture.dot](diagrams/doubao-asr-architecture.dot) | 1.1.1 架构图 Graphviz 源码 |
+| [diagrams/doubao-asr-architecture.png](diagrams/doubao-asr-architecture.png) | 已渲染 1.1.1 架构图 |
 
 ## comparison/
 
 | 文件 | 职责 |
 | :--- | :--- |
 | [comparison/COMPARISON.md](comparison/COMPARISON.md) | 1.1.1 双模型架构差异，及与 Seed-ASR / LiteASR / 实时语音模型的对比 |
-| [comparison/model-metadata.json](comparison/model-metadata.json) | 1.1.0 权重文件前 4 MiB 中的图名称、算子字符串及偏移记录 |
+| [comparison/model-metadata.json](comparison/model-metadata.json) | 1.1.1 专业版与通用版 `.packed` 内嵌 `.mnn` 子模型与层索引扫描记录 |
 | [comparison/public-model-and-papers.json](comparison/public-model-and-papers.json) | 公开 `lite-whisper-large-v3-turbo` 配置摘录与论文元数据 |
-| [comparison/runtime-markers.json](comparison/runtime-markers.json) | 应用静态算子与 AcLLM 相关标记 |
+| [comparison/runtime-markers.json](comparison/runtime-markers.json) | 1.1.1 主程序静态算子、MNN 与 AcLLM 相关标记 |
 | [comparison/sources.json](comparison/sources.json) | LiteASR 固定提交与官方资料链接 |

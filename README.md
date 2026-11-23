@@ -1,7 +1,7 @@
 # 豆包输入法 macOS 离线语音模型分析
 
 > [!NOTE]
-> 仅供学习与技术分析。**本分支（`main`）对应最新版本 macOS `1.1.1`**；如需查看旧版分析结果与原始产物，请切换到对应 Git Tag（如 `git checkout macos_1.1.0`）。
+> 仅供学习与技术分析。**本分支（`main`）对应最新版本 macOS `1.1.1`**；如需查看旧版分析结果与原始产物，请切换到对应 Git Tag（如 `git checkout tags/macos_1.1.0`）。
 
 ## 核心结论
 
@@ -40,11 +40,11 @@
 
 ## 模型架构图
 
-下图绘制自 1.1.0 主模型静态配置，展示了 VAD、流式与上下文双路径的整体骨架；1.1.1 延续了该双路径设计，并新增尾部静音探测（`tail_vad_probe`）、热词检索（`rag_words`）及 `.packed` 引擎封装（详见 [架构图说明](diagrams/README.md) 与 [1.1.1 配置文件](model-config/pro-config.yaml)）：
+下图基于 1.1.1 两款模型的配置文件（[专业版](model-config/pro-config.yaml) / [通用版](model-config/general-config.yaml)）与 `.packed` 内部结构绘制，展示 VAD + 尾静音快检、流式实时路径，以及专业版独立权重与通用版共享骨干的差异：
 
-![豆包输入法离线语音识别架构](diagrams/doubao-asr-architecture.png)
+![豆包输入法 1.1.1 离线语音识别架构](diagrams/doubao-asr-architecture.png)
 
-[查看原图](diagrams/doubao-asr-architecture.png) · [Graphviz 源码](diagrams/doubao-asr-architecture.dot) · [图例与 1.1.1 演进](diagrams/README.md)
+[查看原图](diagrams/doubao-asr-architecture.png) · [Graphviz 源码](diagrams/doubao-asr-architecture.dot) · [图例与渲染命令](diagrams/README.md)
 
 ## 复现步骤
 
