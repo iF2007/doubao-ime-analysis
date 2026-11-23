@@ -9,10 +9,10 @@
   "extraction_verified": true,
   "extracted_files": 6,
   "extracted_bytes": 463454925,
-  "written_files_verified": 0,
+  "written_files_verified": 6,
   "model_md5_entries_checked": 0,
   "model_md5_entries_matched": 0,
-  "model_md5_manifest_matches": false,
+  "model_md5_manifest_matches": null,
   "model_md5_mismatches": [],
   "files": [
     {

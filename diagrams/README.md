@@ -1,30 +1,25 @@
 # 离线语音模型架构图
 
-> [!NOTE]
-> 仅供学习分析使用。
-
-本架构图基于豆包输入法 1.1.0 的 `acllm_main_model_mac` 1.8 提取的静态配置绘制。其 VAD、流式与上下文双识别路径的整体架构在 1.1.1（专业版与通用版）中得到延续与重构封装。内容依据 [主配置](../model-config/config.yaml)、[VAD 配置](../model-config/vad/config.yaml) 和 [模型结构分析](../comparison/COMPARISON.md)。
-
-| 文件 | 用途 |
-| --- | --- |
-| [doubao-asr-architecture.png](doubao-asr-architecture.png) | README 使用的架构图，5961 × 1867 像素 |
+| 文件 | 说明 |
+| :--- | :--- |
+| [doubao-asr-architecture.png](doubao-asr-architecture.png) | README 展示的架构图（5961 × 1867） |
 | [doubao-asr-architecture.dot](doubao-asr-architecture.dot) | 可编辑的 Graphviz 源码 |
 
-## 图例与证据范围
+## 图例与版本说明
 
-- 蓝色表示流式识别路径，紫色表示上下文识别路径，绿色表示两类转写输出。
-- 实线表示配置中明确连接的数据流。橙色虚线只表示 draft 的配置引用，未完整验证其启用语义。
-- 图是静态配置与模型图证据的整理，未进行运行时调用追踪。两类输出的最终整合策略未验证。
-- `non_s_*` 是主模型包内的上下文识别路径，不能据此将它等同于未分析的独立上下文辅助模型 1.1。
-- 模型训练血缘、精确参数量和识别性能仍未确认。
+- **颜色**：蓝色为流式识别路径，紫色为上下文识别路径，绿色为转写输出，橙色虚线为 1.1.0 配置中的 draft 引用。
+- **适用范围**：该图基于 1.1.0 主模型（`acllm_main_model_mac` 1.8）静态配置绘制，展示整体 VAD + 双路径骨架。
+- **1.1.1 架构演进**：1.1.1 延续了相同的 VAD + 流式 + 非流式上下文双路径，具体变化体现在 [pro-config.yaml](../model-config/pro-config.yaml) 与 [general-config.yaml](../model-config/general-config.yaml)：
+  - 推理封装改为 `AsrContextExecutor` + `IntegrationEngineCreator`，ASR 权重从 20 个 `.pthlite` 合并为 `.packed`（内含 `.mnn`）。
+  - 新增 `tail_vad_probe`（尾部静音快检）与 `rag_words`（热词检索注入）。
+  - 通用版（`share_weight: true`）取消了独立非流式特征提取，改为直接复用流式输出的 880 维 `audio_proj`。
 
 ## 重新渲染
 
-生成时使用 `diagram-generator` 和 Graphviz 16.1.1。安装 Graphviz 后，从仓库根目录执行：
+安装 Graphviz 后，从仓库根目录执行：
 
 ```sh
-dot -Tpng diagrams/doubao-asr-architecture.dot \
-  -o diagrams/doubao-asr-architecture.png
+dot -Tpng diagrams/doubao-asr-architecture.dot -o diagrams/doubao-asr-architecture.png
 ```
 
-源码使用 `PingFang SC` 字体。其他系统可改为本机支持中文的字体，再重新渲染。
+源码默认使用 `PingFang SC` 字体，非 macOS 环境可替换为系统自带中文字体后重新渲染。

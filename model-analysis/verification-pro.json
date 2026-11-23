@@ -59,7 +59,7 @@
   "key_source": "derived from seed and model metadata",
   "nonce": "39a12d5e7dc541b5c5106c3f",
   "derived_key": "b876b031394e176de4789c155f4059f92743b30f60e550a46a0d4b0c07113f6e",
+  "config_label": "LiteASRP_v1.2.0_7",
   "model_name": "acllm_pro_model_mac",
-  "model_version": "1.5",
-  "config_label": "LiteASRP_v1.2.0_7"
+  "model_version": "1.5"
 }

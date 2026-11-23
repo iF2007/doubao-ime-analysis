@@ -1,0 +1,275 @@
+objects:
+  universal_asr_executor:
+    type: flute.asr.ntp_cif.AsrContextExecutor
+    audio_input: audio_input
+    finish: finish
+    reset: reset
+    segment: segment
+    stream_output: stream_context_output
+    non_s_context_event: non_s_context_event
+    non_s_context_output: non_s_context_result
+    model_version: LiteASRm_v1.0.1_5
+    enable_asr_track: false
+    track_data_out: asr_track_data
+    enable_tail_vad_probe: true
+    tail_vad_state: tail_vad_state
+    actors:
+    - vad_feature_extractor
+    - vad_encoder
+    - vad_decoder
+    - tail_vad_probe
+    - wav_split
+    - asr_feature_extractor
+    - asr_stream_context
+    - asr_nonstream_context_rag
+  universal_s_asr_executor:
+    type: flute.asr.ntp_cif.AsrContextExecutor
+    audio_input: audio_input
+    finish: finish
+    reset: reset
+    segment: segment
+    stream_output: stream_context_output
+    model_version: LiteASRm_v1.0.1_5
+    enable_asr_track: false
+    track_data_out: asr_track_data
+    enable_tail_vad_probe: true
+    tail_vad_state: tail_vad_state
+    actors:
+    - vad_feature_extractor
+    - vad_encoder
+    - vad_decoder
+    - tail_vad_probe
+    - wav_split
+    - asr_feature_extractor
+    - asr_stream_context
+  asr_executor:
+    type: flute.asr.ntp_cif.AsrContextExecutor
+    audio_input: asr_audio_input
+    finish: asr_finish
+    reset: reset
+    segment: asr_segment
+    stream_output: stream_context_output
+    non_s_context_event: non_s_context_event
+    non_s_context_output: non_s_context_result
+    rag_words: rag_words
+    model_version: LiteASRm_v1.0.1_5
+    enable_asr_track: false
+    track_data_out: asr_track_data
+    actors:
+    - asr_feature_extractor
+    - asr_stream_context
+    - asr_nonstream_context_rag
+  s_asr_executor:
+    type: flute.asr.ntp_cif.AsrContextExecutor
+    audio_input: asr_audio_input
+    finish: asr_finish
+    reset: reset
+    segment: asr_segment
+    stream_output: stream_context_output
+    model_version: LiteASRm_v1.0.1_5
+    enable_asr_track: false
+    track_data_out: asr_track_data
+    actors:
+    - asr_feature_extractor
+    - asr_stream_context
+  mel_bank_feature_option:
+    type: flute.FeOption
+    ftype: 4
+    sampleRate: 16000
+    wave_normalization: true
+  mel_bank_kernel:
+    type: flute.MelBankKernel
+    sample_rate: 16000
+    stft_win: 320
+    stft_shift: 160
+    num_mel_bins: 84
+    low_freq: 0
+    high_freq: 12000
+    mel_bank_mode: 0
+    fillter_mode: 1
+    hz_domain: true
+    norm: true
+  mel_bank_feature_extractor:
+    type: flute.MelBankFeature
+    fe_opt: mel_bank_feature_option
+    mel_bank_kernel: mel_bank_kernel
+  vad_feature_extractor:
+    type: flute.vad.v4.FeatureExtractorActor
+    feature_extractor: mel_bank_feature_extractor
+    audio_input: audio_input
+    finish: finish
+    feature: vad_feature
+  vad_encoder_infer:
+    type: flute.nn.PantherInference
+    mel_bins: 84
+    inputs:
+    - feat
+    - h
+    - c
+    output:
+    - out
+    - h_out
+    - c_out
+    model_path: vad/encoder/vad_v4.pth.pthlite
+    model_data_release: true
+    use_gpu: false
+    providers:
+    - 0
+  vad_encoder:
+    type: flute.vad.v4.EncoderActor
+    encoder_infer: vad_encoder_infer
+    feature_input: vad_feature
+    likelihood: vad_encoder_likelihood
+  vad_decoder:
+    type: flute.vad.v4.DecoderActor
+    likelihood_threshold: 0.5
+    begin_smooth_window_size: 48
+    begin_smooth_voice_proportion: 0.5
+    end_smooth_window_size: 208
+    end_smooth_silence_proportion: 0.925
+    likelihood: vad_encoder_likelihood
+    finish: finish
+    vad_output: vad_segments
+  tail_vad_probe:
+    type: flute.vad.TailVadProbeActor
+    likelihood: vad_encoder_likelihood
+    finish: finish
+    tail_vad_state: tail_vad_state
+    likelihood_threshold: 0.5
+    begin_smooth_window_size: 10
+    begin_smooth_voice_proportion: 0.5
+    end_smooth_window_size: 10
+    end_smooth_silence_proportion: 0.925
+  wav_split:
+    type: flute.vad.v4.WavSplitActor
+    input_wav: audio_input
+    vad_output: vad_segments
+    output_wav: asr_audio_input
+    vad_segment_finish: asr_finish
+    segment_input: segment
+    segment_output: asr_segment
+    max_buffer_length: 16000
+    enable_max_segment_split: true
+    max_segment_ms: 18500
+  asr_feature_extractor:
+    type: flute.asr.ntp_cif.FeatureExtractorActor
+    feature_extractor: feature_extractor
+    feat_win_size: 32
+    feat_win_shift: 32
+    audio_input: asr_audio_input
+    finish_pad_wav_auto: true
+    finish: asr_finish
+    feature: asr_feature
+    total_valid_frames: total_valid_frames
+  feature_option:
+    type: flute.FeOption
+    ftype: 1
+    sampleRate: 16000
+    fbank_config_file: asr/feature_extractor/fbank.conf
+    use_cmvn: true
+    global_cmvn_file: asr/feature_extractor/cmvn.txt
+  feature_extractor:
+    type: flute.PantherFeature
+    fe_opt: feature_option
+  nonstream_prompt_processor:
+    type: flute.asr.ntp_cif.PromptProcessor
+    prompt_template_map:
+    - name: lr_context
+      prompt_template: "[CLS]system\n你是一名语音识别专家，用户会和你用语音对话，在识别语音内容时请参考上下文信息，但有时用户的语音识别结果有错误，请谨慎参考。请将需要转写的汉字数字转写成阿拉伯数字，并以{\"asr\": \"十五\",\"itn\":\"15\"}格式输出。\n请识别内容中的无意义的语气词(A)，并以〈呃|A〉格式输出。\n在输出识别内容时请加上标点符号。\n如果语音是静音或噪音，则不输出任何内容。\n可能需要做如下修改：@@USER_MODIFY@@[EOS]@@DIALOG@@[CLS]user\n有时候语音内容可能插入在某段文字中间，这时候可以参考语音插入位置的上下文，来提升语音识别以及标点的准确率，语音上文内容：@@CUR_CONTEXT@@[EOS][CLS]user\n用户可能提到人名或者地名或者其它个性化词汇和网络新词，其他：@@HOTWORDS@@[EOS][CLS]user\n帮我复述以下这句话 <audio>@@AUDIO@@</audio>[EOS][CLS]assistant\n"
+      cursor_context_delim: ' 语音下文内容：'
+      hotwords_types:
+      - other
+      hotwords_types_prompts:
+      - ''
+      max_prompt_num: 1000
+      bot_name_max_length: 10
+      bot_desc_max_length: 300
+      user_modify_max_length: 300
+      hotwords_max_length: 200
+      dialog_max_length: 400
+      cursor_context_max_length: 50
+    - name: default
+      prompt_template: "[CLS]system\n你是一名语音识别专家，用户会和你用语音对话，在识别语音内容时请参考上下文信息，但有时用户的语音识别结果有错误，请谨慎参考。请将需要转写的汉字数字转写成阿拉伯数字，并以{\"asr\": \"十五\",\"itn\":\"15\"}格式输出。\n请识别内容中的无意义的语气词(A)，并以〈呃|A〉格式输出。\n在输出识别内容时请加上标点符号。\n如果语音是静音或噪音，则不输出任何内容。\n可能需要做如下修改：@@USER_MODIFY@@[EOS]@@DIALOG@@[CLS]user\n用户可能提到人名或者地名或者其它个性化词汇和网络新词，其他：@@HOTWORDS@@[EOS][CLS]user\n帮我复述以下这句话 <audio>@@AUDIO@@</audio>[EOS][CLS]assistant\n"
+      hotwords_types:
+      - other
+      hotwords_types_prompts:
+      - ''
+      max_prompt_num: 1000
+      bot_name_max_length: 10
+      bot_desc_max_length: 300
+      user_modify_max_length: 300
+      hotwords_max_length: 200
+      dialog_max_length: 400
+      cursor_context_max_length: 50
+    - name: bot_context
+      prompt_template: "[CLS]system\n你是一名语音识别专家，用户会和你用语音对话，在识别语音内容时请参考上下文信息，但有时用户的语音识别结果有错误，请谨慎参考。请将需要转写的汉字数字转写成阿拉伯数字，并以{\"asr\": \"十五\",\"itn\":\"15\"}格式输出。\n请识别内容中的无意义的语气词(A)，并以〈呃|A〉格式输出。\n在输出识别内容时请加上标点符号。\n如果语音是静音或噪音，则不输出任何内容。\n你的名字是：\n@@BOT_NAME@@\n你的设定是：\n@@BOT_DESC@@\n用户所在位置：未知\n可能需要做如下修改：@@USER_MODIFY@@[EOS]@@DIALOG@@[CLS]user\n用户可能提到人名或者地名或者其它个性化词汇和网络新词，其他：@@HOTWORDS@@[EOS][CLS]user\n帮我复述以下这句话 <audio>@@AUDIO@@</audio>[EOS][CLS]assistant\n"
+      hotwords_types:
+      - other
+      hotwords_types_prompts:
+      - ''
+      max_prompt_num: 1000
+      bot_name_max_length: 10
+      bot_desc_max_length: 300
+      user_modify_max_length: 300
+      hotwords_max_length: 200
+      dialog_max_length: 400
+      cursor_context_max_length: 50
+  asr_stream_context:
+    type: flute.asr.ntp_cif.PantherLLMStreamContextActor
+    engine_creator: engine_creator
+    audio_embedding_output_type: ntp1
+    chat_template: '@@AUDIO@@'
+    feature: asr_feature
+    fbank_key: asr_feature
+    segment: asr_segment
+    finish: asr_finish
+    s_output_key: stream_context_output
+    s_audio_emb: s_audio_emb
+    s_max_token_num: 256
+    enable_valid_frames: true
+    total_valid_frames: total_valid_frames
+    ntp1_downsample_factor: 4
+  asr_nonstream_context_rag:
+    type: flute.asr.ntp_cif.PantherLLMNonStreamContextActor
+    engine_creator: engine_creator
+    prompt_processor: nonstream_prompt_processor
+    input_event: non_s_context_event
+    audio_embedding_input_type: audio_proj
+    audio_proj_feature_dim: 880
+    s_audio_emb: s_audio_emb
+    output: non_s_context_result
+    rag_words: rag_words
+    mid_decode_interval_ms: 5000
+    enable_itn_post_process: true
+    enable_disfluency: true
+    itn_choice: itn
+    non_s_max_token_num: 1000
+    enable_valid_frames: true
+  engine_creator:
+    type: flute.asr.ntp_cif.IntegrationEngineCreator
+    s_model_file: asr/models/stream.packed
+    non_s_model_file: asr/models/no_stream.packed
+    s_model_name: stream
+    s_model_forward_types:
+      encoder:
+        default: cpu
+        mac: metal
+        android: hexagon
+      decoder:
+        default: cpu
+        mac: cpu
+        android: hexagon
+    non_s_model_name: no_stream
+    non_s_model_forward_types:
+      encoder:
+        default: cpu
+        mac: metal
+        android: hexagon
+      decoder:
+        default: cpu
+        mac: metal
+        android: hexagon
+    model_data_release: true
+    share_weight: true
+    s_max_token_num: 256
+    non_s_max_token_num: 1000

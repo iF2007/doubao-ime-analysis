@@ -2,9 +2,9 @@
 """Verify Doubao IME FLUTE v2/v3 ASR model directory, header layout, and key derivation.
 
 Supports:
-- 1.1.0 acllm_main_model_mac (FLUTE v3, 825 MB, 20 loose files)
 - 1.1.1 acllm_pro_model_mac (FLUTE v3, 1.48 GB, 6 packed files)
 - 1.1.1 acllm_general_model_mac (FLUTE v2, 463 MB, 6 packed files)
+- 1.1.0 acllm_main_model_mac (FLUTE v3, 825 MB, 20 loose files)
 """
 
 import argparse
@@ -17,6 +17,8 @@ import struct
 from Crypto.Cipher import ChaCha20
 
 
+XOR_MASK = b"symphony"
+
 DEFAULT_MODELS = [
     Path.home()
     / "Library/Application Support/DoubaoIme/ASRModel/versions/acllm_pro_model_mac/1_5_4f19c90670291b502a4dd34b936e5f2f/asr_model.model",
@@ -25,6 +27,14 @@ DEFAULT_MODELS = [
     Path.home()
     / "Library/Application Support/DoubaoIme/ASRModel/versions/1_8/asr_model.model",
 ]
+
+
+def format_model_path(path: Path) -> str:
+    resolved = path.expanduser().resolve()
+    try:
+        return "~/" + str(resolved.relative_to(Path.home().resolve()))
+    except ValueError:
+        return str(resolved)
 
 
 def resolve_default_model() -> Path:
@@ -55,7 +65,36 @@ def resolve_default_model() -> Path:
     return DEFAULT_MODELS[0]
 
 
+def load_32_byte_file(path: Path, label: str) -> bytes:
+    if not path.is_file():
+        raise ValueError(f"{label} file not found: {path}")
+    data = path.read_bytes()
+    if len(data) != 32:
+        raise ValueError(f"{label} must contain exactly 32 raw bytes, got {len(data)}")
+    return data
+
+
+def read_container_prefix(file, model_size: int) -> tuple[int, int, int]:
+    prefix = file.read(21)
+    if len(prefix) != 21:
+        raise ValueError("Model file is truncated (fewer than 21 header bytes)")
+    magic = prefix[:5]
+    version, header_size, count = struct.unpack_from("<IQI", prefix, 5)
+    if magic != b"FLUTE" or version not in (2, 3):
+        raise ValueError(f"Unsupported model container: magic={magic!r}, version={version}")
+    min_header = 21 if version == 2 else 33
+    if header_size < min_header or header_size > model_size:
+        raise ValueError(
+            f"Invalid header_size={header_size} for FLUTE v{version} (model_size={model_size})"
+        )
+    return version, header_size, count
+
+
 def derive_key(seed: bytes, nonce: bytes, header_size: int) -> bytes:
+    if len(seed) != 32:
+        raise ValueError("Root seed must be 32 bytes")
+    if len(nonce) != 12:
+        raise ValueError("Nonce must be 12 bytes")
     buffer = bytearray(seed)
     for index, value in enumerate(nonce):
         buffer[index] ^= value
@@ -64,6 +103,10 @@ def derive_key(seed: bytes, nonce: bytes, header_size: int) -> bytes:
         buffer[24 + index] ^= value
     cipher = ChaCha20.new(key=bytes(buffer), nonce=nonce)
     return cipher.encrypt(b"\x00" * 32)
+
+
+def decode_xor_prefix(data: bytes) -> bytes:
+    return bytes(value ^ XOR_MASK[i % len(XOR_MASK)] ^ (i & 255) for i, value in enumerate(data))
 
 
 def parse_directory(data: bytes, count: int, header_size: int, model_size: int):
@@ -91,35 +134,48 @@ def parse_directory(data: bytes, count: int, header_size: int, model_size: int):
     return entries
 
 
+def verify_payload_xor(model_path: Path, entries: list) -> bool:
+    for target_name, expected_prefix in (
+        ("config.yaml", b"objects:"),
+        ("model_md5s.txt", b"# MD5 for Panther Lite"),
+    ):
+        for entry in entries:
+            if entry["name"].lstrip("/") == target_name:
+                with model_path.open("rb") as f:
+                    f.seek(entry["offset"])
+                    chunk = f.read(min(4096, entry["size"]))
+                return decode_xor_prefix(chunk).startswith(expected_prefix)
+    return False
+
+
 def detect_model_metadata(model_path: Path, entries: list) -> dict:
     meta = {}
-    path_str = str(model_path)
-    if "acllm_pro_model_mac" in path_str:
-        meta["model_name"] = "acllm_pro_model_mac"
-        meta["model_version"] = "1.5"
-    elif "acllm_general_model_mac" in path_str:
-        meta["model_name"] = "acllm_general_model_mac"
-        meta["model_version"] = "1.8"
-    elif "acllm_main_model_mac" in path_str or "1_8" in path_str:
-        meta["model_name"] = "acllm_main_model_mac"
-        meta["model_version"] = "1.8"
-
     for entry in entries:
         if entry["name"].lstrip("/") == "config.yaml":
             try:
                 with model_path.open("rb") as f:
                     f.seek(entry["offset"])
                     chunk = f.read(min(4096, entry["size"]))
-                mask = b"symphony"
-                decoded = bytes(b ^ mask[i % len(mask)] ^ (i & 255) for i, b in enumerate(chunk)).decode(
-                    "utf-8", errors="ignore"
-                )
+                decoded = decode_xor_prefix(chunk).decode("utf-8", errors="ignore")
                 m = re.search(r"model_version:\s*([A-Za-z0-9_.-]+)", decoded)
                 if m:
                     meta["config_label"] = m.group(1)
             except Exception:
                 pass
             break
+
+    path_str = str(model_path)
+    label = meta.get("config_label", "")
+    if "acllm_pro_model_mac" in path_str or label.startswith("LiteASRP_v1.2"):
+        meta["model_name"] = "acllm_pro_model_mac"
+        meta["model_version"] = "1.5"
+    elif "acllm_general_model_mac" in path_str or label.startswith("LiteASRm_"):
+        meta["model_name"] = "acllm_general_model_mac"
+        meta["model_version"] = "1.8"
+    elif "acllm_main_model_mac" in path_str or label.startswith("LiteASRP_v1.1"):
+        meta["model_name"] = "acllm_main_model_mac"
+        meta["model_version"] = "1.8"
+
     return meta
 
 
@@ -137,13 +193,13 @@ def main():
         "--seed-file",
         type=Path,
         default=Path(__file__).with_name("model-seed.bin"),
-        help="Path to the 32-byte root seed",
+        help="Path to the 32-byte root seed (FLUTE v3)",
     )
     parser.add_argument(
         "--key-file",
         type=Path,
         default=None,
-        help="Optional 32-byte key file to skip derivation",
+        help="Optional 32-byte key file to skip derivation (FLUTE v3)",
     )
     parser.add_argument(
         "--reference-directory",
@@ -159,73 +215,58 @@ def main():
     )
     args = parser.parse_args()
 
-    model_path = args.model if args.model else resolve_default_model()
-    if not model_path.exists():
+    model_path = (args.model if args.model else resolve_default_model()).expanduser().resolve()
+    if not model_path.is_file():
         parser.error(f"Model file not found: {model_path}")
 
     model_size = model_path.stat().st_size
     with model_path.open("rb") as file:
-        prefix = file.read(21)
-        magic = prefix[:5]
-        version, header_size, count = struct.unpack_from("<IQI", prefix, 5)
-        if magic != b"FLUTE" or version not in (2, 3):
-            raise ValueError(f"Unsupported model container: magic={magic}, version={version}")
-
-        file.seek(header_size)
-        payload = file.read(4096)
-
-    # Verify payload XOR mask
-    mask = b"symphony"
-    decoded = bytes(value ^ mask[i % len(mask)] ^ (i & 255) for i, value in enumerate(payload))
-    if not (decoded.startswith(b"objects:") or decoded.startswith(b"# MD5 for Panther Lite")):
-        raise ValueError("The independently verified payload XOR mask no longer matches")
+        version, header_size, count = read_container_prefix(file, model_size)
+        file.seek(0)
+        header = file.read(header_size)
 
     result = dict(
-        model="~/" + str(model_path.relative_to(Path.home())),
+        model=format_model_path(model_path),
         model_bytes=model_size,
         layout_version=version,
         header_size=header_size,
         internal_files=count,
-        payload_xor_verified=True,
+        payload_xor_verified=False,
         candidate_verified=False,
         attempts=[],
     )
 
     valid_entries = []
     if version == 2:
-        # FLUTE v2 uses unencrypted directory starting directly at offset 21
         result["key_source"] = "unencrypted plaintext directory (FLUTE v2)"
-        with model_path.open("rb") as file:
-            file.seek(21)
-            directory = file.read(header_size - 21)
+        directory = header[21:]
         entries = parse_directory(directory, count, header_size, model_size)
+        if args.reference_directory:
+            matches = directory == args.reference_directory.read_bytes()
+            result["matches_reference"] = matches
+            if not matches:
+                raise ValueError("Parsed directory differs from the reference directory")
         result["candidate_verified"] = True
         result["entries"] = entries
         result["directory_sha256"] = hashlib.sha256(directory).hexdigest()
         valid_entries = entries
     elif version == 3:
-        # FLUTE v3 uses ChaCha20 encrypted directory
-        with model_path.open("rb") as file:
-            file.seek(0)
-            header = file.read(header_size)
         nonce = header[21:33]
-        key = (
-            args.key_file.read_bytes()
-            if args.key_file
-            else derive_key(args.seed_file.read_bytes(), nonce, header_size)
-        )
-        if len(key) != 32:
-            parser.error("The key must contain exactly 32 raw bytes")
-        result["key_source"] = (
-            "provided key" if args.key_file else "derived from seed and model metadata"
-        )
+        if args.key_file:
+            key = load_32_byte_file(args.key_file, "Key")
+            key_source = "provided key"
+        else:
+            seed = load_32_byte_file(args.seed_file, "Seed")
+            key = derive_key(seed, nonce, header_size)
+            key_source = "derived from seed and model metadata"
+        result["key_source"] = key_source
         result["nonce"] = nonce.hex()
         result["derived_key"] = key.hex()
 
         for counter in (0, 1):
             cipher = ChaCha20.new(key=key, nonce=nonce)
             cipher.seek(counter * 64)
-            directory = cipher.decrypt(header[33:header_size])
+            directory = cipher.decrypt(header[33:])
             attempt = dict(counter=counter, valid=False)
             try:
                 entries = parse_directory(directory, count, header_size, model_size)
@@ -248,12 +289,15 @@ def main():
             result["attempts"].append(attempt)
 
     if valid_entries:
+        result["payload_xor_verified"] = verify_payload_xor(model_path, valid_entries)
+        if not result["payload_xor_verified"]:
+            raise ValueError("Payload XOR mask check failed on config.yaml / model_md5s.txt")
         meta = detect_model_metadata(model_path, valid_entries)
-        for k, v in meta.items():
-            result[k] = v
+        result.update(meta)
 
     encoded = json.dumps(result, ensure_ascii=False, indent=2) + "\n"
     if args.report:
+        args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(encoded)
     print(encoded, end="")
     return 0 if result["candidate_verified"] else 1

@@ -43,14 +43,6 @@
       "bytes": 108300553,
       "md5": "32c387bc13445d1b020077c168c0d2c9",
       "component_version_key": "1_1"
-    },
-    "legacy_1_1_0": {
-      "name": "acllm_main_model_mac",
-      "version": "1.8",
-      "config_label": "LiteASRP_v1.1.2_6",
-      "bytes": 824999405,
-      "md5": "c31bdfbd138e9beac48e02672f98f1e8",
-      "container": "FLUTE v3"
     }
   },
   "host": {

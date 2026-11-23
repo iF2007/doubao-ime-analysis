@@ -1,126 +1,71 @@
-# 主模型结构与公开语音模型的比较
+# 1.1.1 模型结构与公开语音模型对比
 
-本机主模型的可见结构支持以下判断：
+## 核心判断
 
-- **与 Seed-ASR / AcLLM 的公开路线更接近。** 共同点包括 Conformer 编码器和上下文识别设计。
-- **与 efeslab/LiteASR 存在明显结构差异。** 后者针对 Whisper 编码器进行低秩压缩。
-- **具体代码或权重来源未确认。** 现有证据不能证明它是某个公开模型的压缩、蒸馏或微调版本。
+基于 1.1.1 两款本地模型的配置文件（[专业版](../model-config/pro-config.yaml)、[通用版](../model-config/general-config.yaml)）、`.packed` 图字符串及应用静态标记：
 
-> [!IMPORTANT]
-> 路线相似性不等于训练血缘。包内标签 `LiteASRP_v1.1.2_6` / `LiteASRP_v1.2.0_7` 与 LiteASR 名称相似，也不能证明两者有关。
+- **技术路线接近 Seed-ASR / AcLLM**：同为 Conformer 声学编码器 + 上下文音频条件 LLM 解码器（支持对话历史、光标上下文、热词与纠错提示），面向端侧离线转写裁剪。
+- **与 efeslab/LiteASR 明显不同**：LiteASR 面向 Whisper 编码器做 SVD 低秩压缩，而本地模型是 80 维 fbank + 24 层 Conformer + GPT 风格解码器 + MNN / Panther 推理栈。包内代号 `LiteASRP_*` / `LiteASRm_*` 只是命名巧合。
+- **不同于豆包实时语音模型**：包内只有转写链路（VAD + ASR 编码/解码 + Prompt），没有语音合成声码器。
 
-| 比较范围 | 说明 |
-| --- | --- |
-| 本机分析对象 | 1.1.0 旧版主模型 `acllm_main_model_mac` 1.8（825 MB）<br>1.1.1 专业版 `acllm_pro_model_mac` 1.5（1.48 GB）<br>1.1.1 通用版 `acllm_general_model_mac` 1.8（463 MB） |
-| 包内配置标签 | 1.1.0：`LiteASRP_v1.1.2_6`<br>1.1.1 专业版：`LiteASRP_v1.2.0_7`<br>1.1.1 通用版：`LiteASRm_v1.0.1_5` |
-| 本机证据 | 引擎配置、五个权重文件各自前 4 MiB 的图字符串、应用静态标记、`engine_creator` 调度声明 |
-| 公开证据 | LiteASR 固定提交、具体公开模型配置、官方论文与介绍 |
-| 未执行 | 运行公共代码、下载公共模型权重、测量识别性能 |
-
-可按 [1.1.1 架构演进](#111-架构升级与双模型分支演进)、[LiteASR 结构差异](#本机与-liteasr-的结构差异)、[本机证据](#本机证据与含义)、[Seed-ASR 对应](#与-seed-asr--acllm-的对应) 和 [实时语音模型区别](#与豆包实时语音模型的区别) 阅读。
-
-本机的两条识别路径及上下文提示关系见 [模型架构图](../README.md#模型架构)。
+> 注：以上结论基于静态配置、模型图字符串和公开论文/源码对比；具体训练权重来源与识别指标无法仅靠静态分析确认。
 
 ---
 
-## 1.1.1 架构升级与双模型分支演进
+## 1.1.1 专业版 vs 通用版架构对比
 
-在 1.1.1 版本中，豆包输入法对 ASR 引擎进行了重构，从 1.1.0 的单一大模型分化为两个独立规格：
+1.1.1 将引擎统一迁至 `AsrContextExecutor` + `IntegrationEngineCreator`，用 MNN `.packed` 包取代 1.1.0 的 20 个散装 `.pthlite` 文件，并分化为两条规格：
 
-| 维度 | 1.1.0 旧版主模型 | 1.1.1 专业版 (`acllm_pro_model_mac`) | 1.1.1 通用版 (`acllm_general_model_mac`) |
-| :--- | :--- | :--- | :--- |
-| **配置代号** | `LiteASRP_v1.1.2_6` | `LiteASRP_v1.2.0_7` (**正统 Pro 升级**) | `LiteASRm_v1.0.1_5` (**全新轻量分支**) |
-| **权重体积** | 824,999,405 字节 (~825 MB) | 1,487,023,817 字节 (~1.48 GB) | 463,455,256 字节 (~463 MB) |
-| **文件组织** | 20 个解离 `.pthlite` 文件 | 6 个聚合文件（含 `nonstream.packed`） | 6 个聚合文件（含 `no_stream.packed`） |
-| **权重共享** | 流式/非流式解耦独立 | `share_weight: false`（独立参数空间） | `share_weight: true`（骨干网络参数共享） |
-| **硬件调度** | CPU / 基础调度 | `non_s_forward_type: metal`（Apple GPU 加速） | 兼顾多平台 CPU / 移动端 Hexagon DSP |
-| **容器格式** | FLUTE v3（ChaCha20 加密目录） | FLUTE v3（ChaCha20 加密目录） | FLUTE v2（未加密明文目录） |
-
----
-
-## 本机与 LiteASR 的结构差异
-
-| 项目 | 本机主模型 1.8 | 采集的公开 lite-whisper-large-v3-turbo |
+| 维度 | 专业版 (`acllm_pro_model_mac` 1.5) | 通用版 (`acllm_general_model_mac` 1.8) |
 | :--- | :--- | :--- |
-| 编码器 | 两套模型图都有 24 层 Conformer 标记 | Whisper Transformer 编码器，32 层 |
-| 音频特征 | ASR 配置为 80 维 fbank | 配置为 128 维 mel |
-| 解码路径 | 12 层流式路径、28 层上下文路径 | 4 层 Whisper 解码器 |
-| 词表 | 配置为 64000，使用 vocab 和 merges | 配置为 51866，使用 Whisper tokenizer |
-| 可见优化 | QW4、W4A8 量化及融合算子、chunk 和 RoPE 状态、2 层 draft 配置 | 激活校准、PCA/SVD、低秩线性层、低维注意力计算 |
-| 上下文 | 音频、热词、对话及光标周围文本共同参与提示 | LiteASR 主要压缩 Whisper 编码器 |
-| 运行接口 | `flute.nn.PantherInference` 和 Panther Lite | PyTorch、Transformers 和 Triton 等公开实现 |
+| **配置代号** | `LiteASRP_v1.2.0_7` | `LiteASRm_v1.0.1_5` |
+| **源包大小** | 1.48 GB（FLUTE v3） | 463 MB（FLUTE v2） |
+| **权重共享** | `share_weight: false`（流式与非流式完全独立） | `share_weight: true`（共享骨干参数） |
+| **非流式音频输入** | 独立 `nonstream_feature_extractor`，直接吃 `fbank` | 复用流式输出的 880 维音频投影（`audio_proj`，4 倍下采样） |
+| **硬件调度** | 流式 `cpu`；非流式 `metal`（Apple GPU） | 拆到编/解码级：macOS 流式编码 `metal`、解码 `cpu`，非流式全 `metal`；Android 配 `hexagon` |
+| **解码器与图标记** | `stream.packed` 12 层、`nonstream.packed` 29 层（含 `.mnn`、RoPE） | `stream.packed` 12 层、`no_stream.packed` 含 24 层 Macaron Conformer 编码器 |
+| **非流式最大 Token** | `256` | `1000` |
+| **Prompt 模板** | `lr_context`、`default` | `lr_context`、`default`、`bot_context` |
+| **1.1.1 共同新增** | `tail_vad_probe`（10 帧尾静音快检）、`rag_words`（热词注入）、18.5 s 分段上限 | 同左 |
 
-右侧描述的是本次采集的具体 Turbo 模型，不代表 LiteASR 支持的所有 Whisper 变体。[公开配置摘录](public-model-and-papers.json) 保存维度和逐层 `low_rank_config`。
+---
 
-LiteASR 的比较固定在提交 `da5be85382a6fc22245803c18c820b5c1b049ef8`，依据以下源码：
+## 与 efeslab/LiteASR 的差异
 
-- [README](https://github.com/efeslab/LiteASR/blob/da5be85382a6fc22245803c18c820b5c1b049ef8/README.md) 将方法定义为利用激活低秩性质的 ASR 压缩，公开模型基于 Whisper。
-- [compress.py](https://github.com/efeslab/LiteASR/blob/da5be85382a6fc22245803c18c820b5c1b049ef8/src/compress.py) 加载 Whisper，对校准激活执行 `torch.linalg.svd`，构建低秩层。
-- [modeling_lite_whisper.py](https://github.com/efeslab/LiteASR/blob/da5be85382a6fc22245803c18c820b5c1b049ef8/src/lite_whisper/modeling_lite_whisper.py) 继承 Whisper 类，以带 `weight1`、`weight2` 的低秩层替换编码器投影和 FFN。
+对比对象固定在 [LiteASR 提交 `da5be85`](https://github.com/efeslab/LiteASR/tree/da5be85382a6fc22245803c18c820b5c1b049ef8) 与公开模型 `lite-whisper-large-v3-turbo`（配置摘录见 [public-model-and-papers.json](public-model-and-papers.json)）：
 
-本机模型没有提供对应的 Whisper 结构或逐层低秩配置。算子编译和融合可能隐藏名称，因此结构差异比单独未检出某个字符串更能支撑判断。
+| 维度 | 豆包输入法本地模型（1.1.1） | LiteASR (`lite-whisper-large-v3-turbo`) |
+| :--- | :--- | :--- |
+| **声学特征** | 16 kHz / 80 维 fbank + CMVN | 128 维 mel |
+| **音频编码器** | 24 层 Conformer（Macaron FFN + Depthwise Conv + RoPE） | 32 层 Whisper Transformer 编码器 |
+| **解码器** | 双路径：12 层流式 + 29 层非流式上下文（1.1.1 专业版） | 4 层 Whisper 解码器 |
+| **压缩手段** | 量化（QW4 / W4A8）、融合算子、跨路径共享权重（通用版） | 校准激活 PCA/SVD 低秩分解（`weight1` / `weight2` 替换线性层） |
+| **上下文能力** | 内置对话历史、光标前后文、热词、纠错记录、ITN 与语气词标注 | 标准 Whisper 转写，主要压缩编码器 |
+| **推理运行时** | `flute` + MNN（`.mnn` 打包于 `.packed`）+ Panther Lite（VAD） | PyTorch / Transformers / Triton |
 
-## 本机证据与含义
+---
 
-[当前配置](../model-config/config.yaml) 描述两个 ASR 路径，关键字段如下：
+## 与 Seed-ASR / AcLLM 的对应与差异
 
-| 组件 | 可见字段 |
-| --- | --- |
-| 两个编码器 | `fbank_length: 80`、`encoder_out_t: 1024` |
-| 流式解码器 | `layer_num: 12`、`token_counts: 64000`、CIF 状态字段 |
-| 上下文解码器 | `layer_num: 28`、`kv_heads: 8`、`draft_layer_num: 2`、`draft_len: 2` |
-| tokenizer 与提示 | `flute.asr.acllm.HFTokenizer`、音频提示、上下文提示 |
+[Seed-ASR 论文 v1](https://arxiv.org/html/2407.04675v1) 提出 Audio-conditioned LLM（AcLLM）架构，论文摘要提到已用于字节豆包语音识别产品；[官方演示页](https://bytedancespeech.github.io/seedasr_tech_report/) 展示的上下文字段与本地 `config.yaml` 里的 Prompt 占位符高度吻合：
 
-[模型图字符串](model-metadata.json) 保存五个权重文件各自前 4 MiB 中的名称及文件偏移，包含以下结构证据：
+| 概念 / 能力 | Seed-ASR 论文 / 演示 | 豆包输入法 1.1.1 本地模型 |
+| :--- | :--- | :--- |
+| **音频编码器** | LUISE（约 2B 参数、32 层 Conformer） | 24 层 Conformer（端侧轻量版） |
+| **语言模型** | 数百亿参数 MoE | 端侧小模型（专业版整包 1.48 GB，通用版 463 MB） |
+| **对话与角色上下文** | 对话历史、智能体名称与设定、修改记录 | `@@DIALOG@@`、`@@BOT_NAME@@`、`@@BOT_DESC@@`、`@@USER_MODIFY@@` |
+| **输入法专属上下文** | 音频 + 上下文共同转写 | 额外加入光标前后文 `@@CUR_CONTEXT@@`、`@@HOTWORDS@@` 与 `rag_words` |
 
-- 流式编码器有 `encoders.0` 至 `encoders.23` 的 `QW4ConformerLayerRopeChunk` 标记。
-- 另一编码器有同类算子的 24 层标记。
-- 流式解码器有 12 个 `W4A8GPT2TransformerBlock` 标记。
-- 上下文解码器有 `h.27.attn.query_layernorm.weight` 等名称。
-
-[应用静态标记](runtime-markers.json) 保留相关 Conformer、W4A8、AcLLM 和上下文处理名称，用于交叉核对。解释这些证据时有以下限制：
-
-- 主程序可能包含多种模型实现，静态标记不证明每个算子都在当前识别路径中启用。
-- `GPT2` 类算子名称不证明使用 OpenAI GPT-2 的预训练权重。
-- `HFTokenizer` 不证明模型由 Hugging Face 公开权重微调而来。
-- 配置和图名称不足以计算精确参数量、确定全部执行路径、推导识别性能或证明训练来源。
-- 包内 MD5 的三项差异仍未解释，见 [格式与校验结果](../model-analysis/FINDINGS.md#包内-md5-清单差异)。
-
-## 与 Seed-ASR / AcLLM 的对应
-
-[Seed-ASR 论文 v1](https://arxiv.org/html/2407.04675v1) 将框架称为 Audio conditioned LLM，即 AcLLM。连续语音表示和上下文共同输入 LLM，语音编码器 LUISE 基于 Conformer。[官方演示页](https://bytedancespeech.github.io/seedasr_tech_report/) 展示对话历史、智能体名字、智能体设定和修改记录。
-
-| 公开能力 | 本机配置中的对应 |
-| --- | --- |
-| Conformer 音频编码器 | 24 层 `QW4ConformerLayerRopeChunk` 图标记 |
-| Audio conditioned LLM | `flute.asr.acllm.HFTokenizer`、语音 embedding 输入上下文解码器 |
-| 对话历史 | `@@DIALOG@@` |
-| 智能体名字与设定 | `@@BOT_NAME@@`、`@@BOT_DESC@@` |
-| 修改记录 | `@@USER_MODIFY@@`，实际生成方式未验证 |
-| 语音和上下文共同转写 | `@@AUDIO@@`、热词及光标前后文 |
-
-论文摘要脚注明确说明 Seed-ASR 已用于字节产品，并以 Doubao speech recognition models 提供商业服务。这个公开产品关系和具体上下文字段支持路线相似性，不能替代权重来源证据。
-
-公开论文和本机对象也存在差异：
-
-| 项目 | Seed-ASR 论文 | 本机主模型 1.8 |
-| --- | --- | --- |
-| 音频编码器 | LUISE 接近 2B 参数，32 层 | 两套编码器图各有 24 层标记，精确参数量未确认 |
-| LLM 规模 | 数百亿参数的 MoE | 解码器配置与论文不同，整个源包约 825 MB |
-| converter | 第 3.3 节使用帧拼接和线性投影 | 配置包含 CIF 路径 |
-
-这些差异说明规模和部署形态不同。论文引用 CIF 不能证明它与本机使用相同实现。
-
-目前没有将 `LiteASRP_v1.1.2_6` / `LiteASRP_v1.2.0_7` 映射到某个公开 Seed-ASR 权重版本的来源声明、训练记录或可对应指纹。
+---
 
 ## 与豆包实时语音模型的区别
 
-[Seed 团队官方介绍](https://seed.bytedance.com/en/blog/doubao-realtime-voice-model-is-available-upon-release-high-eq-and-iq) 将实时语音模型描述为集成语音理解和生成的端到端对话模型，支持 S2S、S2T、T2S 和 T2T。
+[豆包实时语音模型](https://seed.bytedance.com/en/blog/doubao-realtime-voice-model-is-available-upon-release-high-eq-and-iq)是端到端语音对话模型（支持 S2S / T2S 语音生成）。本机离线包内只有 VAD、特征提取、ASR 编解码和转写 Prompt，不含任何声码器或音频合成模块，定位纯粹是语音转文字。
 
-本次主模型包的可见内容与转写任务对应：
+---
 
-- 包内包含 ASR、VAD、tokenizer、编码器、解码器和提示。
-- 已检查的包内没有用于合成输出的声码器文件。
-- 因此 Seed-ASR 比实时语音对话模型更接近本次对象，这一判断不覆盖整个输入法或其他模型包。
+## 证据索引
 
-来源链接和固定提交见 [sources.json](sources.json)。以上结论区分可见结构、路线相似性和未知训练血缘，不能将三者视为同一证明。
+- 1.1.1 配置：[pro-config.yaml](../model-config/pro-config.yaml) · [general-config.yaml](../model-config/general-config.yaml) · [fbank.conf](../model-config/asr/feature_extractor/fbank.conf)
+- 静态算子与历史图标记：[runtime-markers.json](runtime-markers.json) · [model-metadata.json](model-metadata.json)（1.1.0 `.pthlite` 扫描记录）
+- 公开资料来源：[sources.json](sources.json) · [public-model-and-papers.json](public-model-and-papers.json)

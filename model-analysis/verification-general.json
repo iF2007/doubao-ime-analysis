@@ -47,7 +47,7 @@
     }
   ],
   "directory_sha256": "4870a7b6f419a32066fb06b3b0d8461bc0f0a32e205d3ac80739b9adfca24392",
+  "config_label": "LiteASRm_v1.0.1_5",
   "model_name": "acllm_general_model_mac",
-  "model_version": "1.8",
-  "config_label": "LiteASRm_v1.0.1_5"
+  "model_version": "1.8"
 }

@@ -1,145 +1,122 @@
-> [!NOTE]
-> 仅供学习分析使用。
+# 豆包输入法 macOS 离线语音模型分析
 
-# 豆包输入法离线语音模型分析
+> [!NOTE]
+> 仅供学习与技术分析。**本分支（`main`）对应最新版本 macOS `1.1.1`**；如需查看旧版分析结果与原始产物，请切换到对应 Git Tag（如 `git checkout macos_1.1.0`）。
 
 ## 核心结论
 
-分析对象涵盖豆包输入法 **1.1.0** 与 **1.1.1**，重点分析 1.1.1 架构升级后的双离线模型：**专业版（`acllm_pro_model_mac` 1.5，约 1.48 GB）** 与 **通用版（`acllm_general_model_mac` 1.8，约 463 MB）**，同时向下兼容 1.1.0 历史主模型（`acllm_main_model_mac` 1.8，约 825 MB）。最重要的分析结果如下：
+豆包输入法 macOS `1.1.1` 将离线语音识别拆分为 **专业版**（1.48 GB）和 **通用版**（463 MB）两套模型，另配 108 MB 上下文辅助词典：
 
-- **1.1.1 双模型架构与打包演进**：
-  * 由原先单一大模型拆分为 **专业版**（高精度独立权重，非流式计算调度 Metal GPU 加速）与 **通用版**（流式/非流式共享权重，体积精简适合低显存环境）。
-  * 摒弃了 1.1.0 的 20 个解离 `.pthlite` 权重文件布局，升级重构为 **6 个内部聚合文件**（包含核心的 `stream.packed` 与 `nonstream.packed` 引擎图）。
-  * 两款新模型内置的 VAD 语音静音切分权重（`vad_v4.pth.pthlite`）实现 **跨模型 100% 逐字节完全一致（SHA-256 完全相同）**。
-- **FLUTE v2 / v3 容器机制与密钥派生**：
-  * **FLUTE v3（专业版 1.5 / 旧版 1.8）**：目录密钥由固定种子、包内 12 字节 Nonce 和 Header Size 确定性派生，目录使用 ChaCha20 加密（Counter 1 偏移 64 字节）。公式不读取账号、钥匙串或服务器。
-  * **FLUTE v2（通用版 1.8）**：头部为未加密的明文目录（从偏移 21 处直接连续存储文件元数据），无需 ChaCha20 解密。
-- **统一的相对位置 XOR 正文混淆**：
-  * 无论是 FLUTE v2 还是 v3，所有内部文件正文均统一使用 `P[i] = C[i] ^ b"symphony"[i % 8] ^ (i & 255)` 进行流式还原。
-- **离线模型下载直链与 LuLu 防火墙放行**：
-  * 逆向出官方模型分发接口与对象存储 CDN 规则，通过配置最小白名单（`effect.snssdk.com:443` 与 `*.byteeffecttos.com:443`）即可在阻断所有隐私打点与云端音频流的前提下正常下载并更新离线模型。
+- **打包方式大改**：不再像 1.1.0 那样散放 20 个 `.pthlite` 文件，而是收拢为 **6 个文件**。核心 ASR 引擎改用 MNN（`.mnn`），打包进 `stream.packed` 与 `nonstream.packed` / `no_stream.packed`；只有 VAD 仍保留 `vad_v4.pth.pthlite`，且专业版与通用版的 VAD、fbank、CMVN 三个文件完全相同。
+- **双模型架构分工**：
+  - **专业版（`LiteASRP_v1.2.0_7`）**：流式与非流式权重完全独立（`share_weight: false`），非流式独立抽特征并走 Apple Metal GPU 加速。
+  - **通用版（`LiteASRm_v1.0.1_5`）**：流式与非流式共享骨干权重（`share_weight: true`），非流式直接复用流式输出的 880 维音频特征，体积不到专业版三分之一。
+- **容器与还原算法**：
+  - **专业版用 FLUTE v3**：目录表使用 ChaCha20（Counter 1）加密，密钥由客户端固定 32 字节种子、包内 12 字节 Nonce 和 Header Size 确定性算出，不联网也不读账号信息。
+  - **通用版用 FLUTE v2**：目录表**明文存储**，从偏移 21 字节起直接读取。
+  - **正文混淆统一**：v2 与 v3 的内部文件正文都用同一条按文件内相对偏移计算的 XOR 公式还原：`P[i] = C[i] ^ b"symphony"[i % 8] ^ (i & 255)`。
+- **离线下载与断网运行**：官方模型托管在 `byteeffecttos.com` CDN，配置 LuLu 防火墙仅放行 `effect.snssdk.com:443` 和 `*.byteeffecttos.com:443` 即可正常下载更新；下完后彻底断网，离线转写照常工作。
 
-> [!IMPORTANT]
-> 仓库提供的分析工具已全面支持自适应识别本地激活模型、解析 FLUTE v2/v3 容器。仓库不提供受版权保护的加密源包、解密权重、输入法二进制或 LuLu 配置文件。
+## 1.1.1 模型速览
 
-阅读入口按用途划分：
-
-- [格式、密钥与校验](model-analysis/FINDINGS.md) 说明 FLUTE v2/v3 容器布局、派生公式、内部组件与多版本对比。
-- [离线模型下载与防火墙放行](OFFLINE_MODEL_DOWNLOAD.md) 说明离线模型官方 CDN 直链、下载调度协议分析及 LuLu 最小防火墙放行规则。
-- [模型结构与来源对比](comparison/COMPARISON.md) 区分本机证据、公开路线和未知血缘。
-- [文件功能索引](FILE_INDEX.md) 列出每个文件的职责，[发布范围](PRIVACY.md) 说明身份信息和数据边界。
-- [复现步骤](#复现目录验证与解包) 给出目录验证、流式解包和完整输出核对命令。
-
-## 模型架构
-
-主模型离线语音识别架构包含 VAD、流式识别和上下文识别路径：
-
-![豆包输入法离线语音识别架构，包含 VAD、流式识别和上下文识别路径](diagrams/doubao-asr-architecture.png)
-
-蓝色表示流式路径，紫色表示上下文路径，橙色虚线表示 draft 的配置引用。图依据静态配置和模型图标记绘制。
-
-[查看原图](diagrams/doubao-asr-architecture.png) · [可编辑源码](diagrams/doubao-asr-architecture.dot) · [图例、证据范围与渲染命令](diagrams/README.md)
-
-## 结论与证据
-
-| 项目 | 1.1.1 专业版 (`acllm_pro_model_mac`) | 1.1.1 通用版 (`acllm_general_model_mac`) | 1.1.0 旧版主模型 (`acllm_main_model_mac`) |
+| 项目 | 专业版 (`acllm_pro_model_mac`) | 通用版 (`acllm_general_model_mac`) | 上下文辅助 (`acllm_context_model_mac`) |
 | :--- | :--- | :--- | :--- |
-| **源包大小** | 1,487,023,817 字节 (~1.48 GB) | 463,455,256 字节 (~463 MB) | 824,999,405 字节 (~825 MB) |
-| **源包 MD5** | `4f19c90670291b502a4dd34b936e5f2f` | `a6846b0a91ac8a9579468e252c1da2e5` | `c31bdfbd138e9beac48e02672f98f1e8` |
-| **容器格式** | FLUTE v3（343 字节 Header，6 文件） | FLUTE v2（331 字节 Header，6 文件） | FLUTE v3（1143 字节 Header，20 文件） |
-| **目录密钥** | 根种子 + 12B Nonce 确定性派生 | **明文无加密**（直接解析） | 根种子 + 12B Nonce 确定性派生 |
-| **正文混淆** | 相对偏移 `symphony` XOR 混淆 | 相对偏移 `symphony` XOR 混淆 | 相对偏移 `symphony` XOR 混淆 |
-| **内部组成** | 6 个聚合文件（含 `nonstream.packed`） | 6 个聚合文件（含 `no_stream.packed`） | 20 个解离 `.pthlite` 权重文件 |
-| **VAD 模型** | SHA-256: `6ce8753453...` (100% 一致) | SHA-256: `6ce8753453...` (100% 一致) | SHA-256: `d9e761d710...` (旧版) |
-| **验证报告** | [verification-pro.json](model-analysis/verification-pro.json) | [verification-general.json](model-analysis/verification-general.json) | [verification.json](model-analysis/verification.json) |
-| **解包报告** | [extraction-report-pro.json](model-analysis/extraction-report-pro.json) | [extraction-report-general.json](model-analysis/extraction-report-general.json) | [extraction-report.json](model-analysis/extraction-report.json) |
+| **版本 / 标签** | `1.5` / `LiteASRP_v1.2.0_7` | `1.8` / `LiteASRm_v1.0.1_5` | `1.1` |
+| **源包大小** | 1,487,023,817 B (~1.48 GB) | 463,455,256 B (~463 MB) | 108,300,553 B (~108 MB) |
+| **源包 MD5** | `4f19c90670291b502a4dd34b936e5f2f` | `a6846b0a91ac8a9579468e252c1da2e5` | `32c387bc13445d1b020077c168c0d2c9` |
+| **容器格式** | FLUTE v3（343 B Header，6 文件） | FLUTE v2（331 B Header，6 文件） | ZIP（词典 / NER / 拼音） |
+| **目录加密** | ChaCha20（种子 + Nonce 派生） | 明文无加密 | 无 |
+| **权重策略** | 流式 / 非流式独立；非流式走 Metal | 共享骨干权重；复用 880 维音频特征 | 静态词典与辅助模型 |
+| **验证 / 解包报告** | [验证](model-analysis/verification-pro.json) · [解包](model-analysis/extraction-report-pro.json) | [验证](model-analysis/verification-general.json) · [解包](model-analysis/extraction-report-general.json) | 见 [下载文档](OFFLINE_MODEL_DOWNLOAD.md) |
 
-## 目录职责
+> 1.1.0 旧版单模型（`acllm_main_model_mac` 1.8，825 MB，20 个文件）的完整分析与产物保留在 Tag `macos_1.1.0`。
 
-```text
-doubao-ime-analysis/
-├── README.md                    入口、结论与复现命令
-├── FILE_INDEX.md                每个文件的核心功能（32 个文件）
-├── OFFLINE_MODEL_DOWNLOAD.md    离线语音模型官方 CDN 直链与 LuLu 防火墙放行策略
-├── PRIVACY.md                   发布内容和身份信息范围
-├── environment.json            分析对象指纹与环境配置（1.1.0/1.1.1）
-├── requirements.txt            两个工具的 Python 依赖
-├── model-analysis/              自适应验证与流式解包工具、验证报告、密钥产物
-├── model-config/                主模型当前配置与提示模板，供结构分析
-├── diagrams/                    模型架构图、可编辑源码与图例
-└── comparison/                  公开模型对比、选定结构证据与来源链接
-```
+## 文档导航
 
-## 复现目录验证与解包
+- [格式、密钥与内部文件清单](model-analysis/FINDINGS.md)：FLUTE v2/v3 二进制结构、密钥派生步骤、XOR 还原与 1.1.1 全部内部文件哈希。
+- [离线模型直链与 LuLu 规则](OFFLINE_MODEL_DOWNLOAD.md)：官方 CDN 下载直链、调度接口参数与防火墙最小放行/阻断清单。
+- [模型架构与公开路线对比](comparison/COMPARISON.md)：1.1.1 双模型配置差异，以及与 Seed-ASR / LiteASR / 实时语音模型的对比。
+- [文件索引](FILE_INDEX.md) · [发布范围与隐私处理](PRIVACY.md) · [架构图说明](diagrams/README.md)
 
-### 1. 准备源包与依赖
+## 模型架构图
 
-从仓库根目录执行命令。运行前需要：
-- Python 3.11 或更新版本（本次验证使用 Python 3.12.12）。
-- 本机已通过输入法设置下载了离线模型（支持专业版、通用版或旧版主模型）。
-- 若执行完整提取，需预留足够的磁盘空间（专业版约 1.5 GB，通用版约 500 MB）。
+下图绘制自 1.1.0 主模型静态配置，展示了 VAD、流式与上下文双路径的整体骨架；1.1.1 延续了该双路径设计，并新增尾部静音探测（`tail_vad_probe`）、热词检索（`rag_words`）及 `.packed` 引擎封装（详见 [架构图说明](diagrams/README.md) 与 [1.1.1 配置文件](model-config/pro-config.yaml)）：
 
-安装依赖（无需 Git LFS、Unicorn 或 Capstone）：
+![豆包输入法离线语音识别架构](diagrams/doubao-asr-architecture.png)
+
+[查看原图](diagrams/doubao-asr-architecture.png) · [Graphviz 源码](diagrams/doubao-asr-architecture.dot) · [图例与 1.1.1 演进](diagrams/README.md)
+
+## 复现步骤
+
+仓库不提供模型源包或权重，需先在本机豆包输入法中下载离线模型。工具同时兼容 1.1.1 专业版、通用版和 1.1.0 旧版模型。
+
+### 1. 安装依赖（Python 3.11+）
 
 ```sh
 python3 -m pip install -r requirements.txt
 ```
 
-### 2. 验证目录与派生密钥
+### 2. 验证容器目录与密钥派生
 
-工具会自动读取 `~/Library/Application Support/DoubaoIme/ASRContext/offline_model_active_layout.json` 检测当前激活的模型：
+不传 `--model` 时会自动读取 `offline_model_active_layout.json` 检测当前激活的模型：
 
 ```sh
-# 自动检测当前激活模型并验证
+# 自动检测当前激活模型
 python3 model-analysis/verify_directory.py
 
-# 或显式指定模型路径验证（如专业版）
+# 显式验证 1.1.1 专业版
 python3 model-analysis/verify_directory.py \
   --model "$HOME/Library/Application Support/DoubaoIme/ASRModel/versions/acllm_pro_model_mac/1_5_4f19c90670291b502a4dd34b936e5f2f/asr_model.model"
 
-# 或显式指定通用版模型验证
+# 显式验证 1.1.1 通用版
 python3 model-analysis/verify_directory.py \
   --model "$HOME/Library/Application Support/DoubaoIme/ASRModel/versions/acllm_general_model_mac/1_8_a6846b0a91ac8a9579468e252c1da2e5/asr_model.model"
 ```
 
-### 3. 流式提取全部内部文件
+### 3. 流式解包并校验
 
-流式解包至指定目录（若目录不存在将自动创建）：
+工具以 4 MiB 分块流式还原，解包后自动逐文件回读核对大小与 SHA-256：
 
 ```sh
-# 提取专业版
-mkdir -p .local-data
+# 解包专业版（约需 1.5 GB 空间）
 python3 model-analysis/extract_model.py \
   --model "$HOME/Library/Application Support/DoubaoIme/ASRModel/versions/acllm_pro_model_mac/1_5_4f19c90670291b502a4dd34b936e5f2f/asr_model.model" \
   .local-data/extracted-pro
 
-# 提取通用版
+# 解包通用版（约需 500 MB 空间）
 python3 model-analysis/extract_model.py \
   --model "$HOME/Library/Application Support/DoubaoIme/ASRModel/versions/acllm_general_model_mac/1_8_a6846b0a91ac8a9579468e252c1da2e5/asr_model.model" \
   .local-data/extracted-general
-```
 
-### 4. 核对完整输出
-
-对已解包目录进行源包与哈希一致性比对：
-
-```sh
+# 仅核对已解包目录与源包是否逐字节一致（不写入）
 python3 model-analysis/extract_model.py --verify-only \
   --model "$HOME/Library/Application Support/DoubaoIme/ASRModel/versions/acllm_pro_model_mac/1_5_4f19c90670291b502a4dd34b936e5f2f/asr_model.model" \
   .local-data/extracted-pro
 ```
 
-## 分析环境与范围
+## 目录结构
 
-| 项目 | 本次分析环境 |
-| --- | --- |
-| **分析时间** | 2026-11-09 至 2026-11-18 |
-| **输入法** | 豆包输入法 macOS 版 `1.1.1`（Build `1`，Wave `1.1.1.3`，Build Number `1010103`）及 `1.1.0`（Build `1`） |
+```text
+doubao-ime-analysis/
+├── README.md                   入口、核心结论与复现命令
+├── OFFLINE_MODEL_DOWNLOAD.md   1.1.1 官方 CDN 直链、调度接口与 LuLu 规则
+├── FILE_INDEX.md               全部 27 个文件的职责索引
+├── PRIVACY.md                  公开范围与身份脱敏说明
+├── environment.json            1.1.1 应用指纹与分析环境
+├── requirements.txt            Python 依赖（numpy / pycryptodome）
+├── model-analysis/             FLUTE v2/v3 验证与解包脚本、种子、1.1.1 校验报告
+├── model-config/               1.1.1 专业版 / 通用版配置与 fbank 参数
+├── diagrams/                   架构图与 Graphviz 源码
+└── comparison/                 1.1.1 结构对比、模型标记与公开资料链接
+```
+
+## 分析环境
+
+| 项目 | 详情 |
+| :--- | :--- |
+| **目标应用** | 豆包输入法 macOS `1.1.1`（Build `1`，Wave `1.1.1.3`，Build Number `1010103`） |
 | **主程序 SHA-256** | `8544564ffffae4abfe64df721a71b971408fb4a124512138d040c992456435b3` |
-| **测试系统** | macOS 27.2.1，Build `26B131` |
-| **测试硬件** | MacBook Air，Apple M5，ARM64，16 GB 内存 |
-| **Python** | Miniforge Python 3.12.12 |
-| **运行依赖** | NumPy 2.3.5、PyCryptodome 3.23.0 |
+| **测试环境** | macOS 27.2.1 (`26B131`) · MacBook Air Apple M5 (16 GB) · Python 3.12.12 |
+| **运行依赖** | `numpy==2.3.5` · `pycryptodome==3.23.0` |
 
-完整应用指纹和分析工具版本见 [environment.json](environment.json)。
-用户名路径和提交身份的处理见 [PRIVACY.md](PRIVACY.md)。
+完整指纹见 [environment.json](environment.json)。
