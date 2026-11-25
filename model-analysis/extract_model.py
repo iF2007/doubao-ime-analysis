@@ -20,6 +20,7 @@ from verify_directory import (
     XOR_MASK,
     derive_key,
     detect_model_metadata,
+    discover_local_models,
     format_model_path,
     load_32_byte_file,
     parse_directory,
@@ -27,42 +28,25 @@ from verify_directory import (
     resolve_default_model,
 )
 
+REPO_ROOT = Path(__file__).resolve().parent.parent
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Extract and verify internal files from FLUTE v2/v3 ASR model containers."
-    )
-    parser.add_argument("output", type=Path, help="Directory to extract or verify files in")
-    parser.add_argument(
-        "--model",
-        type=Path,
-        default=None,
-        help="Path to asr_model.model (defaults to currently active model)",
-    )
-    parser.add_argument(
-        "--seed-file",
-        type=Path,
-        default=Path(__file__).with_name("model-seed.bin"),
-        help="Path to the 32-byte root seed (FLUTE v3)",
-    )
-    parser.add_argument(
-        "--verify-only",
-        action="store_true",
-        help="Verify already-extracted files in <output> against the source model without writing",
-    )
-    parser.add_argument(
-        "--report",
-        type=Path,
-        default=None,
-        help="Optional path to write extraction JSON report (defaults to <output>/extraction-report.json when extracting; omitted in --verify-only unless specified)",
-    )
-    args = parser.parse_args()
 
-    model_path = (args.model if args.model else resolve_default_model()).expanduser().resolve()
-    if not model_path.is_file():
-        parser.error(f"Model file not found: {model_path}")
+def default_output_dir(model_path: Path, entries: list, root_dir: Path) -> Path:
+    meta = detect_model_metadata(model_path, entries)
+    model_name = meta.get("model_name", "")
+    m = re.match(r"^acllm_([a-z0-9]+)_model", model_name)
+    slug = m.group(1) if m else (model_name or model_path.parent.name)
+    return root_dir / f"extracted-{slug}"
 
-    output = args.output.expanduser().resolve()
+
+def extract_one(
+    model_path: Path,
+    output: Path | None,
+    seed_file: Path,
+    verify_only: bool,
+    report_override: Path | None,
+    default_root: Path,
+) -> None:
     model_size = model_path.stat().st_size
     pattern = np.array([XOR_MASK[i % len(XOR_MASK)] ^ i for i in range(256)], dtype=np.uint8)
     source_md5 = hashlib.md5()
@@ -77,7 +61,7 @@ def main():
         if version == 2:
             directory = header[21:]
         else:
-            seed = load_32_byte_file(args.seed_file, "Seed")
+            seed = load_32_byte_file(seed_file, "Seed")
             nonce = header[21:33]
             key = derive_key(seed, nonce, header_size)
             cipher = ChaCha20.new(key=key, nonce=nonce)
@@ -85,6 +69,12 @@ def main():
             directory = cipher.decrypt(header[33:])
 
         entries = parse_directory(directory, count, header_size, model_size)
+        target_dir = (
+            output.expanduser().resolve()
+            if output is not None
+            else default_output_dir(model_path, entries, default_root)
+        )
+
         paths = []
         for entry in entries:
             path = PurePosixPath(entry["name"].lstrip("/"))
@@ -94,15 +84,15 @@ def main():
         if len(set(paths)) != len(paths):
             raise ValueError("Duplicate internal filename")
 
-        if args.verify_only:
-            if not output.is_dir():
-                raise ValueError(f"Output directory does not exist: {output}")
+        if verify_only:
+            if not target_dir.is_dir():
+                raise ValueError(f"Output directory does not exist: {target_dir}")
         else:
-            output.mkdir(parents=True, exist_ok=True)
+            target_dir.mkdir(parents=True, exist_ok=True)
 
         for entry, path in zip(entries, paths):
-            target = output.joinpath(*path.parts)
-            if not args.verify_only:
+            target = target_dir.joinpath(*path.parts)
+            if not verify_only:
                 target.parent.mkdir(parents=True, exist_ok=True)
             remaining = entry["size"]
             position = 0
@@ -111,7 +101,7 @@ def main():
             if source.tell() != entry["offset"]:
                 raise ValueError("Source position differs from directory offset")
 
-            with nullcontext(None) if args.verify_only else target.open("wb") as destination:
+            with nullcontext(None) if verify_only else target.open("wb") as destination:
                 while remaining:
                     chunk = source.read(min(4 * 1024 * 1024, remaining))
                     if not chunk:
@@ -127,7 +117,7 @@ def main():
                     remaining -= len(chunk)
                     position += len(chunk)
 
-            if not args.verify_only:
+            if not verify_only:
                 os.utime(target, (entry["mtime"], entry["mtime"]))
             extracted.append(
                 dict(
@@ -137,12 +127,12 @@ def main():
                     sha256=sha256.hexdigest(),
                 )
             )
-            action = "Hashed source" if args.verify_only else "Extracted"
+            action = "Hashed source" if verify_only else "Extracted"
             print(f"{action} {path} ({entry['size']} bytes)", flush=True)
 
     # Verify extracted files on disk against decrypted source payloads (both extract and --verify-only)
     for entry in extracted:
-        target = output.joinpath(*PurePosixPath(entry["path"]).parts)
+        target = target_dir.joinpath(*PurePosixPath(entry["path"]).parts)
         if not target.is_file():
             raise ValueError(f"Missing extracted file: {target}")
         if target.stat().st_size != entry["size"]:
@@ -162,7 +152,7 @@ def main():
     mismatches = []
     has_manifest = "model_md5s.txt" in actual
     if has_manifest:
-        manifest_file = output / "model_md5s.txt"
+        manifest_file = target_dir / "model_md5s.txt"
         for line in manifest_file.read_text().splitlines():
             match = re.fullmatch(r"([0-9a-f]{32})\s+(.+)", line)
             if not match:
@@ -197,14 +187,14 @@ def main():
         files=extracted,
     )
     report_path = (
-        args.report.expanduser().resolve()
-        if args.report
-        else (None if args.verify_only else output / "extraction-report.json")
+        report_override.expanduser().resolve()
+        if report_override
+        else (None if verify_only else target_dir / "extraction-report.json")
     )
     if report_path is not None:
         report_path.parent.mkdir(parents=True, exist_ok=True)
         report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
-    print(f"Verified all {len(extracted)} files on disk against decrypted source payloads.", flush=True)
+    print(f"Verified all {len(extracted)} files in {target_dir} against decrypted source payloads.", flush=True)
     if has_manifest:
         print(
             f"Internal model MD5 manifest: {len(expected) - len(mismatches)} matched, {len(mismatches)} mismatched.",
@@ -212,6 +202,65 @@ def main():
         )
     if report_path is not None:
         print(f"Report written to: {report_path}", flush=True)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Extract and verify internal files from FLUTE v2/v3 ASR model containers."
+    )
+    parser.add_argument(
+        "output",
+        nargs="?",
+        type=Path,
+        default=None,
+        help="Destination directory (defaults to .local-data/extracted-<variant>)",
+    )
+    parser.add_argument(
+        "--model",
+        type=Path,
+        default=None,
+        help="Path to asr_model.model (defaults to currently active model)",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Extract or verify all locally installed asr_model.model files into .local-data/extracted-<variant>",
+    )
+    parser.add_argument(
+        "--seed-file",
+        type=Path,
+        default=Path(__file__).with_name("model-seed.bin"),
+        help="Path to the 32-byte root seed (FLUTE v3)",
+    )
+    parser.add_argument(
+        "--verify-only",
+        action="store_true",
+        help="Verify already-extracted files against the source model without writing",
+    )
+    parser.add_argument(
+        "--report",
+        type=Path,
+        default=None,
+        help="Optional path to write extraction JSON report (defaults to <output>/extraction-report.json when extracting; omitted in --verify-only unless specified)",
+    )
+    args = parser.parse_args()
+
+    default_root = REPO_ROOT / ".local-data"
+    if args.all:
+        if args.report:
+            parser.error("--report cannot be combined with --all")
+        models = discover_local_models()
+        if not models:
+            parser.error("No locally installed asr_model.model found")
+        root = args.output.expanduser().resolve() if args.output else default_root
+        for model_path in models:
+            extract_one(model_path, None, args.seed_file, args.verify_only, None, root)
+        return
+
+    model_path = (args.model if args.model else resolve_default_model()).expanduser().resolve()
+    if not model_path.is_file():
+        parser.error(f"Model file not found: {model_path}")
+    extract_one(model_path, args.output, args.seed_file, args.verify_only, args.report, default_root)
 
 
 if __name__ == "__main__":

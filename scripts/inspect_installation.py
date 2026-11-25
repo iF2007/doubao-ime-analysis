@@ -293,7 +293,10 @@ def scan_packed_metadata(app_version: str, extracted_specs: list[tuple[str, Path
 
     for variant, root_dir in extracted_specs:
         if not root_dir.is_dir():
-            raise FileNotFoundError(f"Extracted directory not found: {root_dir}")
+            raise FileNotFoundError(
+                f"Extracted directory not found: {root_dir} "
+                "(run 'python3 model-analysis/extract_model.py --all' first)"
+            )
         model_info = env.get("models", {}).get(variant, {})
         cfg_path = root_dir / "config.yaml"
         config_label = model_info.get("config_label")

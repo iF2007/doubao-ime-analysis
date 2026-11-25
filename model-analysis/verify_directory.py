@@ -213,6 +213,97 @@ def detect_model_metadata(model_path: Path, entries: list) -> dict:
     return meta
 
 
+def verify_model(
+    model_path: Path,
+    seed_file: Path,
+    key_file: Path | None = None,
+    reference_directory: Path | None = None,
+) -> dict:
+    model_size = model_path.stat().st_size
+    with model_path.open("rb") as file:
+        version, header_size, count = read_container_prefix(file, model_size)
+        file.seek(0)
+        header = file.read(header_size)
+
+    result = dict(
+        model=format_model_path(model_path),
+        model_bytes=model_size,
+        layout_version=version,
+        header_size=header_size,
+        internal_files=count,
+        payload_xor_verified=False,
+        candidate_verified=False,
+        attempts=[],
+    )
+
+    valid_entries = []
+    if version == 2:
+        result["key_source"] = "unencrypted plaintext directory (FLUTE v2)"
+        directory = header[21:]
+        try:
+            entries = parse_directory(directory, count, header_size, model_size)
+        except (ValueError, UnicodeDecodeError, struct.error) as error:
+            result["error"] = str(error)
+        else:
+            if reference_directory:
+                matches = directory == reference_directory.read_bytes()
+                result["matches_reference"] = matches
+                if not matches:
+                    raise ValueError("Parsed directory differs from the reference directory")
+            result["candidate_verified"] = True
+            result["entries"] = entries
+            result["directory_sha256"] = hashlib.sha256(directory).hexdigest()
+            valid_entries = entries
+    elif version == 3:
+        nonce = header[21:33]
+        if key_file:
+            key = load_32_byte_file(key_file, "Key")
+            key_source = "provided key"
+        else:
+            seed = load_32_byte_file(seed_file, "Seed")
+            key = derive_key(seed, nonce, header_size)
+            key_source = "derived from seed and model metadata"
+        result["key_source"] = key_source
+        result["nonce"] = nonce.hex()
+        result["derived_key"] = key.hex()
+
+        for counter in (0, 1):
+            cipher = ChaCha20.new(key=key, nonce=nonce)
+            cipher.seek(counter * 64)
+            directory = cipher.decrypt(header[33:])
+            attempt = dict(counter=counter, valid=False)
+            try:
+                entries = parse_directory(directory, count, header_size, model_size)
+            except (ValueError, UnicodeDecodeError, struct.error) as error:
+                attempt["error"] = str(error)
+            else:
+                attempt.update(
+                    valid=True,
+                    entries=entries,
+                    directory_sha256=hashlib.sha256(directory).hexdigest(),
+                )
+                if reference_directory:
+                    attempt["matches_reference"] = directory == reference_directory.read_bytes()
+                    if not attempt["matches_reference"]:
+                        raise ValueError(
+                            "Independent decryption differs from the reference directory"
+                        )
+                result["candidate_verified"] = True
+                valid_entries = entries
+            result["attempts"].append(attempt)
+
+    if valid_entries:
+        result["payload_xor_verified"] = verify_payload_xor(model_path, valid_entries)
+        if not result["payload_xor_verified"]:
+            raise ValueError(
+                "Payload XOR mask check failed on config.yaml / fbank.conf / model_md5s.txt"
+            )
+        meta = detect_model_metadata(model_path, valid_entries)
+        result.update(meta)
+
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Verify Doubao IME FLUTE v2/v3 ASR model containers."
@@ -222,6 +313,11 @@ def main():
         type=Path,
         default=None,
         help="Path to asr_model.model (defaults to currently active model)",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Discover and verify all locally installed asr_model.model files",
     )
     parser.add_argument(
         "--seed-file",
@@ -249,98 +345,29 @@ def main():
     )
     args = parser.parse_args()
 
-    model_path = (args.model if args.model else resolve_default_model()).expanduser().resolve()
-    if not model_path.is_file():
-        parser.error(f"Model file not found: {model_path}")
+    if args.all:
+        models = discover_local_models()
+        if not models:
+            parser.error("No locally installed asr_model.model found")
+        results = [
+            verify_model(m, args.seed_file, args.key_file, args.reference_directory)
+            for m in models
+        ]
+        encoded = json.dumps(results, ensure_ascii=False, indent=2) + "\n"
+        ok = all(r["candidate_verified"] for r in results)
+    else:
+        model_path = (args.model if args.model else resolve_default_model()).expanduser().resolve()
+        if not model_path.is_file():
+            parser.error(f"Model file not found: {model_path}")
+        result = verify_model(model_path, args.seed_file, args.key_file, args.reference_directory)
+        encoded = json.dumps(result, ensure_ascii=False, indent=2) + "\n"
+        ok = result["candidate_verified"]
 
-    model_size = model_path.stat().st_size
-    with model_path.open("rb") as file:
-        version, header_size, count = read_container_prefix(file, model_size)
-        file.seek(0)
-        header = file.read(header_size)
-
-    result = dict(
-        model=format_model_path(model_path),
-        model_bytes=model_size,
-        layout_version=version,
-        header_size=header_size,
-        internal_files=count,
-        payload_xor_verified=False,
-        candidate_verified=False,
-        attempts=[],
-    )
-
-    valid_entries = []
-    if version == 2:
-        result["key_source"] = "unencrypted plaintext directory (FLUTE v2)"
-        directory = header[21:]
-        try:
-            entries = parse_directory(directory, count, header_size, model_size)
-        except (ValueError, UnicodeDecodeError, struct.error) as error:
-            result["error"] = str(error)
-        else:
-            if args.reference_directory:
-                matches = directory == args.reference_directory.read_bytes()
-                result["matches_reference"] = matches
-                if not matches:
-                    raise ValueError("Parsed directory differs from the reference directory")
-            result["candidate_verified"] = True
-            result["entries"] = entries
-            result["directory_sha256"] = hashlib.sha256(directory).hexdigest()
-            valid_entries = entries
-    elif version == 3:
-        nonce = header[21:33]
-        if args.key_file:
-            key = load_32_byte_file(args.key_file, "Key")
-            key_source = "provided key"
-        else:
-            seed = load_32_byte_file(args.seed_file, "Seed")
-            key = derive_key(seed, nonce, header_size)
-            key_source = "derived from seed and model metadata"
-        result["key_source"] = key_source
-        result["nonce"] = nonce.hex()
-        result["derived_key"] = key.hex()
-
-        for counter in (0, 1):
-            cipher = ChaCha20.new(key=key, nonce=nonce)
-            cipher.seek(counter * 64)
-            directory = cipher.decrypt(header[33:])
-            attempt = dict(counter=counter, valid=False)
-            try:
-                entries = parse_directory(directory, count, header_size, model_size)
-            except (ValueError, UnicodeDecodeError, struct.error) as error:
-                attempt["error"] = str(error)
-            else:
-                attempt.update(
-                    valid=True,
-                    entries=entries,
-                    directory_sha256=hashlib.sha256(directory).hexdigest(),
-                )
-                if args.reference_directory:
-                    attempt["matches_reference"] = directory == args.reference_directory.read_bytes()
-                    if not attempt["matches_reference"]:
-                        raise ValueError(
-                            "Independent decryption differs from the reference directory"
-                        )
-                result["candidate_verified"] = True
-                valid_entries = entries
-            result["attempts"].append(attempt)
-
-    if valid_entries:
-        result["payload_xor_verified"] = verify_payload_xor(model_path, valid_entries)
-        if not result["payload_xor_verified"]:
-            raise ValueError(
-                "Payload XOR mask check failed on config.yaml / fbank.conf / model_md5s.txt"
-            )
-        meta = detect_model_metadata(model_path, valid_entries)
-        result.update(meta)
-
-    encoded = json.dumps(result, ensure_ascii=False, indent=2) + "\n"
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(encoded)
     print(encoded, end="")
-    return 0 if result["candidate_verified"] else 1
+    return 0 if ok else 1
 
 
 if __name__ == "__main__":

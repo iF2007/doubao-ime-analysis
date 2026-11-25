@@ -58,40 +58,33 @@ python3 -m pip install -r requirements.txt
 
 ### 2. 验证容器目录与密钥派生
 
-不传 `--model` 时会自动读取 `offline_model_active_layout.json` 检测当前激活的模型：
+支持自动检测当前激活模型，或用 `--all` 一键校验本机已下载的全部离线模型：
 
 ```sh
-# 自动检测当前激活模型
+# 一键校验本机已下载的全部离线模型
+python3 model-analysis/verify_directory.py --all
+
+# 仅校验当前激活模型（自动读取 offline_model_active_layout.json）
 python3 model-analysis/verify_directory.py
 
-# 显式验证 1.1.2 专业版
+# 显式指定模型路径
 python3 model-analysis/verify_directory.py \
   --model "$HOME/Library/Application Support/DoubaoIme/ASRModel/versions/acllm_pro_model_mac/1_5_4f19c90670291b502a4dd34b936e5f2f/asr_model.model"
-
-# 显式验证 1.1.2 通用版
-python3 model-analysis/verify_directory.py \
-  --model "$HOME/Library/Application Support/DoubaoIme/ASRModel/versions/acllm_general_model_mac/1_8_a6846b0a91ac8a9579468e252c1da2e5/asr_model.model"
 ```
 
 ### 3. 流式解包并校验
 
-工具以 4 MiB 分块流式还原，解包后自动逐文件回读核对大小与 SHA-256：
+工具以 4 MiB 分块流式还原，默认输出到 `.local-data/extracted-<variant>`，解包后自动逐文件回读核对大小与 SHA-256：
 
 ```sh
-# 解包专业版（约需 1.5 GB 空间）
-python3 model-analysis/extract_model.py \
-  --model "$HOME/Library/Application Support/DoubaoIme/ASRModel/versions/acllm_pro_model_mac/1_5_4f19c90670291b502a4dd34b936e5f2f/asr_model.model" \
-  .local-data/extracted-pro
+# 一键提取本机全部已下载模型到 .local-data/extracted-*（专业版约 1.5 GB + 通用版约 500 MB）
+python3 model-analysis/extract_model.py --all
 
-# 解包通用版（约需 500 MB 空间）
-python3 model-analysis/extract_model.py \
-  --model "$HOME/Library/Application Support/DoubaoIme/ASRModel/versions/acllm_general_model_mac/1_8_a6846b0a91ac8a9579468e252c1da2e5/asr_model.model" \
-  .local-data/extracted-general
+# 仅提取当前激活模型
+python3 model-analysis/extract_model.py
 
 # 仅核对已解包目录与源包是否逐字节一致（不写入）
-python3 model-analysis/extract_model.py --verify-only \
-  --model "$HOME/Library/Application Support/DoubaoIme/ASRModel/versions/acllm_pro_model_mac/1_5_4f19c90670291b502a4dd34b936e5f2f/asr_model.model" \
-  .local-data/extracted-pro
+python3 model-analysis/extract_model.py --all --verify-only
 ```
 
 ## 目录结构
