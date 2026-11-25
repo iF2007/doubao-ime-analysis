@@ -100,8 +100,9 @@ python3 model-analysis/extract_model.py --verify-only \
 doubao-ime-analysis/
 ├── README.md                   入口、核心结论与复现命令
 ├── AGENTS.md                   AI Agent 版本更新流程与校验门禁
+├── UPDATE_PROMPT.md            新版发布时的一键复用更新 Prompt
 ├── OFFLINE_MODEL_DOWNLOAD.md   官方 CDN 直链、调度接口与 LuLu 规则
-├── FILE_INDEX.md               全部 30 个文件的职责索引
+├── FILE_INDEX.md               全部 31 个文件的职责索引
 ├── PRIVACY.md                  公开范围与身份脱敏说明
 ├── environment.json            1.1.2 应用指纹与分析环境
 ├── requirements.txt            Python 依赖（numpy / pycryptodome）

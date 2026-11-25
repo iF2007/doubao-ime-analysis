@@ -1,6 +1,6 @@
 # AI Agent 维护指南
 
-本仓库记录豆包输入法 macOS 离线语音模型的静态分析结果、验证工具与架构文档，主要由 AI Agent 随客户端新版迭代更新。
+本仓库记录豆包输入法 macOS 离线语音模型的静态分析结果、验证工具与架构文档，主要由 AI Agent 随客户端新版迭代更新（可直接复制使用的更新 Prompt 见 [UPDATE_PROMPT.md](UPDATE_PROMPT.md)）。
 
 ## 铁律
 
@@ -16,7 +16,7 @@
 ```sh
 python3 scripts/inspect_installation.py
 ```
-重点查看输出的 `diff_vs_environment`、`bundle_scan`（新增/移除的 `flute.*`、模型逻辑名、推理后端、网络域名与打点方法）以及 `local_models`：
+重点查看输出的 `diff_vs_repo`、`bundle_scan`（新增/移除的 `flute.*`、模型逻辑名、推理后端、网络域名与打点方法）以及 `local_models`：
 - **仅主程序更新、模型未变**：走轻量更新路径（刷新指纹、运行时标记、版本号与架构图标题）。
 - **模型、容器或架构有变**：先对变化项做深度分析，再按需更新解包脚本、`model-config/`、`model-analysis/FINDINGS.md`、报告 JSON、`comparison/COMPARISON.md` 与架构图。
 

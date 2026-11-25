@@ -1,10 +1,10 @@
 # 文件索引
 
-本分支（`main`，对应 macOS `1.1.2`）共包含 **30 个文件**，按目录分组如下。1.1.0 旧版完整文件保留在 Git Tag `macos_1.1.0`。
+本分支（`main`，对应 macOS `1.1.2`）共包含 **31 个文件**，按目录分组如下。1.1.0 旧版完整文件保留在 Git Tag `macos_1.1.0`。
 
 | 目录 | 文件数 | 用途 |
 | :--- | ---: | :--- |
-| [根目录](#根目录) | 8 | 入口文档、Agent 维护指南、CDN 直链与 LuLu 规则、环境与依赖 |
+| [根目录](#根目录) | 9 | 入口文档、Agent 指南与 Prompt、CDN 直链与 LuLu 规则、环境与依赖 |
 | [scripts/](#scripts) | 2 | 本机版本/二进制盘点与仓库一致性/隐私门禁脚本 |
 | [model-analysis/](#model-analysis) | 9 | FLUTE v2/v3 验证与解包脚本、根种子、校验报告 |
 | [model-config/](#model-config) | 3 | 专业版 / 通用版配置与 fbank 参数 |
@@ -21,6 +21,7 @@
 | [OFFLINE_MODEL_DOWNLOAD.md](OFFLINE_MODEL_DOWNLOAD.md) | 离线模型官方 CDN 直链、调度协议与 LuLu 防火墙规则 |
 | [PRIVACY.md](PRIVACY.md) | 收录范围、隐私脱敏与合规/反滥用原则 |
 | [README.md](README.md) | 仓库入口、核心结论与复现命令 |
+| [UPDATE_PROMPT.md](UPDATE_PROMPT.md) | 面向新版发布的一键复制 AI Agent 更新 Prompt |
 | [environment.json](environment.json) | 应用指纹、模型元数据与分析环境 |
 | [requirements.txt](requirements.txt) | 验证与解包脚本的 Python 依赖 |
 
