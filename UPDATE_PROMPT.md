@@ -56,9 +56,9 @@ python3 scripts/validate_repo.py --verify-local
 1. 确认 Git 作者为 `Anonymous <anonymous@invalid>`，按 Conventional Commits 提交到 `main`。
 2. 在新提交上创建带注释 Tag：`git tag -a macos_<VERSION> -m "macos_<VERSION>"`。
 3. 推送 `main` 与 `refs/tags/macos_<VERSION>` 到 `origin`（如本次指令要求推送）。
-4. 检查并同步 GitHub 仓库描述，确保准确反映当前版本与模型阵容：
+4. 检查并同步 GitHub 仓库描述（只写当前版本与模型阵容，不涉及旧版本）：
    ```sh
    gh repo view --json nameWithOwner,description
-   gh repo edit --description "<反映当前版本与模型阵容的简洁描述>"
+   gh repo edit --description "<仅描述当前版本与模型阵容的简洁说明，不涉及旧版本>"
    ```
 ````

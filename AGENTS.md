@@ -52,10 +52,10 @@ python3 scripts/validate_repo.py --verify-local
 ### 5. 提交、打 Tag 与同步 GitHub 仓库描述
 - 使用 Conventional Commits 提交到 `main`（作者 `Anonymous <anonymous@invalid>`）。
 - 创建带注释 Tag：`git tag -a macos_<VERSION> -m "macos_<VERSION>"`。
-- 推送 `main` 与 `refs/tags/macos_<VERSION>` 后，检查并同步 GitHub 仓库描述：
+- 推送 `main` 与 `refs/tags/macos_<VERSION>` 后，检查并同步 GitHub 仓库描述（只写当前版本与模型阵容，不提旧版本）：
   ```sh
   gh repo view --json nameWithOwner,description
-  gh repo edit --description "<反映当前版本与模型阵容的简洁描述>"
+  gh repo edit --description "<仅描述当前版本与模型阵容的简洁说明，不涉及旧版本>"
   ```
 
 ## 工具与 Agent 分工
