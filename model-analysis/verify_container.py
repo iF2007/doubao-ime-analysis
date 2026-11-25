@@ -322,7 +322,7 @@ def main():
     parser.add_argument(
         "--seed-file",
         type=Path,
-        default=Path(__file__).with_name("model-seed.bin"),
+        default=Path(__file__).with_name("flute-v3-seed.bin"),
         help="Path to the 32-byte root seed (FLUTE v3)",
     )
     parser.add_argument(

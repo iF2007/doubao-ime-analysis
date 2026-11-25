@@ -16,7 +16,7 @@
 | **正文混淆** | `symphony` 相对偏移 XOR | `symphony` 相对偏移 XOR |
 | **内部文件数** | 6 个 | 6 个 |
 | **核心权重策略** | `share_weight: false`（独立权重，非流式走 Metal） | `share_weight: true`（共享骨干，复用 880 维音频特征） |
-| **校验报告** | [verification-pro.json](verification-pro.json) · [extraction-report-pro.json](extraction-report-pro.json) | [verification-general.json](verification-general.json) · [extraction-report-general.json](extraction-report-general.json) |
+| **校验报告** | [container-verify-pro.json](container-verify-pro.json) · [extraction-report-pro.json](extraction-report-pro.json) | [container-verify-general.json](container-verify-general.json) · [extraction-report-general.json](extraction-report-general.json) |
 
 **相比 1.1.0 的主要变化**：
 - 20 个分散 `.pthlite` 文件被合并为 `stream.packed` + `nonstream.packed` / `no_stream.packed`（内部为 MNN `.mnn` 模型），总文件数减至 6 个。
@@ -63,7 +63,7 @@
 
 密钥由客户端常量种子与当前文件头元数据本地算出，不依赖网络、账号或钥匙串：
 
-1. 取内置 32 字节根种子 `S`（存于 [model-seed.bin](model-seed.bin)）：
+1. 取内置 32 字节根种子 `S`（存于 [flute-v3-seed.bin](flute-v3-seed.bin)）：
    ```text
    00112233445566778899aabbccddeefffedcba98765432100123456789abcdef
    ```
@@ -82,7 +82,7 @@
 - **通用版 1.8（FLUTE v2，无加密）**
   - 目录明文 SHA-256：`4870a7b6f419a32066fb06b3b0d8461bc0f0a32e205d3ac80739b9adfca24392`
 
-派生公式的独立验证记录见 [generation-verification.json](generation-verification.json)。
+派生公式的独立验证记录见 [key-derivation-vectors.json](key-derivation-vectors.json)。
 
 ---
 

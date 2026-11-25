@@ -8,7 +8,7 @@ Checks:
 4. Privacy & hygiene: no `/Users/<name>` leaks, no forbidden model/weight artifacts tracked.
 5. Cross-file version, SHA-256, and architecture diagram PNG dimensions stay in sync.
 6. Optional `--verify-local`: verifies `model-config/` against `.local-data/extracted-*`
-   and runs `model-analysis/verify_directory.py` against all locally installed models.
+   and runs `model-analysis/verify_container.py` against all locally installed models.
 """
 
 import argparse
@@ -173,12 +173,12 @@ def check_cross_file_consistency(loaded_json: dict[str, object], errors: list[st
                 "comparison/runtime-markers.json binary_sha256 differs from environment.json"
             )
 
-    mm = loaded_json.get("comparison/model-metadata.json")
+    mm = loaded_json.get("comparison/packed-mnn-layers.json")
     if isinstance(mm, list):
         for item in mm:
             if item.get("app_version") != app_ver:
                 errors.append(
-                    f"comparison/model-metadata.json entry {item.get('file')!r} has "
+                    f"comparison/packed-mnn-layers.json entry {item.get('file')!r} has "
                     f"app_version={item.get('app_version')!r} != {app_ver!r}"
                 )
 
@@ -207,15 +207,15 @@ def check_local_models(errors: list[str], warnings: list[str]) -> None:
 
     models = sorted(support.rglob("asr_model.model"))
     if not models:
-        warnings.append("No local asr_model.model found; skipped verify_directory.py")
+        warnings.append("No local asr_model.model found; skipped verify_container.py")
     for model in models:
         res = subprocess.run(
-            [sys.executable, str(REPO_ROOT / "model-analysis/verify_directory.py"), "--model", str(model)],
+            [sys.executable, str(REPO_ROOT / "model-analysis/verify_container.py"), "--model", str(model)],
             capture_output=True,
             text=True,
         )
         if res.returncode != 0:
-            errors.append(f"verify_directory.py failed for {model.name}: {res.stderr.strip()}")
+            errors.append(f"verify_container.py failed for {model.name}: {res.stderr.strip()}")
 
     config_pairs = [
         ("model-config/pro-config.yaml", ".local-data/extracted-pro/config.yaml"),

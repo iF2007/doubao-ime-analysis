@@ -27,15 +27,15 @@
 | **容器格式** | FLUTE v3（343 B Header，6 文件） | FLUTE v2（331 B Header，6 文件） | ZIP（词典 / NER / 拼音） |
 | **目录加密** | ChaCha20（种子 + Nonce 派生） | 明文无加密 | 无 |
 | **权重策略** | 流式 / 非流式独立；非流式走 Metal | 共享骨干权重；复用 880 维音频特征 | 静态词典与辅助模型 |
-| **验证 / 解包报告** | [验证](model-analysis/verification-pro.json) · [解包](model-analysis/extraction-report-pro.json) | [验证](model-analysis/verification-general.json) · [解包](model-analysis/extraction-report-general.json) | 见 [下载文档](OFFLINE_MODEL_DOWNLOAD.md) |
+| **验证 / 解包报告** | [验证](model-analysis/container-verify-pro.json) · [解包](model-analysis/extraction-report-pro.json) | [验证](model-analysis/container-verify-general.json) · [解包](model-analysis/extraction-report-general.json) | 见 [下载文档](OFFLINE_MODEL_DOWNLOAD.md) |
 
 > 1.1.0 旧版单模型（`acllm_main_model_mac` 1.8，825 MB，20 个文件）的完整分析与产物保留在 Tag `macos_1.1.0`。
 
 ## 文档导航
 
-- [格式、密钥与内部文件清单](model-analysis/FINDINGS.md)：FLUTE v2/v3 二进制结构、密钥派生步骤、XOR 还原与 1.1.2 全部内部文件哈希。
+- [格式、密钥与内部文件清单](model-analysis/CONTAINER_AND_DECRYPTION.md)：FLUTE v2/v3 二进制结构、密钥派生步骤、XOR 还原与 1.1.2 全部内部文件哈希。
 - [离线模型直链与 LuLu 规则](OFFLINE_MODEL_DOWNLOAD.md)：官方 CDN 下载直链、调度接口参数与防火墙最小放行/阻断清单。
-- [模型架构与公开路线对比](comparison/COMPARISON.md)：1.1.2 双模型配置差异，以及与 Seed-ASR / LiteASR / 实时语音模型的对比。
+- [模型架构与公开路线对比](comparison/ARCHITECTURE_COMPARISON.md)：1.1.2 双模型配置差异，以及与 Seed-ASR / LiteASR / 实时语音模型的对比。
 - [文件索引](FILE_INDEX.md) · [发布范围、隐私与合规](PRIVACY.md) · [架构图说明](diagrams/README.md)
 
 ## 模型架构图
@@ -62,13 +62,13 @@ python3 -m pip install -r requirements.txt
 
 ```sh
 # 一键校验本机已下载的全部离线模型
-python3 model-analysis/verify_directory.py --all
+python3 model-analysis/verify_container.py --all
 
 # 仅校验当前激活模型（自动读取 offline_model_active_layout.json）
-python3 model-analysis/verify_directory.py
+python3 model-analysis/verify_container.py
 
 # 显式指定模型路径
-python3 model-analysis/verify_directory.py \
+python3 model-analysis/verify_container.py \
   --model "$HOME/Library/Application Support/DoubaoIme/ASRModel/versions/acllm_pro_model_mac/1_5_4f19c90670291b502a4dd34b936e5f2f/asr_model.model"
 ```
 

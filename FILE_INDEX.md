@@ -36,15 +36,15 @@
 
 | 文件 | 职责 |
 | :--- | :--- |
-| [model-analysis/FINDINGS.md](model-analysis/FINDINGS.md) | FLUTE v2/v3 容器结构、密钥派生算法、XOR 还原与内部文件清单 |
-| [model-analysis/verify_directory.py](model-analysis/verify_directory.py) | 验证 FLUTE v2/v3 容器头、派生密钥并校验目录结构 |
+| [model-analysis/CONTAINER_AND_DECRYPTION.md](model-analysis/CONTAINER_AND_DECRYPTION.md) | FLUTE v2/v3 容器结构、密钥派生算法、XOR 还原与内部文件清单 |
+| [model-analysis/verify_container.py](model-analysis/verify_container.py) | 验证 FLUTE v2/v3 容器头、派生密钥并校验目录表结构 |
 | [model-analysis/extract_model.py](model-analysis/extract_model.py) | 4 MiB 流式解包或 `--verify-only` 逐文件校验 |
-| [model-analysis/model-seed.bin](model-analysis/model-seed.bin) | FLUTE v3 密钥派生所需的 32 字节固定根种子 |
-| [model-analysis/verification-pro.json](model-analysis/verification-pro.json) | 专业版目录解密与结构验证报告 |
-| [model-analysis/verification-general.json](model-analysis/verification-general.json) | 通用版明文目录验证报告 |
+| [model-analysis/flute-v3-seed.bin](model-analysis/flute-v3-seed.bin) | FLUTE v3 密钥派生所需的 32 字节固定根种子 |
+| [model-analysis/container-verify-pro.json](model-analysis/container-verify-pro.json) | 专业版目录解密与结构验证报告 |
+| [model-analysis/container-verify-general.json](model-analysis/container-verify-general.json) | 通用版明文目录验证报告 |
 | [model-analysis/extraction-report-pro.json](model-analysis/extraction-report-pro.json) | 专业版 6 个内部文件的大小、MD5 与 SHA-256 |
 | [model-analysis/extraction-report-general.json](model-analysis/extraction-report-general.json) | 通用版 6 个内部文件的大小、MD5 与 SHA-256 |
-| [model-analysis/generation-verification.json](model-analysis/generation-verification.json) | 真实及合成元数据案例的密钥派生独立验证记录 |
+| [model-analysis/key-derivation-vectors.json](model-analysis/key-derivation-vectors.json) | 真实及合成元数据案例的密钥派生测试向量与验证记录 |
 
 ## model-config/
 
@@ -66,8 +66,8 @@
 
 | 文件 | 职责 |
 | :--- | :--- |
-| [comparison/COMPARISON.md](comparison/COMPARISON.md) | 双模型架构差异，及与 Seed-ASR / LiteASR / 实时语音模型的对比 |
-| [comparison/model-metadata.json](comparison/model-metadata.json) | 专业版与通用版 `.packed` 内嵌 `.mnn` 子模型与层索引扫描记录 |
-| [comparison/public-model-and-papers.json](comparison/public-model-and-papers.json) | 公开 `lite-whisper-large-v3-turbo` 配置摘录与论文元数据 |
+| [comparison/ARCHITECTURE_COMPARISON.md](comparison/ARCHITECTURE_COMPARISON.md) | 双模型架构差异，及与 Seed-ASR / LiteASR / 实时语音模型的对比 |
+| [comparison/packed-mnn-layers.json](comparison/packed-mnn-layers.json) | 专业版与通用版 `.packed` 内嵌 `.mnn` 子模型与层索引扫描记录 |
+| [comparison/public-references.json](comparison/public-references.json) | 公开 `lite-whisper-large-v3-turbo` 配置摘录与论文元数据 |
 | [comparison/runtime-markers.json](comparison/runtime-markers.json) | 主程序静态算子、MNN 与 AcLLM 相关标记 |
 | [comparison/sources.json](comparison/sources.json) | LiteASR 固定提交与官方资料链接 |

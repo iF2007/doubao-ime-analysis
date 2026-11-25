@@ -18,25 +18,24 @@ python3 scripts/inspect_installation.py
 ```
 重点查看输出的 `diff_vs_repo`、`bundle_scan`（新增/移除的 `flute.*`、模型逻辑名、推理后端、网络域名与打点方法）以及 `local_models`：
 - **仅主程序更新、模型未变**：走轻量更新路径（刷新指纹、运行时标记、版本号与架构图标题）。
-- **模型、容器或架构有变**：先对变化项做深度分析，再按需更新解包脚本、`model-config/`、`model-analysis/FINDINGS.md`、报告 JSON、`comparison/COMPARISON.md` 与架构图。
+- **模型、容器或架构有变**：先对变化项做深度分析，再按需更新解包脚本、`model-config/`、`model-analysis/CONTAINER_AND_DECRYPTION.md`、报告 JSON、`comparison/ARCHITECTURE_COMPARISON.md` 与架构图。
 
 ### 2. 验证离线模型与解包产物
 ```sh
-# 校验当前激活模型，或显式指定 --model 逐个校验
-python3 model-analysis/verify_directory.py
+# 校验全部或单个本地模型
+python3 model-analysis/verify_container.py --all
 
 # 已有解包目录时直接校验；新模型先去掉 --verify-only 解包到 .local-data/
-python3 model-analysis/extract_model.py --verify-only \
-  --model "<asr_model.model>" .local-data/<extracted-dir>
+python3 model-analysis/extract_model.py --all --verify-only
 ```
-若需同步 `comparison/runtime-markers.json` 或 `comparison/model-metadata.json`：
+若需同步 `comparison/runtime-markers.json` 或 `comparison/packed-mnn-layers.json`：
 ```sh
 python3 scripts/inspect_installation.py --write-runtime-markers
-python3 scripts/inspect_installation.py --write-model-metadata
+python3 scripts/inspect_installation.py --write-packed-layers
 ```
 
 ### 3. 更新文档与架构图
-- 同步 `environment.json`、`README.md`、`OFFLINE_MODEL_DOWNLOAD.md`、`FILE_INDEX.md`、`model-analysis/FINDINGS.md`、`comparison/COMPARISON.md`。
+- 同步 `environment.json`、`README.md`、`OFFLINE_MODEL_DOWNLOAD.md`、`FILE_INDEX.md`、`model-analysis/CONTAINER_AND_DECRYPTION.md`、`comparison/ARCHITECTURE_COMPARISON.md`。
 - 若版本号、模型阵容或数据流变化，更新 `diagrams/doubao-asr-architecture.dot` 并重新渲染，再核对 `diagrams/README.md` 中的分辨率：
   ```sh
   dot -Tpng diagrams/doubao-asr-architecture.dot -o diagrams/doubao-asr-architecture.png
@@ -59,5 +58,5 @@ python3 scripts/validate_repo.py --verify-local
   ```
 
 ## 工具与 Agent 分工
-- **交给脚本（确定性）**：指纹采集、全包字符串开放式扫描、`runtime-markers.json` / `model-metadata.json` 生成、FLUTE 容器校验/解包、JSON/链接/索引/隐私/跨文件一致性检查。
+- **交给脚本（确定性）**：指纹采集、全包字符串开放式扫描、`runtime-markers.json` / `packed-mnn-layers.json` 生成、FLUTE 容器校验/解包、JSON/链接/索引/隐私/跨文件一致性检查。
 - **交给 Agent（智能判断）**：新模型/新容器/新推理后端的逆向研判、文档正文修订、架构图结构调整、GitHub 描述与提交信息撰写。

@@ -16,7 +16,7 @@ import re
 import numpy as np
 from Crypto.Cipher import ChaCha20
 
-from verify_directory import (
+from verify_container import (
     XOR_MASK,
     derive_key,
     detect_model_metadata,
@@ -229,7 +229,7 @@ def main():
     parser.add_argument(
         "--seed-file",
         type=Path,
-        default=Path(__file__).with_name("model-seed.bin"),
+        default=Path(__file__).with_name("flute-v3-seed.bin"),
         help="Path to the 32-byte root seed (FLUTE v3)",
     )
     parser.add_argument(

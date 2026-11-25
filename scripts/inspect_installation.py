@@ -7,7 +7,7 @@ open-ended discovery across all Mach-O binaries inside DoubaoIme.app.
 
 Optional write modes:
   --write-runtime-markers  Regenerate comparison/runtime-markers.json from main binary
-  --write-model-metadata   Regenerate comparison/model-metadata.json from extracted dirs
+  --write-packed-layers    Regenerate comparison/packed-mnn-layers.json from extracted dirs
 """
 
 import argparse
@@ -376,16 +376,18 @@ def main() -> int:
         help="Write regenerated comparison/runtime-markers.json from installed main binary",
     )
     parser.add_argument(
+        "--write-packed-layers",
         "--write-model-metadata",
+        dest="write_packed_layers",
         action="store_true",
-        help="Write regenerated comparison/model-metadata.json from extracted model directories",
+        help="Write regenerated comparison/packed-mnn-layers.json from extracted model directories",
     )
     parser.add_argument(
         "--extracted",
         action="append",
         default=[],
         metavar="VARIANT=DIR",
-        help="Extracted directory mapping for --write-model-metadata (defaults to pro=.local-data/extracted-pro and general=.local-data/extracted-general)",
+        help="Extracted directory mapping for --write-packed-layers (defaults to pro=.local-data/extracted-pro and general=.local-data/extracted-general)",
     )
     args = parser.parse_args()
 
@@ -401,7 +403,7 @@ def main() -> int:
             f"mnn_string_count={rm['mnn_string_count']}"
         )
 
-    if args.write_model_metadata:
+    if args.write_packed_layers:
         if args.extracted:
             specs = []
             for item in args.extracted:
@@ -413,11 +415,11 @@ def main() -> int:
                 ("general", REPO_ROOT / ".local-data/extracted-general"),
             ]
         records = scan_packed_metadata(app_info["version"], specs)
-        target = REPO_ROOT / "comparison/model-metadata.json"
+        target = REPO_ROOT / "comparison/packed-mnn-layers.json"
         target.write_text(json.dumps(records, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print(f"Wrote {target.relative_to(REPO_ROOT)}: {len(records)} packed model records")
 
-    if not args.write_runtime_markers and not args.write_model_metadata:
+    if not args.write_runtime_markers and not args.write_packed_layers:
         local_models = collect_local_models(args.support_dir)
         bundle_scan = scan_app_bundle(args.app)
         diff_summary = build_diff_summary(app_info, local_models, bundle_scan)

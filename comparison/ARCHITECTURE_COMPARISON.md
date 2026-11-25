@@ -30,7 +30,7 @@
 
 ## 与 efeslab/LiteASR 的差异
 
-对比对象固定在 [LiteASR 提交 `da5be85`](https://github.com/efeslab/LiteASR/tree/da5be85382a6fc22245803c18c820b5c1b049ef8) 与公开模型 `lite-whisper-large-v3-turbo`（配置摘录见 [public-model-and-papers.json](public-model-and-papers.json)）：
+对比对象固定在 [LiteASR 提交 `da5be85`](https://github.com/efeslab/LiteASR/tree/da5be85382a6fc22245803c18c820b5c1b049ef8) 与公开模型 `lite-whisper-large-v3-turbo`（配置摘录见 [public-references.json](public-references.json)）：
 
 | 维度 | 豆包输入法本地模型（1.1.2） | LiteASR (`lite-whisper-large-v3-turbo`) |
 | :--- | :--- | :--- |
@@ -65,5 +65,5 @@
 ## 证据索引
 
 - 1.1.2 配置：[pro-config.yaml](../model-config/pro-config.yaml) · [general-config.yaml](../model-config/general-config.yaml) · [fbank.conf](../model-config/asr/feature_extractor/fbank.conf)
-- 静态算子与 `.packed` 扫描记录：[runtime-markers.json](runtime-markers.json)（1.1.2 主程序）· [model-metadata.json](model-metadata.json)（1.1.2 `.packed` 内嵌 `.mnn` 与层索引）
-- 公开资料来源：[sources.json](sources.json) · [public-model-and-papers.json](public-model-and-papers.json)
+- 静态算子与 `.packed` 扫描记录：[runtime-markers.json](runtime-markers.json)（1.1.2 主程序）· [packed-mnn-layers.json](packed-mnn-layers.json)（1.1.2 `.packed` 内嵌 `.mnn` 与层索引）
+- 公开资料来源：[sources.json](sources.json) · [public-references.json](public-references.json)

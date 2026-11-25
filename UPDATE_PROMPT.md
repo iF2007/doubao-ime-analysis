@@ -26,20 +26,20 @@ python3 scripts/inspect_installation.py
 ### 2. 验证离线模型与解包产物
 - 对本机已下载的各离线 ASR 模型执行目录与解包校验：
   ```sh
-  python3 model-analysis/verify_directory.py --model "<asr_model.model>"
-  python3 model-analysis/extract_model.py --verify-only --model "<asr_model.model>" .local-data/<extracted-dir>
+  python3 model-analysis/verify_container.py --all
+  python3 model-analysis/extract_model.py --all --verify-only
   ```
   （若为新模型或尚无本地解包目录，先去掉 `--verify-only` 解包到 `.local-data/` 并核对配置与内部文件。）
-- 若容器版本、密钥派生或混淆算法有变，先扩展 `model-analysis/verify_directory.py`、`model-analysis/extract_model.py` 与 `model-analysis/FINDINGS.md`。
+- 若容器版本、密钥派生或混淆算法有变，先扩展 `model-analysis/verify_container.py`、`model-analysis/extract_model.py` 与 `model-analysis/CONTAINER_AND_DECRYPTION.md`。
 - 如需同步静态标记与 `.packed` 元数据：
   ```sh
   python3 scripts/inspect_installation.py --write-runtime-markers
-  python3 scripts/inspect_installation.py --write-model-metadata
+  python3 scripts/inspect_installation.py --write-packed-layers
   ```
 
 ### 3. 同步仓库文档、索引与架构图
 按需最小修正以下内容，保证跨文件版本号、SHA-256、文件数与结论一致：
-- **指纹与文档**：`environment.json`、`README.md`、`OFFLINE_MODEL_DOWNLOAD.md`、`FILE_INDEX.md`、`PRIVACY.md`、`model-analysis/FINDINGS.md`、`comparison/COMPARISON.md`（若增删文件或支持新模型，同步更新 `FILE_INDEX.md` 文件总数及工具注释）。
+- **指纹与文档**：`environment.json`、`README.md`、`OFFLINE_MODEL_DOWNLOAD.md`、`FILE_INDEX.md`、`PRIVACY.md`、`model-analysis/CONTAINER_AND_DECRYPTION.md`、`comparison/ARCHITECTURE_COMPARISON.md`（若增删文件或支持新模型，同步更新 `FILE_INDEX.md` 文件总数及工具注释）。
 - **架构图**：若版本号、模型阵容、数据流或硬件后端变化，更新 `diagrams/doubao-asr-architecture.dot` 并重新渲染，再核对 `diagrams/README.md` 中的分辨率：
   ```sh
   dot -Tpng diagrams/doubao-asr-architecture.dot -o diagrams/doubao-asr-architecture.png
