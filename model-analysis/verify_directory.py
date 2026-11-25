@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """Verify Doubao IME FLUTE v2/v3 ASR model directory, header layout, and key derivation.
 
-Supports:
-- 1.1.2 acllm_pro_model_mac (FLUTE v3, 1.48 GB, 6 packed files)
-- 1.1.2 acllm_general_model_mac (FLUTE v2, 463 MB, 6 packed files)
-- 1.1.0 acllm_main_model_mac (FLUTE v3, 825 MB, 20 loose files)
+Supports FLUTE v2 (plaintext directory) and FLUTE v3 (ChaCha20 encrypted directory)
+containers across current dual-model releases and legacy 1.1.0 single-model releases.
 """
 
 import argparse
@@ -18,15 +16,7 @@ from Crypto.Cipher import ChaCha20
 
 
 XOR_MASK = b"symphony"
-
-DEFAULT_MODELS = [
-    Path.home()
-    / "Library/Application Support/DoubaoIme/ASRModel/versions/acllm_pro_model_mac/1_5_4f19c90670291b502a4dd34b936e5f2f/asr_model.model",
-    Path.home()
-    / "Library/Application Support/DoubaoIme/ASRModel/versions/acllm_general_model_mac/1_8_a6846b0a91ac8a9579468e252c1da2e5/asr_model.model",
-    Path.home()
-    / "Library/Application Support/DoubaoIme/ASRModel/versions/1_8/asr_model.model",
-]
+DOUBAO_SUPPORT_DIR = Path.home() / "Library/Application Support/DoubaoIme"
 
 
 def format_model_path(path: Path) -> str:
@@ -37,32 +27,34 @@ def format_model_path(path: Path) -> str:
         return str(resolved)
 
 
+def discover_local_models(support_dir: Path = DOUBAO_SUPPORT_DIR) -> list[Path]:
+    versions_dir = support_dir / "ASRModel/versions"
+    if not versions_dir.is_dir():
+        return []
+    candidates = [p for p in versions_dir.rglob("asr_model.model") if p.is_file()]
+    candidates.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+    return candidates
+
+
 def resolve_default_model() -> Path:
-    layout_file = (
-        Path.home()
-        / "Library/Application Support/DoubaoIme/ASRContext/offline_model_active_layout.json"
-    )
+    layout_file = DOUBAO_SUPPORT_DIR / "ASRContext/offline_model_active_layout.json"
     if layout_file.exists():
         try:
             data = json.loads(layout_file.read_text())
             selected = data.get("selectedMainModelName")
             rel_path = data.get("mainModelPaths", {}).get(selected)
             if rel_path:
-                candidate = (
-                    Path.home()
-                    / "Library/Application Support/DoubaoIme"
-                    / rel_path
-                )
-                if candidate.exists():
+                candidate = DOUBAO_SUPPORT_DIR / rel_path
+                if candidate.is_file():
                     return candidate
         except Exception:
             pass
 
-    for candidate in DEFAULT_MODELS:
-        if candidate.exists():
-            return candidate
+    discovered = discover_local_models()
+    if discovered:
+        return discovered[0]
 
-    return DEFAULT_MODELS[0]
+    return DOUBAO_SUPPORT_DIR / "ASRModel/versions/asr_model.model"
 
 
 def load_32_byte_file(path: Path, label: str) -> bytes:
@@ -137,6 +129,7 @@ def parse_directory(data: bytes, count: int, header_size: int, model_size: int):
 def verify_payload_xor(model_path: Path, entries: list) -> bool:
     for target_name, expected_prefix in (
         ("config.yaml", b"objects:"),
+        ("asr/feature_extractor/fbank.conf", b"--sample-frequency="),
         ("model_md5s.txt", b"# MD5 for Panther Lite"),
     ):
         for entry in entries:
@@ -147,6 +140,32 @@ def verify_payload_xor(model_path: Path, entries: list) -> bool:
                 if decode_xor_prefix(chunk).startswith(expected_prefix):
                     return True
     return False
+
+
+def _lookup_manifest_metadata(model_path: Path) -> dict:
+    manifest_file = DOUBAO_SUPPORT_DIR / "ASRContext/offline_model_manifest.json"
+    if not manifest_file.is_file():
+        return {}
+    try:
+        resolved = model_path.expanduser().resolve()
+        manifest = json.loads(manifest_file.read_text())
+        for logical_name, records in manifest.get("models", {}).items():
+            for record in records if isinstance(records, list) else []:
+                rel = record.get("installRelativePath")
+                if not rel:
+                    continue
+                if (DOUBAO_SUPPORT_DIR / rel).resolve() == resolved:
+                    meta = {}
+                    name = record.get("logicalName") or logical_name
+                    version = record.get("version")
+                    if name:
+                        meta["model_name"] = str(name)
+                    if version:
+                        meta["model_version"] = str(version)
+                    return meta
+    except Exception:
+        pass
+    return {}
 
 
 def detect_model_metadata(model_path: Path, entries: list) -> dict:
@@ -165,17 +184,31 @@ def detect_model_metadata(model_path: Path, entries: list) -> dict:
                 pass
             break
 
-    path_str = str(model_path)
+    manifest_meta = _lookup_manifest_metadata(model_path)
+    meta.update(manifest_meta)
+
+    parts = model_path.expanduser().resolve().parts
+    if "versions" in parts and ("model_name" not in meta or "model_version" not in meta):
+        idx = parts.index("versions")
+        tail = parts[idx + 1 :]
+        if len(tail) >= 3:
+            meta.setdefault("model_name", tail[0])
+            ver_match = re.match(r"^(\d+)_(\d+)(?:_[0-9a-f]{32})?$", tail[1])
+            if ver_match:
+                meta.setdefault("model_version", f"{ver_match.group(1)}.{ver_match.group(2)}")
+        elif len(tail) == 2:
+            ver_match = re.match(r"^(\d+)_(\d+)$", tail[0])
+            if ver_match:
+                meta.setdefault("model_version", f"{ver_match.group(1)}.{ver_match.group(2)}")
+
     label = meta.get("config_label", "")
-    if "acllm_pro_model_mac" in path_str or label.startswith("LiteASRP_v1.2"):
-        meta["model_name"] = "acllm_pro_model_mac"
-        meta["model_version"] = "1.5"
-    elif "acllm_general_model_mac" in path_str or label.startswith("LiteASRm_"):
-        meta["model_name"] = "acllm_general_model_mac"
-        meta["model_version"] = "1.8"
-    elif "acllm_main_model_mac" in path_str or label.startswith("LiteASRP_v1.1"):
-        meta["model_name"] = "acllm_main_model_mac"
-        meta["model_version"] = "1.8"
+    if "model_name" not in meta:
+        if label.startswith("LiteASRP_v1.1"):
+            meta["model_name"] = "acllm_main_model_mac"
+        elif label.startswith("LiteASRP_"):
+            meta["model_name"] = "acllm_pro_model_mac"
+        elif label.startswith("LiteASRm_"):
+            meta["model_name"] = "acllm_general_model_mac"
 
     return meta
 
@@ -296,7 +329,9 @@ def main():
     if valid_entries:
         result["payload_xor_verified"] = verify_payload_xor(model_path, valid_entries)
         if not result["payload_xor_verified"]:
-            raise ValueError("Payload XOR mask check failed on config.yaml / model_md5s.txt")
+            raise ValueError(
+                "Payload XOR mask check failed on config.yaml / fbank.conf / model_md5s.txt"
+            )
         meta = detect_model_metadata(model_path, valid_entries)
         result.update(meta)
 

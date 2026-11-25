@@ -5,5 +5,11 @@
 __pycache__/
 *.py[cod]
 .DS_Store
+*.model
 *.pthlite
 *.packed
+*.mnn
+*.mnn.weight
+*.onnx
+*.safetensors
+*.mlmodelc/

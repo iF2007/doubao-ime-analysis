@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """Extract and verify internal files from FLUTE v2/v3 ASR model containers.
 
-Supports:
-- 1.1.2 acllm_pro_model_mac (FLUTE v3, 1.48 GB, 6 packed files)
-- 1.1.2 acllm_general_model_mac (FLUTE v2, 463 MB, 6 packed files)
-- 1.1.0 acllm_main_model_mac (FLUTE v3, 825 MB, 20 loose files)
+Supports FLUTE v2 (plaintext directory) and FLUTE v3 (ChaCha20 encrypted directory)
+containers across current dual-model releases and legacy 1.1.0 single-model releases.
 """
 
 import argparse

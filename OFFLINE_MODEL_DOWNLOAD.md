@@ -75,6 +75,6 @@ DoubaoImeSettings / IPC
 - `device_platform`：`mac`
 - `aid`：应用 ID（如 `843934` / `685343`）
 
-服务端在 `data.arithmetics` 中返回每个模型的 `name`、`version`、`uri`（MD5）和 `url_list` / `zip_url_list`。安装完成后客户端写入两份状态文件：
+服务端在 `data.arithmetics` 中按分组返回模型条目，包含 `name` / 加密名称字段 `name_sec`（客户端通过 `resolvedModelName(from:context:)` 解密）、`version`、`uri`（MD5）及 `url_list` / `zip_url_list`。安装完成后客户端写入两份状态文件：
 - `~/Library/Application Support/DoubaoIme/ASRContext/offline_model_manifest.json`（Schema v2，已安装清单）
 - `~/Library/Application Support/DoubaoIme/ASRContext/offline_model_active_layout.json`（Schema v1，当前激活模型，如 `selectedMainModelName: acllm_pro_model_mac`）

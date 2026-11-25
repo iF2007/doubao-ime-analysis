@@ -99,15 +99,17 @@ python3 model-analysis/extract_model.py --verify-only \
 ```text
 doubao-ime-analysis/
 ├── README.md                   入口、核心结论与复现命令
-├── OFFLINE_MODEL_DOWNLOAD.md   1.1.2 官方 CDN 直链、调度接口与 LuLu 规则
-├── FILE_INDEX.md               全部 27 个文件的职责索引
+├── AGENTS.md                   AI Agent 版本更新流程与校验门禁
+├── OFFLINE_MODEL_DOWNLOAD.md   官方 CDN 直链、调度接口与 LuLu 规则
+├── FILE_INDEX.md               全部 30 个文件的职责索引
 ├── PRIVACY.md                  公开范围与身份脱敏说明
 ├── environment.json            1.1.2 应用指纹与分析环境
 ├── requirements.txt            Python 依赖（numpy / pycryptodome）
-├── model-analysis/             FLUTE v2/v3 验证与解包脚本、种子、1.1.2 校验报告
-├── model-config/               1.1.2 专业版 / 通用版配置与 fbank 参数
+├── scripts/                    本机安装盘点与仓库一致性/隐私校验脚本
+├── model-analysis/             FLUTE v2/v3 验证与解包脚本、种子与校验报告
+├── model-config/               专业版 / 通用版配置与 fbank 参数
 ├── diagrams/                   架构图与 Graphviz 源码
-└── comparison/                 1.1.2 结构对比、模型标记与公开资料链接
+└── comparison/                 双模型对比、静态标记与公开资料链接
 ```
 
 ## 分析环境

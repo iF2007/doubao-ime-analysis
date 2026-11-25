@@ -61,12 +61,9 @@
     "python_distribution": "Miniforge",
     "numpy_distribution": "2.3.5",
     "pycryptodome_distribution": "3.23.0",
-    "unicorn_distribution": "2.1.4",
-    "unicorn_import_reported_version": "2.1.4",
-    "capstone_distribution": "5.0.9",
-    "capstone_import_reported_version": "5.0.7",
     "clang": "Apple clang 21.0.0 (clang-2100.4.1.1)",
-    "lldb": "lldb-2103.0.34.407"
+    "lldb": "lldb-2103.0.34.407",
+    "graphviz": "16.1.2"
   },
-  "execution": "Installed files were inspected read-only. Independent analysis process snapshots and ARM64 instruction emulation were verified by independent cipher and payload checks. The original input method process was not attached to or modified."
+  "execution": "Installed files were inspected read-only. Container headers, ChaCha20 key derivation, symphony XOR payloads, extracted configs, and binary markers were independently verified without attaching to or modifying the running input method."
 }
