@@ -1,6 +1,6 @@
-# 1.1.1 离线模型容器格式、密钥派生与文件清单
+# 1.1.2 离线模型容器格式、密钥派生与文件清单
 
-本文档记录豆包输入法 macOS `1.1.1` 两款离线 ASR 模型（专业版 `acllm_pro_model_mac` 1.5、通用版 `acllm_general_model_mac` 1.8）的容器结构、目录解密、正文还原及全部内部文件校验结果。
+本文档记录豆包输入法 macOS `1.1.2` 两款离线 ASR 模型（专业版 `acllm_pro_model_mac` 1.5、通用版 `acllm_general_model_mac` 1.8）的容器结构、目录解密、正文还原及全部内部文件校验结果。
 
 > 1.1.0 旧版单模型（`acllm_main_model_mac` 1.8，20 个 `.pthlite` 文件及 `model_md5s.txt` 清单差异）的分析保留在 Git Tag `macos_1.1.0`。
 
@@ -55,7 +55,7 @@
 1. **文件名**：以 `\x00` 结尾的 ASCII 路径（如 `/config.yaml\x00`）。
 2. **Offset**：int64 LE（8 B），文件在源包内的绝对起始偏移。
 3. **Size**：int64 LE（8 B），文件原始字节数。
-4. **Mtime**：int64 LE（8 B），修改时间戳（1.1.1 打包值均为 `1`）。
+4. **Mtime**：int64 LE（8 B），修改时间戳（1.1.2 打包值均为 `1`）。
 
 ---
 
@@ -73,7 +73,7 @@
 5. 以 `key=M`、`nonce=Nonce`、`counter=0` 初始化 ChaCha20，加密 32 个 `0x00` 字节得到最终密钥 `K`。
 6. 以 `key=K`、`nonce=Nonce`、**`counter=1`（seek 64 字节）** 解密目录密文 `header[33:]`。
 
-**1.1.1 实测值**：
+**1.1.2 实测值**：
 - **专业版 1.5（FLUTE v3）**
   - Nonce：`39a12d5e7dc541b5c5106c3f`
   - Header Size：`343`
@@ -98,7 +98,7 @@ P[i] = C[i] ^ b"symphony"[i % 8] ^ (i & 255)
 
 ---
 
-## 1.1.1 内部文件清单
+## 1.1.2 内部文件清单
 
 ### 专业版 1.5（6 文件，正文合计 1,487,023,474 B）
 

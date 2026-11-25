@@ -2,12 +2,12 @@
 
 | 文件 | 说明 |
 | :--- | :--- |
-| [doubao-asr-architecture.png](doubao-asr-architecture.png) | README 展示的 1.1.1 架构图（5720 × 1516） |
+| [doubao-asr-architecture.png](doubao-asr-architecture.png) | README 展示的 1.1.2 架构图（5720 × 1516） |
 | [doubao-asr-architecture.dot](doubao-asr-architecture.dot) | 可编辑的 Graphviz 源码 |
 
 ## 图例
 
-- **颜色**：蓝色为流式识别路径（`stream.packed`），紫色为非流式上下文路径（`nonstream.packed` / `no_stream.packed`），黄色为 1.1.1 新增的尾部静音快检（`TailVadProbeActor`），绿色为两类转写输出。
+- **颜色**：蓝色为流式识别路径（`stream.packed`），紫色为非流式上下文路径（`nonstream.packed` / `no_stream.packed`），黄色为尾部静音快检（`TailVadProbeActor`），绿色为两类转写输出。
 - **双版本路径差异**：
   - **专业版（`LiteASRP_v1.2.0_7`，`share_weight: false`）**：经独立 `nonstream_feature_extractor` 进入 `nonstream.packed`（29 层解码器，Metal）。
   - **通用版（`LiteASRm_v1.0.1_5`，`share_weight: true`）**：紫色虚线路径，直接复用流式输出并经 4 倍下采样的 880 维 `audio_proj`。

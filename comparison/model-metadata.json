@@ -1,6 +1,6 @@
 [
   {
-    "app_version": "1.1.1",
+    "app_version": "1.1.2",
     "variant": "pro",
     "model_name": "acllm_pro_model_mac",
     "model_version": "1.5",
@@ -59,7 +59,7 @@
     ]
   },
   {
-    "app_version": "1.1.1",
+    "app_version": "1.1.2",
     "variant": "pro",
     "model_name": "acllm_pro_model_mac",
     "model_version": "1.5",
@@ -101,7 +101,7 @@
     ]
   },
   {
-    "app_version": "1.1.1",
+    "app_version": "1.1.2",
     "variant": "general",
     "model_name": "acllm_general_model_mac",
     "model_version": "1.8",
@@ -141,7 +141,7 @@
     ]
   },
   {
-    "app_version": "1.1.1",
+    "app_version": "1.1.2",
     "variant": "general",
     "model_name": "acllm_general_model_mac",
     "model_version": "1.8",

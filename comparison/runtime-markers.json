@@ -1,523 +1,523 @@
 {
-  "app_version": "1.1.1",
+  "app_version": "1.1.2",
   "path": "/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme",
-  "binary_sha256": "8544564ffffae4abfe64df721a71b971408fb4a124512138d040c992456435b3",
-  "mnn_string_count": 515,
+  "binary_sha256": "c36348f714eb4e9883487d1b7b96e1ad5e57d1d13545da084173b4785173df7b",
+  "mnn_string_count": 501,
   "matches": [
     {
-      "offset": 20220976,
+      "offset": 20323856,
       "text": "flute::asr::ntp_cif::PromptProcessor"
     },
     {
-      "offset": 20221168,
+      "offset": 20324048,
       "text": "flute::asr::ntp_cif::PantherLLMEngineCreator"
     },
     {
-      "offset": 20327947,
+      "offset": 20430859,
       "text": "N7panther4lite3cpu26QW4ConformerLayerRopeChunkE"
     },
     {
-      "offset": 20327967,
+      "offset": 20430879,
       "text": "QW4ConformerLayerRopeChunkE"
     },
     {
-      "offset": 20329216,
+      "offset": 20432128,
       "text": "N7panther4lite3cpu19W4A8Gpt2TransformerE"
     },
     {
-      "offset": 20329236,
+      "offset": 20432148,
       "text": "W4A8Gpt2TransformerE"
     },
     {
-      "offset": 21359005,
+      "offset": 21468685,
       "text": "flute.asr.ntp_cif.AsrExecutorWithContext"
     },
     {
-      "offset": 21359046,
+      "offset": 21468726,
       "text": "flute.asr.ntp_cif.AsrExecutor"
     },
     {
-      "offset": 21359076,
+      "offset": 21468756,
       "text": "flute.asr.ntp_cif.AsrContextExecutor"
     },
     {
-      "offset": 22084457,
+      "offset": 22194130,
       "text": "flute.asr.acllm.GPT2Tokenizer"
     },
     {
-      "offset": 22084487,
+      "offset": 22194160,
       "text": "flute.asr.acllm.HFTokenizer"
     },
     {
-      "offset": 22084515,
+      "offset": 22194188,
       "text": "flute.asr.ntp_cif.PromptProcessor"
     },
     {
-      "offset": 22084549,
+      "offset": 22194222,
       "text": "flute.asr.ntp_cif.DecoderContextActor"
     },
     {
-      "offset": 22084587,
+      "offset": 22194260,
       "text": "flute.asr.ntp_cif.FeatureExtractorActor"
     },
     {
-      "offset": 22084627,
+      "offset": 22194300,
       "text": "flute.asr.ntp_cif.EncoderActor"
     },
     {
-      "offset": 22084658,
+      "offset": 22194331,
       "text": "flute.asr.ntp_cif.TgtSpkEncoderActor"
     },
     {
-      "offset": 22084695,
+      "offset": 22194368,
       "text": "flute.asr.ntp_cif.DecoderActor"
     },
     {
-      "offset": 22084726,
+      "offset": 22194399,
       "text": "flute.asr.ntp_cif.DecoderMixerActor"
     },
     {
-      "offset": 22084762,
+      "offset": 22194435,
       "text": "flute.asr.ntp_cif.DecoderPostActor"
     },
     {
-      "offset": 22084797,
+      "offset": 22194470,
       "text": "flute.asr.ntp_cif.PostActor"
     },
     {
-      "offset": 22084825,
+      "offset": 22194498,
       "text": "flute.asr.ntp_cif.PostTrackActor"
     },
     {
-      "offset": 22084858,
+      "offset": 22194531,
       "text": "flute.asr.ntp_cif.PantherLLMStreamContextActor"
     },
     {
-      "offset": 22084905,
+      "offset": 22194578,
       "text": "flute.asr.ntp_cif.PantherLLMNonStreamContextActor"
     },
     {
-      "offset": 22084955,
+      "offset": 22194628,
       "text": "flute.asr.ntp_cif.RagRunner"
     },
     {
-      "offset": 22084983,
+      "offset": 22194656,
       "text": "flute.asr.ntp_cif.IntegrationActor"
     },
     {
-      "offset": 22085018,
+      "offset": 22194691,
       "text": "flute.asr.ntp_cif.IntegrationEngineCreator"
     },
     {
-      "offset": 22085061,
+      "offset": 22194734,
       "text": "flute.asr.ntp_cif.AsrIntentVmActor"
     },
     {
-      "offset": 22116572,
+      "offset": 22226245,
       "text": "flute.vad.TailVadProbeActor"
     },
     {
-      "offset": 22140508,
+      "offset": 22250181,
       "text": "QW4ConformerLayerRopeChunk: ffn1 layernorm init failed[0m"
     },
     {
-      "offset": 22140674,
+      "offset": 22250347,
       "text": "QW4ConformerLayerRopeChunk: attn layernorm init failed[0m"
     },
     {
-      "offset": 22140755,
+      "offset": 22250428,
       "text": "QW4ConformerLayerRopeChunk: is_mha_quant=1, no catcher scales, using dynamic quant_bmm (mode=2)[0m"
     },
     {
-      "offset": 22140881,
+      "offset": 22250554,
       "text": "QW4ConformerLayerRopeChunk: pos_emb_mat_size[%d] != attn_left[%d]+chunk_size[%d][0m"
     },
     {
-      "offset": 22140988,
+      "offset": 22250661,
       "text": "QW4ConformerLayerRopeChunk: pos_rope rebuilt (streaming=%d, f32->bf16=%d, frames=%d->%d, HD=%d, total=%d floats)[0m"
     },
     {
-      "offset": 22141131,
+      "offset": 22250804,
       "text": "QW4ConformerLayerRopeChunk: conv layernorm init failed[0m"
     },
     {
-      "offset": 22141216,
+      "offset": 22250889,
       "text": "QW4ConformerLayerRopeChunk: conv2 init failed[0m"
     },
     {
-      "offset": 22141292,
+      "offset": 22250965,
       "text": "QW4ConformerLayerRopeChunk: conv2 layernorm init failed[0m"
     },
     {
-      "offset": 22141378,
+      "offset": 22251051,
       "text": "QW4ConformerLayerRopeChunk: ffn2 layernorm init failed[0m"
     },
     {
-      "offset": 22141463,
+      "offset": 22251136,
       "text": "QW4ConformerLayerRopeChunk: out layernorm init failed[0m"
     },
     {
-      "offset": 22141547,
+      "offset": 22251220,
       "text": "QW4ConformerLayerRopeChunk: failed to allocate kv_scales_buffer (%d floats)[0m"
     },
     {
-      "offset": 22142538,
+      "offset": 22252211,
       "text": "QW4ConformerLayerRopeChunk: format must be PthBTN[0m"
     },
     {
-      "offset": 22142614,
+      "offset": 22252287,
       "text": "QW4ConformerLayerRopeChunk: attn_left_context < attn_right_context is unsupported now[0m"
     },
     {
-      "offset": 22142823,
+      "offset": 22252496,
       "text": "QW4ConformerLayerRopeChunkKernel: chunk_size error %d![0m"
     },
     {
-      "offset": 22142908,
+      "offset": 22252581,
       "text": "QW4ConformerLayerRopeChunkKernel: stream not support mask![0m"
     },
     {
-      "offset": 22142997,
+      "offset": 22252670,
       "text": "QW4ConformerLayerRopeChunkKernel: stream first/mid not support T %dwith param chunksize:%d![0m"
     },
     {
-      "offset": 22143119,
+      "offset": 22252792,
       "text": "QW4ConformerLayerRopeChunkKernel: unsupported mask type/dtype[0m"
     },
     {
-      "offset": 22143336,
+      "offset": 22253009,
       "text": "QW4ConformerLayerRopeChunk: ffn1 layernorm compute failed[0m"
     },
     {
-      "offset": 22144216,
+      "offset": 22253889,
       "text": "QW4ConformerLayerRopeChunk: attn layernorm compute failed[0m"
     },
     {
-      "offset": 22145116,
+      "offset": 22254789,
       "text": "QW4ConformerLayerRopeChunk: conv layernorm compute failed[0m"
     },
     {
-      "offset": 22145204,
+      "offset": 22254877,
       "text": "QW4ConformerLayerRopeChunk: conv2 compute failed[0m"
     },
     {
-      "offset": 22145283,
+      "offset": 22254956,
       "text": "QW4ConformerLayerRopeChunk: conv2 layernorm compute failed[0m"
     },
     {
-      "offset": 22145513,
+      "offset": 22255186,
       "text": "QW4ConformerLayerRopeChunk: ffn2 layernorm compute failed[0m"
     },
     {
-      "offset": 22146244,
+      "offset": 22255917,
       "text": "QW4ConformerLayerRopeChunk: out layernorm compute failed[0m"
     },
     {
-      "offset": 22166840,
+      "offset": 22276513,
       "text": "PthCpuProviderQW4ConformerLayerRopeChunk"
     },
     {
-      "offset": 22166854,
+      "offset": 22276527,
       "text": "QW4ConformerLayerRopeChunk"
     },
     {
-      "offset": 22166881,
+      "offset": 22276554,
       "text": "QW4ConformerLayerRopeChunk"
     },
     {
-      "offset": 22166985,
+      "offset": 22276658,
       "text": "QW4ConformerLayerRopeChunk\", \"QW4ConformerLayerRopeChunk\", cpu::BuildLiteKernelCreateInfo<cpu::LITE_KERNEL_CLASS_NAME( PthCpuProvider, QW4ConformerLayerRopeChunk)>)"
     },
     {
-      "offset": 22167170,
+      "offset": 22276843,
       "text": "QW4ConformerLayerRopeChunk info failed"
     },
     {
-      "offset": 22227046,
+      "offset": 22336719,
       "text": "PthCpuProviderW4A8GPT2TransformerBlock"
     },
     {
-      "offset": 22266080,
+      "offset": 22375753,
       "text": "QW4ConformerLayerRopeChunk only support format BTN"
     },
     {
-      "offset": 22280410,
+      "offset": 22390083,
       "text": "W4A8Gpt2Transformer ffn activation only support gelu"
     },
     {
-      "offset": 22281063,
+      "offset": 22390736,
       "text": "W4A8Gpt2TransformerKernel Init failed"
     },
     {
-      "offset": 22281172,
+      "offset": 22390845,
       "text": "W4A8Gpt2Transformer input x shape is not valid"
     },
     {
-      "offset": 22281312,
+      "offset": 22390985,
       "text": "W4A8Gpt2Transformer compute failed"
     },
     {
-      "offset": 44758508,
+      "offset": 44983836,
       "text": "flute::asr::ntp_cif::PantherLLMEngineCreator"
     },
     {
-      "offset": 44798346,
+      "offset": 45023674,
       "text": "flute::asr::ntp_cif::PromptProcessor"
     },
     {
-      "offset": 44856992,
+      "offset": 45082320,
       "text": "N7panther4lite3cpu26QW4ConformerLayerRopeChunkE"
     },
     {
-      "offset": 44857012,
+      "offset": 45082340,
       "text": "QW4ConformerLayerRopeChunkE"
     },
     {
-      "offset": 44858176,
+      "offset": 45083504,
       "text": "N7panther4lite3cpu19W4A8Gpt2TransformerE"
     },
     {
-      "offset": 44858196,
+      "offset": 45083524,
       "text": "W4A8Gpt2TransformerE"
     },
     {
-      "offset": 45890125,
+      "offset": 46122309,
       "text": "flute.asr.ntp_cif.AsrExecutorWithContext"
     },
     {
-      "offset": 45890166,
+      "offset": 46122350,
       "text": "flute.asr.ntp_cif.AsrExecutor"
     },
     {
-      "offset": 45890196,
+      "offset": 46122380,
       "text": "flute.asr.ntp_cif.AsrContextExecutor"
     },
     {
-      "offset": 46616151,
+      "offset": 46848328,
       "text": "flute.asr.acllm.GPT2Tokenizer"
     },
     {
-      "offset": 46616181,
+      "offset": 46848358,
       "text": "flute.asr.acllm.HFTokenizer"
     },
     {
-      "offset": 46616209,
+      "offset": 46848386,
       "text": "flute.asr.ntp_cif.PromptProcessor"
     },
     {
-      "offset": 46616243,
+      "offset": 46848420,
       "text": "flute.asr.ntp_cif.DecoderContextActor"
     },
     {
-      "offset": 46616281,
+      "offset": 46848458,
       "text": "flute.asr.ntp_cif.FeatureExtractorActor"
     },
     {
-      "offset": 46616321,
+      "offset": 46848498,
       "text": "flute.asr.ntp_cif.EncoderActor"
     },
     {
-      "offset": 46616352,
+      "offset": 46848529,
       "text": "flute.asr.ntp_cif.TgtSpkEncoderActor"
     },
     {
-      "offset": 46616389,
+      "offset": 46848566,
       "text": "flute.asr.ntp_cif.DecoderActor"
     },
     {
-      "offset": 46616420,
+      "offset": 46848597,
       "text": "flute.asr.ntp_cif.DecoderMixerActor"
     },
     {
-      "offset": 46616456,
+      "offset": 46848633,
       "text": "flute.asr.ntp_cif.DecoderPostActor"
     },
     {
-      "offset": 46616491,
+      "offset": 46848668,
       "text": "flute.asr.ntp_cif.PostActor"
     },
     {
-      "offset": 46616519,
+      "offset": 46848696,
       "text": "flute.asr.ntp_cif.PostTrackActor"
     },
     {
-      "offset": 46616552,
+      "offset": 46848729,
       "text": "flute.asr.ntp_cif.PantherLLMStreamContextActor"
     },
     {
-      "offset": 46616599,
+      "offset": 46848776,
       "text": "flute.asr.ntp_cif.PantherLLMNonStreamContextActor"
     },
     {
-      "offset": 46616649,
+      "offset": 46848826,
       "text": "flute.asr.ntp_cif.RagRunner"
     },
     {
-      "offset": 46616677,
+      "offset": 46848854,
       "text": "flute.asr.ntp_cif.IntegrationActor"
     },
     {
-      "offset": 46616712,
+      "offset": 46848889,
       "text": "flute.asr.ntp_cif.IntegrationEngineCreator"
     },
     {
-      "offset": 46616755,
+      "offset": 46848932,
       "text": "flute.asr.ntp_cif.AsrIntentVmActor"
     },
     {
-      "offset": 46648479,
+      "offset": 46880656,
       "text": "flute.vad.TailVadProbeActor"
     },
     {
-      "offset": 46669558,
+      "offset": 46901735,
       "text": "QW4ConformerLayerRopeChunk: ffn1 layernorm init failed[0m"
     },
     {
-      "offset": 46669724,
+      "offset": 46901901,
       "text": "QW4ConformerLayerRopeChunk: attn layernorm init failed[0m"
     },
     {
-      "offset": 46669805,
+      "offset": 46901982,
       "text": "QW4ConformerLayerRopeChunk: is_mha_quant=1, no catcher scales, using dynamic quant_bmm (mode=2)[0m"
     },
     {
-      "offset": 46669931,
+      "offset": 46902108,
       "text": "QW4ConformerLayerRopeChunk: pos_emb_mat_size[%d] != attn_left[%d]+chunk_size[%d][0m"
     },
     {
-      "offset": 46670038,
+      "offset": 46902215,
       "text": "QW4ConformerLayerRopeChunk: pos_rope rebuilt (streaming=%d, f32->bf16=%d, frames=%d->%d, HD=%d, total=%d floats)[0m"
     },
     {
-      "offset": 46670181,
+      "offset": 46902358,
       "text": "QW4ConformerLayerRopeChunk: conv layernorm init failed[0m"
     },
     {
-      "offset": 46670266,
+      "offset": 46902443,
       "text": "QW4ConformerLayerRopeChunk: conv2 init failed[0m"
     },
     {
-      "offset": 46670342,
+      "offset": 46902519,
       "text": "QW4ConformerLayerRopeChunk: conv2 layernorm init failed[0m"
     },
     {
-      "offset": 46670428,
+      "offset": 46902605,
       "text": "QW4ConformerLayerRopeChunk: ffn2 layernorm init failed[0m"
     },
     {
-      "offset": 46670513,
+      "offset": 46902690,
       "text": "QW4ConformerLayerRopeChunk: out layernorm init failed[0m"
     },
     {
-      "offset": 46670597,
+      "offset": 46902774,
       "text": "QW4ConformerLayerRopeChunk: failed to allocate kv_scales_buffer (%d floats)[0m"
     },
     {
-      "offset": 46671588,
+      "offset": 46903765,
       "text": "QW4ConformerLayerRopeChunk: format must be PthBTN[0m"
     },
     {
-      "offset": 46671664,
+      "offset": 46903841,
       "text": "QW4ConformerLayerRopeChunk: attn_left_context < attn_right_context is unsupported now[0m"
     },
     {
-      "offset": 46671873,
+      "offset": 46904050,
       "text": "QW4ConformerLayerRopeChunkKernel: chunk_size error %d![0m"
     },
     {
-      "offset": 46671958,
+      "offset": 46904135,
       "text": "QW4ConformerLayerRopeChunkKernel: stream not support mask![0m"
     },
     {
-      "offset": 46672047,
+      "offset": 46904224,
       "text": "QW4ConformerLayerRopeChunkKernel: stream first/mid not support T %dwith param chunksize:%d![0m"
     },
     {
-      "offset": 46672169,
+      "offset": 46904346,
       "text": "QW4ConformerLayerRopeChunkKernel: unsupported mask type/dtype[0m"
     },
     {
-      "offset": 46672386,
+      "offset": 46904563,
       "text": "QW4ConformerLayerRopeChunk: ffn1 layernorm compute failed[0m"
     },
     {
-      "offset": 46673266,
+      "offset": 46905443,
       "text": "QW4ConformerLayerRopeChunk: attn layernorm compute failed[0m"
     },
     {
-      "offset": 46674166,
+      "offset": 46906343,
       "text": "QW4ConformerLayerRopeChunk: conv layernorm compute failed[0m"
     },
     {
-      "offset": 46674254,
+      "offset": 46906431,
       "text": "QW4ConformerLayerRopeChunk: conv2 compute failed[0m"
     },
     {
-      "offset": 46674333,
+      "offset": 46906510,
       "text": "QW4ConformerLayerRopeChunk: conv2 layernorm compute failed[0m"
     },
     {
-      "offset": 46674563,
+      "offset": 46906740,
       "text": "QW4ConformerLayerRopeChunk: ffn2 layernorm compute failed[0m"
     },
     {
-      "offset": 46675294,
+      "offset": 46907471,
       "text": "QW4ConformerLayerRopeChunk: out layernorm compute failed[0m"
     },
     {
-      "offset": 46695843,
+      "offset": 46928020,
       "text": "PthCpuProviderQW4ConformerLayerRopeChunk"
     },
     {
-      "offset": 46695857,
+      "offset": 46928034,
       "text": "QW4ConformerLayerRopeChunk"
     },
     {
-      "offset": 46695884,
+      "offset": 46928061,
       "text": "QW4ConformerLayerRopeChunk"
     },
     {
-      "offset": 46695988,
+      "offset": 46928165,
       "text": "QW4ConformerLayerRopeChunk\", \"QW4ConformerLayerRopeChunk\", cpu::BuildLiteKernelCreateInfo<cpu::LITE_KERNEL_CLASS_NAME( PthCpuProvider, QW4ConformerLayerRopeChunk)>)"
     },
     {
-      "offset": 46696173,
+      "offset": 46928350,
       "text": "QW4ConformerLayerRopeChunk info failed"
     },
     {
-      "offset": 46756056,
+      "offset": 46988233,
       "text": "PthCpuProviderW4A8GPT2TransformerBlock"
     },
     {
-      "offset": 46795090,
+      "offset": 47027267,
       "text": "QW4ConformerLayerRopeChunk only support format BTN"
     },
     {
-      "offset": 46800436,
+      "offset": 47032613,
       "text": "QW4ConformerLayerRopeChunk CPU execution requested after CPU weights were released"
     },
     {
-      "offset": 46800745,
+      "offset": 47032922,
       "text": "QW4ConformerLayerRopeChunk Metal execution failed after CPU weights were released"
     },
     {
-      "offset": 46801709,
+      "offset": 47033886,
       "text": "QW4ConformerLayerRopeChunk layer_idx=%d had_handle=%d device=%.1fMB->%.1fMB freed=%.1fMB"
     },
     {
-      "offset": 46811079,
+      "offset": 47043256,
       "text": "W4A8Gpt2Transformer ffn activation only support gelu"
     },
     {
-      "offset": 46811732,
+      "offset": 47043909,
       "text": "W4A8Gpt2TransformerKernel Init failed"
     },
     {
-      "offset": 46811841,
+      "offset": 47044018,
       "text": "W4A8Gpt2Transformer input x shape is not valid"
     },
     {
-      "offset": 46811981,
+      "offset": 47044158,
       "text": "W4A8Gpt2Transformer compute failed"
     }
   ]

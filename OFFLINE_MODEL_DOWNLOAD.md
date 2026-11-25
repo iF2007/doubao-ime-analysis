@@ -1,12 +1,12 @@
-# 1.1.1 离线模型官方直链与 LuLu 防火墙配置
+# 1.1.2 离线模型官方直链与 LuLu 防火墙配置
 
-本文档提供豆包输入法 macOS `1.1.1` 离线模型的官方 CDN 下载直链、客户端下载调度机制，以及在阻断遥测和云端语音的前提下只放行离线模型下载的 LuLu 防火墙最小规则。
+本文档提供豆包输入法 macOS `1.1.2` 离线模型的官方 CDN 下载直链、客户端下载调度机制，以及在阻断遥测和云端语音的前提下只放行离线模型下载的 LuLu 防火墙最小规则。
 
 > 1.1.0 旧版主模型（`acllm_main_model_mac` 1.8，825 MB）的直链与路径见 Git Tag `macos_1.1.0`。
 >
 > 以下接口参数与 CDN 路径仅用于个人本地离线部署与网络审计，请勿用于自动化批量抓取、镜像分发或商业调用。
 
-## 官方 CDN 直链速查（1.1.1）
+## 官方 CDN 直链速查（1.1.2）
 
 所有模型文件托管在 `byteeffecttos.com` CDN，URI 路径即文件 32 位 MD5：
 
@@ -43,7 +43,7 @@
 
 | 域名 | 用途 |
 | :--- | :--- |
-| `pc-mon.zijieapi.com` / `*.zijieapi.com` | 行为与性能打点（`OimeReport` 击键提交记录 `reportKeyboardCommitEvent`、体验改进数据 `reportUserExpImprovementData`） |
+| `pc-mon.zijieapi.com` / `*.zijieapi.com` | 行为与性能打点（`OimeReport` 击键提交记录 `recordKeyboardCommitEvent`、体验改进数据 `reportUserExpImprovementData`） |
 | `frontier*-audio-ime-*.doubao.com` | 实时云端语音转文字通道（WebSocket / QUIC 音频流） |
 | `speech.bytedance.com` | 云端语音识别接口 |
 | `api-normal.doubao.com` | 账号鉴权与心跳（`/passport/token/beat/v2/`） |

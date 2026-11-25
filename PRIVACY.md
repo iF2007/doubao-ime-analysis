@@ -5,7 +5,7 @@
 | 内容 | 状态 |
 | :--- | :--- |
 | 分析文档、FLUTE v2/v3 验证与解包脚本 | 公开 |
-| 1.1.1 模型配置文件（`pro-config.yaml` / `general-config.yaml` / `fbank.conf`） | 公开 |
+| 1.1.2 模型配置文件（`pro-config.yaml` / `general-config.yaml` / `fbank.conf`） | 公开 |
 | FLUTE v3 固定根种子（`model-seed.bin`）与校验报告 JSON | 公开 |
 | 静态结构证据、架构图与公开资料链接 | 公开 |
 | 加密模型源包、解包权重（`.packed` / `.pthlite`） | 不提供 |

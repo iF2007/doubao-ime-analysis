@@ -2,8 +2,8 @@
 """Verify Doubao IME FLUTE v2/v3 ASR model directory, header layout, and key derivation.
 
 Supports:
-- 1.1.1 acllm_pro_model_mac (FLUTE v3, 1.48 GB, 6 packed files)
-- 1.1.1 acllm_general_model_mac (FLUTE v2, 463 MB, 6 packed files)
+- 1.1.2 acllm_pro_model_mac (FLUTE v3, 1.48 GB, 6 packed files)
+- 1.1.2 acllm_general_model_mac (FLUTE v2, 463 MB, 6 packed files)
 - 1.1.0 acllm_main_model_mac (FLUTE v3, 825 MB, 20 loose files)
 """
 

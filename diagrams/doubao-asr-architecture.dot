@@ -6,7 +6,7 @@ digraph DoubaoASR {
     fontsize=28,
     fontcolor="#0F172A",
     labelloc=t,
-    label="豆包输入法 1.1.1 离线语音模型架构\n专业版 LiteASRP_v1.2.0_7 (1.48 GB, FLUTE v3) · 通用版 LiteASRm_v1.0.1_5 (463 MB, FLUTE v2)",
+    label="豆包输入法 1.1.2 离线语音模型架构\n专业版 LiteASRP_v1.2.0_7 (1.48 GB, FLUTE v3) · 通用版 LiteASRm_v1.0.1_5 (463 MB, FLUTE v2)",
     pad=0.4,
     nodesep=0.45,
     ranksep=0.65,

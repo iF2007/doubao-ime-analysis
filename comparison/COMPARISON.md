@@ -1,8 +1,8 @@
-# 1.1.1 模型结构与公开语音模型对比
+# 1.1.2 模型结构与公开语音模型对比
 
 ## 核心判断
 
-基于 1.1.1 两款本地模型的配置文件（[专业版](../model-config/pro-config.yaml)、[通用版](../model-config/general-config.yaml)）、`.packed` 图字符串及应用静态标记：
+基于 1.1.2 两款本地模型的配置文件（[专业版](../model-config/pro-config.yaml)、[通用版](../model-config/general-config.yaml)）、`.packed` 图字符串及应用静态标记：
 
 - **技术路线接近 Seed-ASR / AcLLM**：同为 Conformer 声学编码器 + 上下文音频条件 LLM 解码器（支持对话历史、光标上下文、热词与纠错提示），面向端侧离线转写裁剪。
 - **与 efeslab/LiteASR 明显不同**：LiteASR 面向 Whisper 编码器做 SVD 低秩压缩，而本地模型是 80 维 fbank + 24 层 Conformer + GPT 风格解码器 + MNN / Panther 推理栈。包内代号 `LiteASRP_*` / `LiteASRm_*` 只是命名巧合。
@@ -10,9 +10,9 @@
 
 ---
 
-## 1.1.1 专业版 vs 通用版架构对比
+## 1.1.2 专业版 vs 通用版架构对比
 
-1.1.1 将引擎统一迁至 `AsrContextExecutor` + `IntegrationEngineCreator`，用 MNN `.packed` 包取代 1.1.0 的 20 个散装 `.pthlite` 文件，并分化为两条规格：
+相比 1.1.0，1.1.2 将引擎统一迁至 `AsrContextExecutor` + `IntegrationEngineCreator`，用 MNN `.packed` 包取代 1.1.0 的 20 个散装 `.pthlite` 文件，并分化为两条规格：
 
 | 维度 | 专业版 (`acllm_pro_model_mac` 1.5) | 通用版 (`acllm_general_model_mac` 1.8) |
 | :--- | :--- | :--- |
@@ -24,7 +24,7 @@
 | **解码器与图标记** | `stream.packed` 12 层、`nonstream.packed` 29 层（均内嵌 `.mnn`、RoPE） | `stream.packed` 12 层解码 + 编码器 `0..15` 层，`no_stream.packed` 含编码器 `16..23` 层（共 24 层 Macaron Conformer） |
 | **非流式最大 Token** | `256` | `1000` |
 | **Prompt 模板** | `lr_context`、`default` | `lr_context`、`default`、`bot_context` |
-| **1.1.1 共同新增** | `tail_vad_probe`（10 帧尾静音快检）、`rag_words`（热词注入）、18.5 s 分段上限 | 同左 |
+| **相比 1.1.0 新增** | `tail_vad_probe`（10 帧尾静音快检）、`rag_words`（热词注入）、18.5 s 分段上限 | 同左 |
 
 ---
 
@@ -32,11 +32,11 @@
 
 对比对象固定在 [LiteASR 提交 `da5be85`](https://github.com/efeslab/LiteASR/tree/da5be85382a6fc22245803c18c820b5c1b049ef8) 与公开模型 `lite-whisper-large-v3-turbo`（配置摘录见 [public-model-and-papers.json](public-model-and-papers.json)）：
 
-| 维度 | 豆包输入法本地模型（1.1.1） | LiteASR (`lite-whisper-large-v3-turbo`) |
+| 维度 | 豆包输入法本地模型（1.1.2） | LiteASR (`lite-whisper-large-v3-turbo`) |
 | :--- | :--- | :--- |
 | **声学特征** | 16 kHz / 80 维 fbank + CMVN | 128 维 mel |
 | **音频编码器** | 24 层 Conformer（Macaron FFN + Depthwise Conv + RoPE） | 32 层 Whisper Transformer 编码器 |
-| **解码器** | 双路径：12 层流式 + 29 层非流式上下文（1.1.1 专业版） | 4 层 Whisper 解码器 |
+| **解码器** | 双路径：12 层流式 + 29 层非流式上下文（1.1.2 专业版） | 4 层 Whisper 解码器 |
 | **压缩手段** | 量化（QW4 / W4A8）、融合算子、跨路径共享权重（通用版） | 校准激活 PCA/SVD 低秩分解（`weight1` / `weight2` 替换线性层） |
 | **上下文能力** | 内置对话历史、光标前后文、热词、纠错记录、ITN 与语气词标注 | 标准 Whisper 转写，主要压缩编码器 |
 | **推理运行时** | `flute` + MNN（`.mnn` 打包于 `.packed`）+ Panther Lite（VAD） | PyTorch / Transformers / Triton |
@@ -47,7 +47,7 @@
 
 [Seed-ASR 论文 v1](https://arxiv.org/html/2407.04675v1) 提出 Audio-conditioned LLM（AcLLM）架构，论文摘要提到已用于字节豆包语音识别产品；[官方演示页](https://bytedancespeech.github.io/seedasr_tech_report/) 展示的上下文字段与本地 `config.yaml` 里的 Prompt 占位符高度吻合：
 
-| 概念 / 能力 | Seed-ASR 论文 / 演示 | 豆包输入法 1.1.1 本地模型 |
+| 概念 / 能力 | Seed-ASR 论文 / 演示 | 豆包输入法 1.1.2 本地模型 |
 | :--- | :--- | :--- |
 | **音频编码器** | LUISE（约 2B 参数、32 层 Conformer） | 24 层 Conformer（端侧轻量版） |
 | **语言模型** | 数百亿参数 MoE | 端侧小模型（专业版整包 1.48 GB，通用版 463 MB） |
@@ -64,6 +64,6 @@
 
 ## 证据索引
 
-- 1.1.1 配置：[pro-config.yaml](../model-config/pro-config.yaml) · [general-config.yaml](../model-config/general-config.yaml) · [fbank.conf](../model-config/asr/feature_extractor/fbank.conf)
-- 静态算子与 `.packed` 扫描记录：[runtime-markers.json](runtime-markers.json)（1.1.1 主程序）· [model-metadata.json](model-metadata.json)（1.1.1 `.packed` 内嵌 `.mnn` 与层索引）
+- 1.1.2 配置：[pro-config.yaml](../model-config/pro-config.yaml) · [general-config.yaml](../model-config/general-config.yaml) · [fbank.conf](../model-config/asr/feature_extractor/fbank.conf)
+- 静态算子与 `.packed` 扫描记录：[runtime-markers.json](runtime-markers.json)（1.1.2 主程序）· [model-metadata.json](model-metadata.json)（1.1.2 `.packed` 内嵌 `.mnn` 与层索引）
 - 公开资料来源：[sources.json](sources.json) · [public-model-and-papers.json](public-model-and-papers.json)
